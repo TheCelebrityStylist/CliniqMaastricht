@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; --bg:#080607; --ivory:#fff7ea; --pink:#f02688; --burgundy:#36101f; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: radial-gradient(circle at 20% 0%, rgba(240,38,136,.18), transparent 28rem), #080607; color: var(--ivory); font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif; }
+a { text-underline-offset: 4px; }
+::selection { background: #f02688; color: white; }
+.focus-ring { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta; }
+.container-premium { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
+.eyebrow { @apply text-xs font-black uppercase tracking-[0.28em] text-gold; }
+.h1 { @apply text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-8xl; }
+.h2 { @apply text-4xl font-black leading-[0.98] tracking-[-0.045em] sm:text-5xl lg:text-6xl; }
+.h3 { @apply text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl; }
+.card { @apply border border-white/10 bg-white/[0.045] shadow-2xl shadow-black/20 backdrop-blur; }
+.btn-primary { @apply focus-ring inline-flex items-center justify-center rounded-full bg-magenta px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-ink; }
+.btn-secondary { @apply focus-ring inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-ink; }
+.input { @apply focus-ring w-full rounded-2xl border border-white/12 bg-black/35 px-4 py-3 text-base text-white placeholder:text-white/35; }
+.label { @apply mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/60; }
+.prose-premium { @apply text-lg leading-8 text-white/72; }
+.prose-premium p { @apply mb-5; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }

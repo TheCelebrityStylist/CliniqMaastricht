@@ -1,0 +1,6 @@
+import Image from 'next/image'
+import { metadata as createMetadata } from '@/lib/seo'
+import { pages, images } from '@/lib/site'
+import { getArtists } from '@/lib/sanity/client'
+export const metadata = createMetadata(pages[7].title, pages[7].description, '/artiesten')
+export default async function ArtiestenPage(){const artists=await getArtists();return <section className="container-premium pt-36 pb-24"><p className="eyebrow">Artists & DJs</p><h1 className="h1 mt-5">Sound of Cliniq.</h1><p className="prose-premium mt-7 max-w-3xl">Resident DJs, gastartiesten en culture partners geven Cliniq Maastricht een eigen nightlife identiteit. Profielen zijn editable in Sanity.</p><div className="mt-12 grid gap-6 md:grid-cols-3">{artists.map(a=><article className="card overflow-hidden rounded-[2rem]" key={a._id}><div className="relative aspect-[4/3]"><Image src={a.imageUrl || images.club} alt={`${a.name} bij Cliniq Maastricht`} fill sizes="33vw" className="object-cover"/></div><div className="p-6"><p className="eyebrow">{a.role || 'Artist'}</p><h2 className="h3 mt-3">{a.name}</h2><p className="mt-3 text-white/70">{a.bio}</p></div></article>)}</div><a href="/contact" className="btn-primary mt-12">Boekingen & contact</a></section>}

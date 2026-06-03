@@ -12,7 +12,6 @@ export function formatDate(dateStr: string, lang: 'nl' | 'en' = 'nl'): string {
     const d = parseISO(dateStr)
     return format(d, 'EEEE d MMMM', { locale: lang === 'nl' ? nl : undefined })
   } catch {
-    // Try DD-MM-YYYY format from Base44
     const parts = dateStr.split(/[-\/.]/)
     if (parts.length === 3) {
       const d = new Date(+parts[2], +parts[1] - 1, +parts[0])
