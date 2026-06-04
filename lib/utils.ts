@@ -1,39 +1,43 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { format, parseISO, isFuture, isToday } from 'date-fns'
-import { nl } from 'date-fns/locale'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(dateStr: string, lang: 'nl' | 'en' = 'nl'): string {
-  try {
-    const d = parseISO(dateStr)
-    return format(d, 'EEEE d MMMM', { locale: lang === 'nl' ? nl : undefined })
-  } catch {
-    const parts = dateStr.split(/[-\/.]/)
-    if (parts.length === 3) {
-      const d = new Date(+parts[2], +parts[1] - 1, +parts[0])
-      if (!isNaN(d.getTime())) {
-        return format(d, 'EEEE d MMMM', { locale: lang === 'nl' ? nl : undefined })
-      }
-    }
-    return dateStr
+function parseDate(dateStr: string): Date | null {
+  const iso = new Date(`${dateStr}T00:00:00`)
+  if (!Number.isNaN(iso.getTime())) return iso
+
+  const parts = dateStr.split(/[-/.]/).map(Number)
+  if (parts.length === 3 && parts.every(Number.isFinite)) {
+    const [day, month, year] = parts
+    const parsed = new Date(year, month - 1, day)
+    if (!Number.isNaN(parsed.getTime())) return parsed
   }
+
+  return null
+}
+
+export function formatDate(dateStr: string, lang: 'nl' | 'en' = 'nl'): string {
+  const parsed = parseDate(dateStr)
+  if (!parsed) return dateStr
+
+  return new Intl.DateTimeFormat(lang === 'nl' ? 'nl-NL' : 'en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(parsed)
 }
 
 export function isUpcoming(dateStr: string): boolean {
-  try {
-    const parts = dateStr.split(/[-\/.]/)
-    if (parts.length === 3) {
-      const d = new Date(+parts[2], +parts[1] - 1, +parts[0])
-      return isFuture(d) || isToday(d)
-    }
-    return isFuture(parseISO(dateStr)) || isToday(parseISO(dateStr))
-  } catch {
-    return true
-  }
+  const parsed = parseDate(dateStr)
+  if (!parsed) return true
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  parsed.setHours(0, 0, 0, 0)
+  return parsed >= today
 }
 
 // Returns the next N open days (Thu/Fri/Sat) from today

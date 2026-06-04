@@ -25,6 +25,9 @@ All redirects are configured server-side in `next.config.ts`. `/lockers` is a pe
 ## Security note
 Next.js is pinned to `15.5.11` in `package.json` to avoid Vercel blocking deployment for vulnerable `15.1.0` builds. Keep `next` and `eslint-config-next` on matching patched versions when upgrading.
 
+## Dependency note
+Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fns/locale` to `package.json`; it is an import path, not an npm package, and Vercel/npm will reject it as an invalid package name.
+
 ## Manual setup still required
 - Add real Sanity project ID/dataset and create initial content.
 - Configure Resend verified sending domain for email notifications.
