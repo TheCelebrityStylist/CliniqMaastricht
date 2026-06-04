@@ -17,9 +17,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const { slug } = await params
   const event = await getAgendaEventBySlug(slug)
   if (!event) notFound()
-  const title = 'en' === 'en' ? event.titleEn || event.title : event.titleNl || event.title
-  const subtitle = 'en' === 'en' ? event.subtitleEn || event.subtitle : event.subtitleNl || event.subtitle
-  const description = 'en' === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription
+  const title = event.titleEn || event.title
+  const subtitle = event.subtitleEn || event.subtitle
+  const description = event.shortDescriptionEn || event.shortDescription
   return <section className="container-premium pt-36 pb-24">
     <Link href="/en/nightlife" className="text-white/70 hover:text-white">← Back to agenda</Link>
     <div className="mt-8 grid gap-10 lg:grid-cols-[.9fr_1.1fr]"><div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]"><Image src={event.imageUrl || images.club} alt={event.imageAlt || title} fill priority sizes="50vw" className="object-cover" /></div><div><p className="eyebrow">{event.date} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}</p><h1 className="h1 mt-5">{title}</h1>{subtitle ? <p className="mt-4 text-2xl text-gold">{subtitle}</p> : null}<p className="prose-premium mt-7">{description}</p>{event.ticketUrl ? <Link data-track="event_click" href={event.ticketUrl} target="_blank" className="btn-primary mt-8">Tickets / RSVP</Link> : null}</div></div>
