@@ -22,6 +22,9 @@ Sanity includes schemas for agenda events, editable page content, site settings,
 ## Redirects
 All redirects are configured server-side in `next.config.ts`. `/lockers` is a permanent one-hop 301 to `https://cliniq.elockers.shop/cliniq/lockers`.
 
+## Security note
+Next.js is pinned to `15.5.11` in `package.json` to avoid Vercel blocking deployment for vulnerable `15.1.0` builds. Keep `next` and `eslint-config-next` on matching patched versions when upgrading.
+
 ## Manual setup still required
 - Add real Sanity project ID/dataset and create initial content.
 - Configure Resend verified sending domain for email notifications.
