@@ -1,4 +1,4 @@
-import { getJobs } from '@/lib/sanity/client'
+import { getJobs } from '@/lib/admin/public'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { cmsMetadata } from '@/lib/pageMetadata'
 export async function generateMetadata() { return cmsMetadata('jobs', 'nl') }

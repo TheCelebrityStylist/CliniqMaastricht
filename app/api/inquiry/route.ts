@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { z } from 'zod'
-import { createClient } from '@sanity/client'
+import { createLead } from '@/lib/admin/store'
 
 const schema = z.object({
   type: z.enum(['contact', 'workshop', 'event-space', 'job']),
@@ -13,23 +13,13 @@ const schema = z.object({
   sourcePage: z.string().optional(),
 }).passthrough()
 
-const writeClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'placeholder',
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: '2024-06-01',
-  token: process.env.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-})
-
 export async function POST(request: Request) {
   const body = await request.json()
   const parsed = schema.safeParse(body)
   if (!parsed.success || parsed.data.website) return NextResponse.json({ error: 'Invalid submission' }, { status: 400 })
   const data = parsed.data
 
-  if (process.env.SANITY_API_WRITE_TOKEN && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
-    await writeClient.create({ _type: 'formSubmission', formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage, status: 'new', payloadJson: JSON.stringify(data), createdAt: new Date().toISOString() })
-  }
+  await createLead({ formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage, payload: data })
 
   if (process.env.RESEND_API_KEY) {
     const resend = new Resend(process.env.RESEND_API_KEY)

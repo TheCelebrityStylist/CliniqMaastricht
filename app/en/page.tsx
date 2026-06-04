@@ -1,18 +1,19 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents, getPageContent } from '@/lib/sanity/client'
+import { getAgendaEvents, getPageContent } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import { cmsMetadata } from '@/lib/pageMetadata'
 
 export async function generateMetadata() { return cmsMetadata('home', 'en') }
 
 export default async function HomeEn() {
-  const content = await getPageContent('home-en')
+  const content = await getPageContent('home', 'en')
+  const heroImage = content?.images?.[0]?.url || images.hero
   const events = (await getAgendaEvents()).filter((event) => event.featured).slice(0, 3)
   return <>
     <section className="relative min-h-[92vh] overflow-hidden pt-32">
-      <Image src={images.hero} alt="Cliniq Maastricht premium nightlife and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover" />
+      <Image src={heroImage} alt="Cliniq Maastricht premium nightlife and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-burgundy/25" />
       <div className="container-premium py-20"><p className="eyebrow">Nightlife · Cocktails · Venue hire</p><h1 className="h1 mt-5 max-w-5xl">{content?.heroTitle || 'Premium nightlife in Maastricht.'}</h1><p className="mt-7 max-w-2xl text-xl leading-8 text-white/70">{content?.heroSubtitle || 'Cliniq is a polished Maastricht destination for late nights, cocktails and private events — designed for guests who want atmosphere without giving up style.'}</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link className="btn-primary" href="/en/nightlife">View agenda</Link><Link className="btn-secondary" href="/en/event-space">Request venue</Link></div></div>
     </section>

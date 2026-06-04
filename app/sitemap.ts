@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { localizedPaths } from '@/lib/i18n'
 import { site } from '@/lib/site'
-import { getAgendaEvents } from '@/lib/sanity/client'
+import { getAgendaEvents } from '@/lib/admin/public'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()

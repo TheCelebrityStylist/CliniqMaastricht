@@ -3,13 +3,13 @@ import Link from 'next/link'
 import { faqSchema } from '@/lib/seo'
 import { images } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
-import { getPageContent } from '@/lib/sanity/client'
+import { getPageContent } from '@/lib/admin/public'
 import JsonLd from '@/components/ui/JsonLd'
 import { workshopFaqsNl as faqs } from '@/lib/faqs'
 import { cmsMetadata } from '@/lib/pageMetadata'
 
 export async function generateMetadata() { return cmsMetadata('workshop', 'nl') }
-export default async function WorkshopPage() { const content = await getPageContent('cocktail-workshop'); const pageFaqs = content?.faqs?.length ? content.faqs : faqs; return <>
+export default async function WorkshopPage() { const content = await getPageContent('cocktail-workshop'); const pageFaqs = content?.faqs?.length ? content.faqs : faqs; const heroImage = content?.images?.[0]?.url || images.bar; return <>
   <Hero title={content?.heroTitle || 'Cocktail workshop Maastricht.'} label="Workshop" image={images.bar} text={content?.heroSubtitle || 'Geen standaard groepsactiviteit, maar een smaakvolle start van je avond in Maastricht: shaken, proeven, lachen en leren van bartenders die weten hoe je een goede cocktail én een goede sfeer bouwt.'} />
   <section className="container-premium py-20 grid gap-8 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Vanaf €45 p.p.</p><h2 className="h2 mt-3">Een workshop met bargevoel, energie en goede begeleiding.</h2><p className="prose-premium mt-6">De cocktail workshop bij Cliniq is gemaakt voor groepen die iets beters zoeken dan alleen een borreltafel. Je leert hoe smaak, techniek en presentatie samenkomen, maakt zelf cocktails en krijgt genoeg ruimte voor foto’s, gezelligheid en een sterke start van de avond. Ideaal voor vrijgezellenfeest Maastricht, bedrijfsuitje, verjaardag, team event of vriendengroep.</p></div><div className="grid gap-4 sm:grid-cols-2">{['Minimaal 15 personen','3 cocktails inbegrepen','Professionele bartender','Centrum Maastricht'].map((x)=><div className="card rounded-3xl p-6" key={x}><h3 className="font-black text-xl">{x}</h3></div>)}</div></section>
   <section className="container-premium pb-20"><div className="grid gap-4 md:grid-cols-3">{[images.bar, images.hero, images.party].map((src,i)=><div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]" key={src}><Image src={src} alt={`Cocktail workshop sfeer ${i+1}`} fill sizes="33vw" className="object-cover" /></div>)}</div></section>

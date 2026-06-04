@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents, getPageContent } from '@/lib/sanity/client'
+import { getAgendaEvents, getPageContent } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import { cmsMetadata } from '@/lib/pageMetadata'
 
@@ -9,10 +9,11 @@ export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 
 export default async function Home() {
   const content = await getPageContent('home')
+  const heroImage = content?.images?.[0]?.url || images.hero
   const events = (await getAgendaEvents()).filter((e) => e.featured).slice(0, 3)
   return <>
     <section className="relative min-h-[92vh] overflow-hidden pt-32">
-      <Image src={images.hero} alt="Cliniq Maastricht premium nightlife crowd and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover" />
+      <Image src={heroImage} alt="Cliniq Maastricht premium nightlife crowd and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-burgundy/25" />
       <div className="container-premium py-20">
         <p className="eyebrow">Nightlife · Cocktails · Event space</p>

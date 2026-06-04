@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getAgendaEvents } from '@/lib/sanity/client'
+import { getAgendaEvents } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import JsonLd from '@/components/ui/JsonLd'
 import { nightlifeFaqsNl as faqs } from '@/lib/faqs'

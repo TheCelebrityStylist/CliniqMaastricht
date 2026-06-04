@@ -1,6 +1,6 @@
 import { pageMeta, localizedPaths, type Lang } from './i18n'
 import { metadata } from './seo'
-import { getSeoSettings } from './sanity/client'
+import { getSeoSettings } from './admin/public'
 
 type PageKey = keyof typeof pageMeta
 

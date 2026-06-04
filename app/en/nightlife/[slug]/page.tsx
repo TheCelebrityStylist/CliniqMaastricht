@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { metadata as createMetadata } from '@/lib/seo'
-import { getAgendaEventBySlug } from '@/lib/sanity/client'
+import { getAgendaEventBySlug } from '@/lib/admin/public'
 import { images, site } from '@/lib/site'
 import JsonLd from '@/components/ui/JsonLd'
 

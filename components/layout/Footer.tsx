@@ -1,8 +1,13 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { localizedPaths, navItems } from '@/lib/i18n'
 import { site } from '@/lib/site'
 
 export default function Footer() {
+  const pathname = usePathname()
+  if (pathname?.startsWith('/admin')) return null
   return <footer className="border-t border-white/10 bg-black py-14">
     <div className="container-premium grid gap-10 lg:grid-cols-[1.2fr_.8fr_.8fr]">
       <div><p className="text-2xl font-black tracking-[0.35em]">CLINIQ</p><p className="mt-4 max-w-md text-white/70">Premium nightlife, cocktail workshops and event space in the heart of Maastricht.</p></div>

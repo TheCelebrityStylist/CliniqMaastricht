@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
-import { AgendaEvent } from '@/lib/sanity/client'
+import type { AgendaEvent } from '@/lib/admin/types'
 import { images } from '@/lib/site'
 
 export function EventCard({ event, lang = 'nl' }: { event: AgendaEvent; lang?: 'nl' | 'en' }) {

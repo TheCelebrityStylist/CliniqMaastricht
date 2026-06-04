@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.squarespace-cdn.com' },
-      { protocol: 'https', hostname: 'cdn.sanity.io' },
+      { protocol: 'https', hostname: '**.public.blob.vercel-storage.com' },
     ],
   },
   async redirects() {
@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       { source: '/lockers', destination: 'https://cliniq.elockers.shop/cliniq/lockers', permanent: true },
       { source: '/cms', destination: '/admin', permanent: false },
       { source: '/backend', destination: '/admin', permanent: false },
+      { source: '/studio', destination: '/admin', permanent: false },
       { source: '/login', destination: '/admin', permanent: false },
       { source: '/admin-login', destination: '/admin', permanent: false },
       { source: '/ruimte-huren', destination: '/event-space', permanent: true },
