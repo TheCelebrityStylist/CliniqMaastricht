@@ -15,7 +15,7 @@ export function EventCard({ event }: { event: AgendaEvent }) {
     <div className="p-6">
       <p className="eyebrow">{format(date, 'EEEE d MMMM', { locale: nl })} · {event.ageLimit || '21+'}</p>
       <h3 className="mt-3 text-2xl font-black tracking-[-0.03em]">{event.title}</h3>
-      <p className="mt-2 text-white/62">{event.startTime || '22:00'}–{event.endTime || '03:00'} · {event.shortDescription}</p>
+      <p className="mt-2 text-white/70">{event.startTime || '22:00'}–{event.endTime || '03:00'} · {event.shortDescription}</p>
       {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="mt-5 inline-flex font-black text-magenta hover:text-white">Tickets / RSVP →</Link> : null}
     </div>
   </article>
