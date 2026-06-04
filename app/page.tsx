@@ -1,13 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents } from '@/lib/sanity/client'
+import { getAgendaEvents, getPageContent } from '@/lib/sanity/client'
 import { EventCard } from '@/components/ui/EventCard'
 import { cmsMetadata } from '@/lib/pageMetadata'
 
 export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 
 export default async function Home() {
+  const content = await getPageContent('home')
   const events = (await getAgendaEvents()).filter((e) => e.featured).slice(0, 3)
   return <>
     <section className="relative min-h-[92vh] overflow-hidden pt-32">
@@ -15,8 +16,8 @@ export default async function Home() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-burgundy/25" />
       <div className="container-premium py-20">
         <p className="eyebrow">Nightlife · Cocktails · Event space</p>
-        <h1 className="h1 mt-5 max-w-5xl">Premium nightlife in Maastricht.</h1>
-        <p className="mt-7 max-w-2xl text-xl leading-8 text-white/70">Cliniq Maastricht is de stijlvolle club, cocktailbar en eventlocatie in het hart van de stad — gebouwd voor avonden die blijven hangen.</p>
+        <h1 className="h1 mt-5 max-w-5xl">{content?.heroTitle || 'Premium nightlife in Maastricht.'}</h1>
+        <p className="mt-7 max-w-2xl text-xl leading-8 text-white/70">{content?.heroSubtitle || 'Cliniq Maastricht is de stijlvolle club, cocktailbar en eventlocatie in het hart van de stad — gebouwd voor avonden die blijven hangen.'}</p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link className="btn-primary" href="/uitgaan">Bekijk agenda</Link><Link className="btn-secondary" href="/event-space">Vraag ruimte aan</Link></div>
       </div>
     </section>

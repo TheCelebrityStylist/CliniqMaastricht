@@ -13,9 +13,9 @@ export const site = {
 }
 
 export const images = {
-  hero: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/aa79c0ac-5561-41b3-9a9a-d4fb009a4a5d/001_EnriqueMeesters_Maastricht_Cliniq_20221111.jpg',
-  crowd: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/512e92e4-396c-4a4a-aedd-eb928ab681d6/20240822_Cliniq_HR_SanderPaulussen-44.jpg',
-  bar: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/820c06b1-de40-417c-808f-9c1b3b25dc1f/20240822_Cliniq_HR_SanderPaulussen-50.jpg',
-  club: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/25d285a5-e73e-4f38-a55c-a3d9fcd73d60/003_EnriqueMeesters_Maastricht+-+Cliniq_20230204.jpg',
-  party: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/4fa88dae-1327-459e-95c4-6f2e95bf02b3/4_Wildschieters_JtT_Cliniq_20230318.JPG',
+  hero: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=2400&q=85',
+  crowd: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=2200&q=85',
+  bar: 'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=2200&q=85',
+  club: 'https://images.unsplash.com/photo-1571266028243-d220c9c3b8bb?auto=format&fit=crop&w=2200&q=85',
+  party: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=2200&q=85',
 }
