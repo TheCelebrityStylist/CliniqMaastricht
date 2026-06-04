@@ -15,7 +15,7 @@ Sanity includes schemas for agenda events, editable page content, site settings,
 ## Vercel deployment
 1. Create a Sanity project and dataset.
 2. Add the environment variables from `.env.example` in Vercel.
-3. Deploy the repository to Vercel.
+3. Deploy the repository to Vercel. The included `vercel.json` pins the framework to Next.js and the output directory to `.next`, so Vercel must not look for a static `dist` folder.
 4. Add `https://www.cliniqmaastricht.nl` and the Vercel preview URL to Sanity CORS origins.
 5. Verify Google Search Console and replace `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
