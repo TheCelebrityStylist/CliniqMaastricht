@@ -1,6 +1,6 @@
 # Cliniq Maastricht Operating System
 
-Use `/admin` as the simple owner start page. The actual CMS lives at `/studio` and is designed as a business operating system: Events Manager, Media Library, Page Manager, SEO Manager, Lead Dashboard, Analytics Dashboard, Jobs and Site Settings.
+Use `/admin` as the private owner start page. `/admin` and `/studio` are protected by the `ADMIN_USERNAME` and `ADMIN_PASSWORD` environment variables. The actual CMS lives at `/studio` and is designed as a business operating system: Events Manager, Media Library, Page Manager, SEO Manager, Lead Dashboard, Analytics Dashboard, Jobs and Site Settings.
 
 ## Events Manager: add an event in under 2 minutes
 1. Open `/studio` and choose **Events Manager**.
@@ -25,7 +25,7 @@ Dutch is the default language. English routes live under `/en`, for example `/en
 
 ## Vercel deployment
 1. Create a Sanity project and dataset.
-2. Add the environment variables from `.env.example` in Vercel.
+2. Add the environment variables from `.env.example` in Vercel, including `ADMIN_USERNAME` and `ADMIN_PASSWORD` so `/admin` and `/studio` are not public.
 3. Deploy the repository to Vercel. The included `vercel.json` pins the framework to Next.js and the output directory to `.next`, so Vercel must not look for a static `dist` folder.
 4. Add `https://www.cliniqmaastricht.nl` and the Vercel preview URL to Sanity CORS origins.
 5. Verify Google Search Console and replace `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
@@ -44,19 +44,19 @@ Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fn
 - Configure Resend verified sending domain for email notifications.
 - Add GA4 measurement ID and Search Console verification code.
 - Add `LEADS_EXPORT_TOKEN` for CSV exports.
-- Upload any new approved Cliniq photography to Sanity Media Library and assign it to pages/events. The coded fallbacks already use Cliniq imagery, not stock photos.
+- Upload any new approved Cliniq photography to Sanity Media Library and assign it to pages/events. The coded fallbacks already use Cliniq imagery, not stock photos. Chat-pasted images must be uploaded as actual files or CMS assets before they can be used by the website.
 
 # Owner manual — normal updates without code
 
 ## 1. CMS login URL
-After deployment, open `https://www.cliniqmaastricht.nl/admin` for the simple owner screen, then click **Open CMS**. You can also go directly to `https://www.cliniqmaastricht.nl/studio`. On a Vercel preview deployment, open `https://YOUR-VERCEL-PREVIEW-URL.vercel.app/studio`. Log in with the Sanity account that has access to the Cliniq Maastricht Sanity project. Required environment variables in Vercel: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_READ_TOKEN` and `SANITY_API_WRITE_TOKEN`.
+After deployment, open `https://www.cliniqmaastricht.nl/admin` for the private owner screen. Your browser will ask for the `ADMIN_USERNAME` and `ADMIN_PASSWORD` configured in Vercel. After that, click **Open CMS**. You can also go directly to `https://www.cliniqmaastricht.nl/studio`. On a Vercel preview deployment, open `https://YOUR-VERCEL-PREVIEW-URL.vercel.app/studio`. Log in with the Sanity account that has access to the Cliniq Maastricht Sanity project. Required environment variables in Vercel: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_READ_TOKEN` and `SANITY_API_WRITE_TOKEN`.
 
 
 ### Can we use a simple admin login?
-Yes: use `/admin` as the simple owner login/start page. For security, the actual login is the Sanity account login, not a password hardcoded in the website. Invite the owner in `https://www.sanity.io/manage` under the Cliniq project **Members** section. This gives each person their own login and keeps events, images, leads and SEO protected.
+Yes: use `/admin` as the private owner login/start page. The website first asks for the Vercel `ADMIN_USERNAME` / `ADMIN_PASSWORD`, then Sanity asks for the invited Sanity account. There is no shared password hardcoded in the website. Invite the owner in `https://www.sanity.io/manage` under the Cliniq project **Members** section. This gives each person their own login and keeps events, images, leads and SEO protected.
 
 ### If Sanity says “Before you continue…” / CORS origin required
-That message is not a website bug: Sanity blocks every new domain until it is added as an allowed origin. Do this once for production and once for each Vercel preview domain you want to use:
+That message is separate from the private `/admin` password. Sanity blocks every new domain until it is added as an allowed origin. Do this once for production and once for each Vercel preview domain you want to use:
 1. Go to `https://www.sanity.io/manage` and open the Cliniq Maastricht project.
 2. Go to **API** → **CORS Origins**.
 3. Click **Add CORS origin**.
@@ -65,13 +65,13 @@ That message is not a website bug: Sanity blocks every new domain until it is ad
 6. Also add `https://www.cliniqmaastricht.nl` before going live.
 7. Refresh `/studio` and log in again.
 
-For day-to-day use, use the production CMS URL `https://www.cliniqmaastricht.nl/studio` after launch. Preview URLs change often, so they may ask for CORS again.
+For day-to-day use, use `https://www.cliniqmaastricht.nl/admin` or the production CMS URL `https://www.cliniqmaastricht.nl/studio` after launch. Preview URLs change often, so they may ask for CORS again.
 
 ## 2. Edit page texts
 Go to **Page Manager**. Create or open the page record for the relevant page/language, for example `home`, `cocktail-workshop`, `event-space`, `contact`, `jobs` or `house-rules`. Edit hero title, hero subtitle, main copy, CTA labels, FAQs, price, group size, capacity and facilities. If a field is empty, the website uses the polished fallback copy from the code so the page never breaks.
 
 ## 3. Change images
-Go to **Media Library**. Upload a new image, set a clear title and alt text, choose the usage such as homepage hero, event poster, workshop, venue hire, gallery or social image, and use Sanity hotspot/crop to choose the focal point. For dark nightlife photos, use the brightness field as a note for frontend tuning. Assign images to pages through **Page Manager** or to events through **Events Manager**.
+Go to **Media Library**. Upload a new image. The photos pasted into chat are not repository files; to use those exact photos, upload them into Sanity Media Library or place the original files in `public/images/cliniq/`. Then set a clear title and alt text, choose the usage such as homepage hero, event poster, workshop, venue hire, gallery or social image, and use Sanity hotspot/crop to choose the focal point. For dark nightlife photos, use the brightness field as a note for frontend tuning. Assign images to pages through **Page Manager** or to events through **Events Manager**.
 
 ## 4. Add agenda events
 Go to **Events Manager** → **Create new**. Fill in event title, Dutch/English title if needed, date, opening time, closing time, age limit, poster image, short description, full description and ticket/reservation link. The first tab is designed for the fast “Add Event → Upload Poster → Set Date → Publish” workflow.

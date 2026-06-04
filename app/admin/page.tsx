@@ -23,7 +23,7 @@ export default function AdminPage() {
       <p className="text-xs font-black uppercase tracking-[0.28em] text-magenta">Cliniq owner area</p>
       <h1 className="mt-4 text-5xl font-black tracking-[-0.05em] sm:text-7xl">Admin login.</h1>
       <p className="mt-6 max-w-3xl text-xl leading-8 text-ink/70">
-        Use this page as the simple owner start screen. The secure login itself is handled by Sanity, so there is no hardcoded website password and no separate developer-only backend.
+        Use this page as the private owner start screen. The browser login is controlled by Vercel environment variables, and the CMS login is handled by the invited Sanity account.
       </p>
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
@@ -40,7 +40,7 @@ export default function AdminPage() {
           <h2 className="text-2xl font-black tracking-[-0.03em]">Login details</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-7 text-ink/70">
             <li>Go to <strong>{site.url}/admin</strong> for this owner screen.</li>
-            <li>Click <strong>Open CMS</strong> and sign in with the invited Sanity account.</li>
+            <li>Log in with the private browser username/password, then click <strong>Open CMS</strong> and sign in with the invited Sanity account.</li>
             <li>If Sanity asks for a CORS origin, copy the exact URL shown and add it in Sanity Manage → API → CORS Origins.</li>
             <li>For daily work after launch, use <strong>{site.url}/studio</strong> or this <strong>/admin</strong> page.</li>
           </ol>
@@ -64,7 +64,7 @@ export default function AdminPage() {
       </div>
 
       <p className="mt-8 text-sm leading-6 text-ink/55">
-        Important: for security, the owner must be invited to the Sanity project instead of sharing a password in the website code. This is the same safe login model used by professional CMS platforms.
+        Important: keep the private browser password in Vercel environment variables and invite each owner/team member to the Sanity project with their own email address.
       </p>
     </div>
   </section>
