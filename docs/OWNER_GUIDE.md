@@ -51,6 +51,18 @@ Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fn
 ## 1. CMS login URL
 After deployment, open `https://www.cliniqmaastricht.nl/studio`. On a Vercel preview deployment, open `https://YOUR-VERCEL-PREVIEW-URL.vercel.app/studio`. Log in with the Sanity account that has access to the Cliniq Maastricht Sanity project. Required environment variables in Vercel: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_READ_TOKEN` and `SANITY_API_WRITE_TOKEN`.
 
+### If Sanity says “Before you continue…” / CORS origin required
+That message is not a website bug: Sanity blocks every new domain until it is added as an allowed origin. Do this once for production and once for each Vercel preview domain you want to use:
+1. Go to `https://www.sanity.io/manage` and open the Cliniq Maastricht project.
+2. Go to **API** → **CORS Origins**.
+3. Click **Add CORS origin**.
+4. Paste the exact URL shown in the Sanity popup, for example `https://cliniq-maastricht-727t35cot-elkes-projects-97024c91.vercel.app`.
+5. Enable credentials if Sanity offers that option, then save.
+6. Also add `https://www.cliniqmaastricht.nl` before going live.
+7. Refresh `/studio` and log in again.
+
+For day-to-day use, use the production CMS URL `https://www.cliniqmaastricht.nl/studio` after launch. Preview URLs change often, so they may ask for CORS again.
+
 ## 2. Edit page texts
 Go to **Page Manager**. Create or open the page record for the relevant page/language, for example `home`, `cocktail-workshop`, `event-space`, `contact`, `jobs` or `house-rules`. Edit hero title, hero subtitle, main copy, CTA labels, FAQs, price, group size, capacity and facilities. If a field is empty, the website uses the polished fallback copy from the code so the page never breaks.
 
