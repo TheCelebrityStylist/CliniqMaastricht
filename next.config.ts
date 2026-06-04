@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: '/lockers', destination: 'https://cliniq.elockers.shop/cliniq/lockers', permanent: true },
+      { source: '/cms', destination: '/admin', permanent: false },
+      { source: '/backend', destination: '/admin', permanent: false },
+      { source: '/login', destination: '/admin', permanent: false },
+      { source: '/admin-login', destination: '/admin', permanent: false },
       { source: '/ruimte-huren', destination: '/event-space', permanent: true },
       { source: '/zaal-huren', destination: '/event-space', permanent: true },
       { source: '/evenementen', destination: '/event-space', permanent: true },

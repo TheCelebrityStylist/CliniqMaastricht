@@ -1,6 +1,6 @@
 # Cliniq Maastricht Operating System
 
-The admin lives at `/studio` and is designed as a business operating system: Events Manager, Media Library, Page Manager, SEO Manager, Lead Dashboard, Analytics Dashboard, Jobs and Site Settings.
+Use `/admin` as the simple owner start page. The actual CMS lives at `/studio` and is designed as a business operating system: Events Manager, Media Library, Page Manager, SEO Manager, Lead Dashboard, Analytics Dashboard, Jobs and Site Settings.
 
 ## Events Manager: add an event in under 2 minutes
 1. Open `/studio` and choose **Events Manager**.
@@ -44,12 +44,16 @@ Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fn
 - Configure Resend verified sending domain for email notifications.
 - Add GA4 measurement ID and Search Console verification code.
 - Add `LEADS_EXPORT_TOKEN` for CSV exports.
-- Replace or expand imagery when the owner supplies final approved photography.
+- Upload any new approved Cliniq photography to Sanity Media Library and assign it to pages/events. The coded fallbacks already use Cliniq imagery, not stock photos.
 
 # Owner manual — normal updates without code
 
 ## 1. CMS login URL
-After deployment, open `https://www.cliniqmaastricht.nl/studio`. On a Vercel preview deployment, open `https://YOUR-VERCEL-PREVIEW-URL.vercel.app/studio`. Log in with the Sanity account that has access to the Cliniq Maastricht Sanity project. Required environment variables in Vercel: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_READ_TOKEN` and `SANITY_API_WRITE_TOKEN`.
+After deployment, open `https://www.cliniqmaastricht.nl/admin` for the simple owner screen, then click **Open CMS**. You can also go directly to `https://www.cliniqmaastricht.nl/studio`. On a Vercel preview deployment, open `https://YOUR-VERCEL-PREVIEW-URL.vercel.app/studio`. Log in with the Sanity account that has access to the Cliniq Maastricht Sanity project. Required environment variables in Vercel: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `SANITY_API_READ_TOKEN` and `SANITY_API_WRITE_TOKEN`.
+
+
+### Can we use a simple admin login?
+Yes: use `/admin` as the simple owner login/start page. For security, the actual login is the Sanity account login, not a password hardcoded in the website. Invite the owner in `https://www.sanity.io/manage` under the Cliniq project **Members** section. This gives each person their own login and keeps events, images, leads and SEO protected.
 
 ### If Sanity says “Before you continue…” / CORS origin required
 That message is not a website bug: Sanity blocks every new domain until it is added as an allowed origin. Do this once for production and once for each Vercel preview domain you want to use:
