@@ -10,6 +10,7 @@ const schema = z.object({
   phone: z.string().optional(),
   message: z.string().min(5).max(3000),
   website: z.string().optional(),
+  sourcePage: z.string().optional(),
 }).passthrough()
 
 const writeClient = createClient({
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
   const data = parsed.data
 
   if (process.env.SANITY_API_WRITE_TOKEN && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
-    await writeClient.create({ _type: 'formSubmission', formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, payloadJson: JSON.stringify(data), createdAt: new Date().toISOString() })
+    await writeClient.create({ _type: 'formSubmission', formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage, status: 'new', payloadJson: JSON.stringify(data), createdAt: new Date().toISOString() })
   }
 
   if (process.env.RESEND_API_KEY) {

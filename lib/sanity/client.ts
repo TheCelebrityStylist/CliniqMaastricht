@@ -26,6 +26,7 @@ export type AgendaEvent = {
   startTime?: string
   endTime?: string
   ageLimit?: string
+  subtitle?: string
   shortDescription?: string
   fullDescription?: string
   ticketUrl?: string
@@ -37,7 +38,6 @@ export type AgendaEvent = {
 
 export type Faq = { question: string; answer: string }
 export type Job = { _id: string; title: string; type?: string; description?: string; requirements?: string[]; published?: boolean }
-export type Artist = { _id: string; name: string; bio?: string; role?: string; imageUrl?: string; instagram?: string; soundcloud?: string }
 export type PageContent = Record<string, unknown> & { faqs?: Faq[]; images?: { url: string; alt?: string }[] }
 
 const fallbackEvents: AgendaEvent[] = [
@@ -49,18 +49,13 @@ export async function getAgendaEvents(includePast = false): Promise<AgendaEvent[
   if (!sanityConfigured) return fallbackEvents
   const today = new Date().toISOString().slice(0, 10)
   const filter = includePast ? '' : '&& date >= $today'
-  const query = `*[_type == "agendaEvent" && status == "published" ${filter}] | order(date asc, startTime asc) { _id, title, slug, date, startTime, endTime, ageLimit, shortDescription, fullDescription, ticketUrl, featured, recurring, "imageUrl": poster.asset->url, "imageAlt": poster.alt }`
+  const query = `*[_type == "agendaEvent" && (published == true || status == "published") ${filter}] | order(date asc, startTime asc) { _id, title, subtitle, slug, date, startTime, endTime, ageLimit, shortDescription, fullDescription, ticketUrl, featured, recurring, "imageUrl": coalesce(mediaPoster->image.asset->url, poster.asset->url), "imageAlt": coalesce(mediaPoster->image.alt, poster.alt) }`
   return sanityClient.fetch(query, { today }, { next: { revalidate: 300 } })
 }
 
 export async function getJobs(): Promise<Job[]> {
   if (!sanityConfigured) return [{ _id: 'open', title: 'Open sollicitatie', type: 'Parttime', description: 'Wij zoeken hospitality talent voor bar, floor en events.', requirements: ['Gastvrij', 'Beschikbaar in avonden/weekenden', 'Teamspeler'], published: true }]
   return sanityClient.fetch(`*[_type == "job" && published == true] | order(title asc) { _id, title, type, description, requirements, published }`, {}, { next: { revalidate: 600 } })
-}
-
-export async function getArtists(): Promise<Artist[]> {
-  if (!sanityConfigured) return [{ _id: 'resident', name: 'Cliniq Residents', role: 'Resident DJs', bio: 'Onze residents bouwen avonden met warm-up finesse, herkenbare energie en Maastricht nightlife gevoel.' }]
-  return sanityClient.fetch(`*[_type == "artist" && published == true] | order(name asc) { _id, name, role, bio, instagram, soundcloud, "imageUrl": photo.asset->url }`, {}, { next: { revalidate: 600 } })
 }
 
 export async function getPageContent(slug: string): Promise<PageContent | null> {
@@ -71,5 +66,11 @@ export async function getPageContent(slug: string): Promise<PageContent | null> 
 
 export async function getAgendaEventBySlug(slug: string): Promise<AgendaEvent | null> {
   if (!sanityConfigured) return fallbackEvents.find((event) => event.slug?.current === slug) || null
-  return sanityClient.fetch(`*[_type == "agendaEvent" && status == "published" && slug.current == $slug][0] { _id, title, slug, date, startTime, endTime, ageLimit, shortDescription, fullDescription, ticketUrl, featured, recurring, "imageUrl": poster.asset->url, "imageAlt": poster.alt }`, { slug }, { next: { revalidate: 300 } })
+  return sanityClient.fetch(`*[_type == "agendaEvent" && (published == true || status == "published") && slug.current == $slug][0] { _id, title, subtitle, slug, date, startTime, endTime, ageLimit, shortDescription, fullDescription, ticketUrl, featured, recurring, "imageUrl": coalesce(mediaPoster->image.asset->url, poster.asset->url), "imageAlt": coalesce(mediaPoster->image.alt, poster.alt) }`, { slug }, { next: { revalidate: 300 } })
+}
+
+export type SeoSettings = { seoTitle?: string; metaDescription?: string; ogTitle?: string; ogDescription?: string; canonicalUrl?: string; socialImageUrl?: string }
+export async function getSeoSettings(pageKey: string, language: 'nl' | 'en'): Promise<SeoSettings | null> {
+  if (!sanityConfigured) return null
+  return sanityClient.fetch(`*[_type == "seoSettings" && pageKey == $pageKey && language == $language][0] { seoTitle, metaDescription, ogTitle, ogDescription, canonicalUrl, "socialImageUrl": socialImage->image.asset->url }`, { pageKey, language }, { next: { revalidate: 600 } })
 }

@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { metadata as createMetadata } from '@/lib/seo'
-import { images, pages, site } from '@/lib/site'
+import { images, site } from '@/lib/site'
 import { getAgendaEvents } from '@/lib/sanity/client'
 import { EventCard } from '@/components/ui/EventCard'
+import { cmsMetadata } from '@/lib/pageMetadata'
 
-export const metadata = createMetadata(pages[0].title, pages[0].description, '/')
+export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 
 export default async function Home() {
   const events = (await getAgendaEvents()).filter((e) => e.featured).slice(0, 3)

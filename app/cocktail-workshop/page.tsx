@@ -1,12 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { metadata as createMetadata, faqSchema } from '@/lib/seo'
-import { images, pages } from '@/lib/site'
+import { faqSchema } from '@/lib/seo'
+import { images } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
+import { cmsMetadata } from '@/lib/pageMetadata'
 
 const faqs = [{ question: 'Wat kost een cocktail workshop?', answer: 'Standaard vanaf €45 per persoon op basis van drie cocktails. De eigenaar kan prijzen in Sanity aanpassen.' }, { question: 'Wat is de minimale groepsgrootte?', answer: 'De richtlijn is minimaal 15 personen. Kleinere groepen kunnen contact opnemen voor opties.' }, { question: 'Wanneer kan de workshop starten?', answer: 'Meestal donderdag, vrijdag of zaterdag tussen 19:00 en 20:30, in overleg.' }]
-export const metadata = createMetadata(pages[2].title, pages[2].description, '/cocktail-workshop')
+export async function generateMetadata() { return cmsMetadata('workshop', 'nl') }
 export default function WorkshopPage() { return <>
   <Hero title="Cocktail workshop Maastricht." label="Workshop" image={images.bar} text="Leer shaken met onze bartenders en start jouw avond in premium Cliniq stijl." />
   <section className="container-premium py-20 grid gap-8 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Vanaf €45 p.p.</p><h2 className="h2 mt-3">Warm, interactief en gemaakt voor groepen.</h2><p className="prose-premium mt-6">Perfect voor vrijgezellenfeest Maastricht, bedrijfsuitje, verjaardag of vriendengroep. Inclusief uitleg, bar tools, minimaal drie cocktails en optie om na afloop te blijven voor nightlife.</p></div><div className="grid gap-4 sm:grid-cols-2">{['Minimaal 15 personen','3 cocktails inbegrepen','Professionele bartender','Centrum Maastricht'].map((x)=><div className="card rounded-3xl p-6" key={x}><h3 className="font-black text-xl">{x}</h3></div>)}</div></section>

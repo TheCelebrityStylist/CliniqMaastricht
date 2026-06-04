@@ -1,11 +1,12 @@
 import Image from 'next/image'
-import { metadata as createMetadata, faqSchema } from '@/lib/seo'
-import { images, pages } from '@/lib/site'
+import { faqSchema } from '@/lib/seo'
+import { images } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
+import { cmsMetadata } from '@/lib/pageMetadata'
 
 const faqs = [{ question: 'Kan ik de ruimte exclusief huren?', answer: 'Ja, Cliniq is beschikbaar voor exclusieve private events afhankelijk van datum, groepsgrootte en programma.' }, { question: 'Voor hoeveel gasten is Cliniq geschikt?', answer: 'De venue is geschikt voor intieme borrels tot grotere club- en feestconcepten. Capaciteit is instelbaar in Sanity.' }, { question: 'Kunnen jullie DJ, licht en cocktails verzorgen?', answer: 'Ja. Sound, licht, DJ mogelijkheden, barservice en cocktail opties kunnen in één voorstel worden meegenomen.' }]
-export const metadata = createMetadata(pages[3].title, pages[3].description, '/event-space')
+export async function generateMetadata() { return cmsMetadata('eventSpace', 'nl') }
 export default function EventSpacePage(){return <>
 <section className="relative min-h-[78vh] pt-36"><Image src={images.crowd} alt="Event space en feestzaal Cliniq Maastricht" fill priority sizes="100vw" className="-z-10 object-cover"/><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-burgundy/30"/><div className="container-premium py-24"><p className="eyebrow">Ruimte huren Maastricht</p><h1 className="h1 mt-5 max-w-5xl">Event space voor feesten met impact.</h1><p className="mt-7 max-w-2xl text-xl text-white/70">Zoek je een feestzaal, zaal huren of private event locatie in Maastricht? Cliniq combineert clubenergie met premium hospitality.</p><a href="#aanvraag" className="btn-primary mt-8">Vrijblijvende aanvraag</a></div></section>
 <section className="container-premium py-20"><div className="grid gap-4 md:grid-cols-4">{['Bedrijfsfeest','Verjaardag','Vrijgezellenfeest','Gala','Studentenfeest','Private party','Borrel','Product launch'].map(x=><div key={x} className="card rounded-3xl p-6 font-black text-xl">{x}</div>)}</div></section>

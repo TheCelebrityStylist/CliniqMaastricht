@@ -3,19 +3,21 @@ import { FormEvent, useState } from 'react'
 
 type Field = { name: string; label: string; type?: string; placeholder?: string; required?: boolean; options?: string[] }
 
-export default function InquiryForm({ type, fields }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[] }) {
+export default function InquiryForm({ type, fields, sourcePage }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string }) {
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setStatus('loading')
     const formData = new FormData(event.currentTarget)
     const payload = Object.fromEntries(formData.entries())
+    if (!payload.sourcePage && typeof window !== 'undefined') payload.sourcePage = window.location.pathname
     const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...payload }) })
     setStatus(res.ok ? 'success' : 'error')
     if (res.ok) event.currentTarget.reset()
   }
   return <form onSubmit={onSubmit} className="card rounded-[2rem] p-5 sm:p-8">
     <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+    <input type="hidden" name="sourcePage" value={sourcePage || ''} />
     <div className="grid gap-5 sm:grid-cols-2">
       {fields.map((field) => <div key={field.name} className={field.name === 'message' ? 'sm:col-span-2' : ''}>
         <label htmlFor={field.name} className="label">{field.label}</label>

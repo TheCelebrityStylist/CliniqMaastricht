@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
       { source: '/checkout', destination: '/event-space', permanent: true },
       { source: '/booking', destination: '/event-space', permanent: true },
       { source: '/reserveren', destination: '/event-space', permanent: true },
+      { source: '/artiesten', destination: '/uitgaan', permanent: true },
+      { source: '/en/artists', destination: '/en/nightlife', permanent: true },
       { source: '/agenda', destination: '/uitgaan', permanent: true },
       { source: '/nachtleven', destination: '/uitgaan', permanent: true },
       { source: '/workshops', destination: '/cocktail-workshop', permanent: true },

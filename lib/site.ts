@@ -19,18 +19,3 @@ export const images = {
   club: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/25d285a5-e73e-4f38-a55c-a3d9fcd73d60/003_EnriqueMeesters_Maastricht+-+Cliniq_20230204.jpg',
   party: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/4fa88dae-1327-459e-95c4-6f2e95bf02b3/4_Wildschieters_JtT_Cliniq_20230318.JPG',
 }
-
-export const nav = [
-  ['Uitgaan', '/uitgaan'], ['Cocktail workshop', '/cocktail-workshop'], ['Event space', '/event-space'], ['Artiesten', '/artiesten'], ['Contact', '/contact'],
-] as const
-
-export const pages = [
-  { path: '/', title: 'Cliniq Maastricht | Premium nightlife, cocktailbar & event space', description: 'Cliniq Maastricht is de premium nightlife bestemming voor clubnachten, cocktail workshops en event space verhuur in hartje Maastricht.' },
-  { path: '/uitgaan', title: 'Uitgaan Maastricht | Agenda & club events bij Cliniq', description: 'Bekijk de agenda van Cliniq Maastricht: clubnachten, DJ events en premium nightlife in het centrum van Maastricht.' },
-  { path: '/cocktail-workshop', title: 'Cocktail workshop Maastricht | Premium groepsactiviteit', description: 'Boek een cocktail workshop in Maastricht bij Cliniq. Perfect voor vrijgezellenfeest, bedrijfsuitje, verjaardag en vriendengroepen.' },
-  { path: '/event-space', title: 'Event space Maastricht | Ruimte huren & feestzaal Cliniq', description: 'Ruimte huren in Maastricht? Cliniq is een premium event space en feestzaal voor bedrijfsfeest, verjaardag, borrel, gala en private party.' },
-  { path: '/contact', title: 'Contact Cliniq Maastricht | Adres, openingstijden & aanvragen', description: 'Neem contact op met Cliniq Maastricht voor agenda, cocktail workshops, event space verhuur en algemene vragen.' },
-  { path: '/vacatures', title: 'Vacatures Maastricht nightlife | Werken bij Cliniq', description: 'Bekijk vacatures bij Cliniq Maastricht en solliciteer voor bar, host, security en event functies in een premium nightlife team.' },
-  { path: '/house-rules', title: 'House rules Cliniq Maastricht | Huisregels & deurbeleid', description: 'Lees de huisregels, leeftijdsbeleid, ID vereisten en veiligheidsregels van Cliniq Maastricht.' },
-  { path: '/artiesten', title: 'Artiesten & DJs | Cliniq Maastricht', description: 'Ontdek resident DJs, artiesten en cultuur bij Cliniq Maastricht. Voor boekingen en samenwerkingen neem contact op.' },
-]

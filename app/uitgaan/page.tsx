@@ -1,11 +1,10 @@
 import Link from 'next/link'
-import { metadata as createMetadata } from '@/lib/seo'
-import { pages } from '@/lib/site'
 import { getAgendaEvents } from '@/lib/sanity/client'
 import { EventCard } from '@/components/ui/EventCard'
 import JsonLd from '@/components/ui/JsonLd'
+import { cmsMetadata } from '@/lib/pageMetadata'
 
-export const metadata = createMetadata(pages[1].title, pages[1].description, '/uitgaan')
+export async function generateMetadata() { return cmsMetadata('nightlife', 'nl') }
 
 export default async function UitgaanPage() {
   const events = await getAgendaEvents()

@@ -1,16 +1,27 @@
-# Cliniq Maastricht owner guide
+# Cliniq Maastricht Operating System
 
-## Editing the agenda in under 2 minutes
-1. Open `/studio` after deployment and log in to Sanity.
-2. Choose **Agenda / Events** → **Create new**.
-3. Fill in title, date, start time, end time, age limit, poster, short description and optional ticket/RSVP URL.
-4. Keep **Visibility status** on `published` and enable **Featured event** if it should appear on the homepage.
-5. Publish. The website refreshes automatically within a few minutes.
+The admin lives at `/studio` and is designed as a business operating system: Events Manager, Media Library, Page Manager, SEO Manager, Lead Dashboard, Analytics Dashboard, Jobs and Site Settings.
 
-Past events are hidden from the upcoming agenda by the frontend query. Duplicate an event for recurring nights so each date has its own SEO-friendly Event schema.
+## Events Manager: add an event in under 2 minutes
+1. Open `/studio` and choose **Events Manager**.
+2. Click **Create new**.
+3. Fill the quick setup fields: title, date, opening time, closing time, age limit and poster.
+4. Add optional subtitle, description, ticket link, gallery and recurring-event note.
+5. Keep **Published** enabled and publish.
 
-## Editable content
-Sanity includes schemas for agenda events, editable page content, site settings, gallery images, artists, jobs and stored form submissions.
+Past events are hidden from the upcoming agenda by the frontend query. Duplicate recurring events for each date for the strongest Event schema and SEO footprint.
+
+## Media Library
+Use **Media Library** to upload, replace, crop and assign images. Sanity hotspot/focal-point controls power responsive crops; the brightness field is a frontend hint for dark nightlife photography. Media can be assigned as hero images, event posters, workshop imagery, venue-hire imagery, gallery imagery or social images.
+
+## Lead Dashboard
+All forms create **Lead Dashboard** entries with date, lead type, status, contact details, message and source page. Change the status to `handled` when complete, add notes, search/filter in Sanity, or export CSV from `/api/leads/export?token=YOUR_LEADS_EXPORT_TOKEN`.
+
+## SEO Manager
+Use **SEO Manager** to manage SEO title, meta description, OG title, OG description, social image, canonical URL and focus keywords per page and language. Dutch and English pages have separate SEO records and hreflang alternates.
+
+## Languages
+Dutch is the default language. English routes live under `/en`, for example `/en/nightlife`, `/en/cocktail-workshop` and `/en/event-space`. The header language switcher stores the selected language in cookie/localStorage.
 
 ## Vercel deployment
 1. Create a Sanity project and dataset.
@@ -20,10 +31,10 @@ Sanity includes schemas for agenda events, editable page content, site settings,
 5. Verify Google Search Console and replace `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
 ## Redirects
-All redirects are configured server-side in `next.config.ts`. `/lockers` is a permanent one-hop 301 to `https://cliniq.elockers.shop/cliniq/lockers`.
+All redirects are configured server-side in `next.config.ts`. `/lockers` is a permanent one-hop 301 to `https://cliniq.elockers.shop/cliniq/lockers`. `/artiesten` permanently redirects to `/uitgaan`.
 
 ## Security note
-Next.js is pinned to `15.5.11` in `package.json` to avoid Vercel blocking deployment for vulnerable `15.1.0` builds. Keep `next` and `eslint-config-next` on matching patched versions when upgrading.
+Next.js is pinned to `15.5.16` in `package.json` to avoid Vercel blocking deployment for vulnerable 15.x builds. Keep `next` and `eslint-config-next` on matching patched versions when upgrading.
 
 ## Dependency note
 Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fns/locale` to `package.json`; it is an import path, not an npm package, and Vercel/npm will reject it as an invalid package name.
@@ -32,4 +43,5 @@ Date formatting uses the built-in `Intl.DateTimeFormat` API. Do not add `date-fn
 - Add real Sanity project ID/dataset and create initial content.
 - Configure Resend verified sending domain for email notifications.
 - Add GA4 measurement ID and Search Console verification code.
+- Add `LEADS_EXPORT_TOKEN` for CSV exports.
 - Replace or expand imagery when the owner supplies final approved photography.
