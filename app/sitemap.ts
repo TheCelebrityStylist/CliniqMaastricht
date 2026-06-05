@@ -17,8 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${site.url}/en/nightlife/${event.slug!.current}`, lastModified: new Date(event.date), changeFrequency: 'weekly' as const, priority: 0.7 },
   ])
   const albumPages = albums.flatMap((album) => [
-    { url: `${site.url}/albums/${album.slug}`, lastModified: new Date(album.date), changeFrequency: 'weekly' as const, priority: 0.65 },
-    { url: `${site.url}/en/albums/${album.slug}`, lastModified: new Date(album.date), changeFrequency: 'weekly' as const, priority: 0.65 },
+    { url: `${site.url}/fotos/${album.slug}`, lastModified: new Date(album.date), changeFrequency: 'weekly' as const, priority: 0.65 },
+    { url: `${site.url}/en/photos/${album.slug}`, lastModified: new Date(album.date), changeFrequency: 'weekly' as const, priority: 0.65 },
   ])
   return [...staticPages, ...eventPages, ...albumPages]
 }

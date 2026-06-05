@@ -38,11 +38,11 @@ Images pasted into chat are not repository files. To use those exact photos, upl
 3. Optionally connect the album to an existing event.
 4. Select a cover image or upload new photos directly in the album form.
 5. Select existing Media Library photos if needed.
-6. Toggle **Published** and save. The album appears at `/albums` and `/en/albums` with a shareable detail URL.
+6. Toggle **Published** and save. The album appears at `/fotos` and `/en/photos` with a shareable detail URL.
 
 ## Public galleries
 - Homepage and Uitgaan show recent albums with **Bekijk alle foto’s** / **View all photos** links.
-- `/albums` and `/en/albums` list all published albums.
+- `/fotos` and `/en/photos` list all published albums.
 - Each album has a shareable URL and photo navigation with previous/next controls.
 
 ## Login troubleshooting

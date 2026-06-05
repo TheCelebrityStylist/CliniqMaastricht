@@ -155,6 +155,8 @@ export async function upsertAlbum(input: Partial<PhotoAlbum> & { titleNl: string
     slug: input.slug || slugify(`${input.titleNl}-${input.date}`),
     titleNl: input.titleNl,
     titleEn: input.titleEn || input.titleNl,
+    descriptionNl: input.descriptionNl,
+    descriptionEn: input.descriptionEn,
     date: input.date,
     relatedEventId: input.relatedEventId,
     coverImageId: input.coverImageId || input.imageIds?.[0],

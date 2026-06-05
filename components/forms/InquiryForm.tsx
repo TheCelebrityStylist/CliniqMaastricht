@@ -1,9 +1,14 @@
 'use client'
 import { FormEvent, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { getLanguageFromPath, ui } from '@/lib/i18n'
 
 type Field = { name: string; label: string; type?: string; placeholder?: string; required?: boolean; options?: string[] }
 
-export default function InquiryForm({ type, fields, sourcePage }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string }) {
+export default function InquiryForm({ type, fields, sourcePage, lang: langProp }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string; lang?: 'nl' | 'en' }) {
+  const pathname = usePathname()
+  const lang = langProp || getLanguageFromPath(pathname || '')
+  const t = ui[lang].form
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -21,11 +26,11 @@ export default function InquiryForm({ type, fields, sourcePage }: { type: 'conta
     <div className="grid gap-5 sm:grid-cols-2">
       {fields.map((field) => <div key={field.name} className={field.name === 'message' ? 'sm:col-span-2' : ''}>
         <label htmlFor={field.name} className="label">{field.label}</label>
-        {field.options ? <select id={field.name} name={field.name} required={field.required} className="input"><option value="">Selecteer...</option>{field.options.map((option) => <option key={option}>{option}</option>)}</select> : field.name === 'message' ? <textarea id={field.name} name={field.name} rows={5} required={field.required} placeholder={field.placeholder} className="input" /> : <input id={field.name} name={field.name} type={field.type || 'text'} required={field.required} placeholder={field.placeholder} className="input" />}
+        {field.options ? <select id={field.name} name={field.name} required={field.required} className="input"><option value="">{t.select}</option>{field.options.map((option) => <option key={option}>{option}</option>)}</select> : field.name === 'message' ? <textarea id={field.name} name={field.name} rows={5} required={field.required} placeholder={field.placeholder} className="input" /> : <input id={field.name} name={field.name} type={field.type || 'text'} required={field.required} placeholder={field.placeholder} className="input" />}
       </div>)}
     </div>
-    <button disabled={status === 'loading'} className="btn-primary mt-6 w-full sm:w-auto">{status === 'loading' ? 'Versturen...' : 'Verstuur aanvraag'}</button>
-    {status === 'success' ? <p className="mt-4 text-gold" role="status">Bedankt. We nemen zo snel mogelijk contact op.</p> : null}
-    {status === 'error' ? <p className="mt-4 text-magenta" role="alert">Er ging iets mis. Mail ons direct via contact@cafecliniq.com.</p> : null}
+    <button disabled={status === 'loading'} className="btn-primary mt-6 w-full sm:w-auto">{status === 'loading' ? t.sending : t.submit}</button>
+    {status === 'success' ? <p className="mt-4 text-gold" role="status">{t.success}</p> : null}
+    {status === 'error' ? <p className="mt-4 text-magenta" role="alert">{t.error}</p> : null}
   </form>
 }

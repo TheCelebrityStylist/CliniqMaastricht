@@ -35,4 +35,4 @@ If `/admin/login` does not accept your login, check these points first:
 
 ## Albums and mass photo upload
 
-Use `/admin/albums` for public night galleries. Create an album, upload many photos at once, choose a cover image, set NL/EN titles and publish it. Published albums appear on `/albums`, `/en/albums`, and gallery sections across the public site.
+Use `/admin/albums` for public night galleries. Create an album, upload many photos at once, choose a cover image, set NL/EN titles and publish it. Published albums appear on `/fotos`, `/en/photos`, and gallery sections across the public site.

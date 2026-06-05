@@ -54,6 +54,8 @@ function revalidatePublic() {
   revalidatePath('/en/event-space')
   revalidatePath('/albums')
   revalidatePath('/en/albums')
+  revalidatePath('/fotos')
+  revalidatePath('/en/photos')
 }
 
 export async function loginAction(formData: FormData) {
@@ -132,6 +134,8 @@ export async function saveAlbumAction(formData: FormData) {
     id: String(formData.get('id') || '') || undefined,
     titleNl: String(formData.get('titleNl') || ''),
     titleEn: String(formData.get('titleEn') || ''),
+    descriptionNl: String(formData.get('descriptionNl') || ''),
+    descriptionEn: String(formData.get('descriptionEn') || ''),
     date: String(formData.get('date') || ''),
     relatedEventId: String(formData.get('relatedEventId') || ''),
     coverImageId: String(formData.get('coverImageId') || '') || imageIds[0],
@@ -195,6 +199,35 @@ export async function toggleEventPublishedAction(formData: FormData) {
   await writeStore(store)
   revalidatePublic()
   redirect('/admin/events?saved=1')
+}
+
+
+export async function deleteAlbumAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  store.albums = store.albums.filter((album) => album.id !== id)
+  await writeStore(store)
+  revalidatePublic()
+  redirect('/admin/albums?deleted=1')
+}
+
+export async function updateMediaAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  const media = store.media.find((item) => item.id === id)
+  if (media) {
+    media.title = String(formData.get('title') || media.title)
+    media.altNl = String(formData.get('altNl') || '')
+    media.altEn = String(formData.get('altEn') || '')
+    media.usage = String(formData.get('usage') || '').split(',').map((item) => item.trim()).filter(Boolean)
+    media.focalPoint = String(formData.get('focalPoint') || 'center')
+    const replacementUrl = String(formData.get('replacementUrl') || '').trim()
+    if (replacementUrl) media.url = replacementUrl
+  }
+  await writeStore(store)
+  revalidatePath('/admin/media')
+  revalidatePublic()
+  redirect('/admin/media?saved=1')
 }
 
 export async function deleteMediaAction(formData: FormData) {

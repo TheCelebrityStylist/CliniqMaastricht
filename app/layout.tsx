@@ -14,7 +14,7 @@ const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tig
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: 'Cliniq Maastricht | Premium nightlife, cocktailbar & event space', template: '%s | Cliniq Maastricht' },
+  title: { default: 'Cliniq Maastricht | Club, cocktails & events in hartje stad', template: '%s | Cliniq Maastricht' },
   description: site.description,
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'add-google-search-console-code' },
 }
@@ -24,7 +24,7 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, them
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html lang="nl" className={interTight.variable}>
     <body>
-      <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
       <Header />
       <main id="main">{children}</main>
       <Footer />
