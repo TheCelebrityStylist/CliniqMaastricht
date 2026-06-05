@@ -4,12 +4,15 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { put } from '@vercel/blob'
 import { createLead, createMedia, readStore, upsertEvent, writeStore } from './store'
-import { clearAdminCookie, setAdminCookie, signAdminSession } from './auth'
+import { clearAdminCookie, hasAdminCredentials, setAdminCookie, signAdminSession, validateAdminCredentials } from './auth'
 
 export async function loginAction(formData: FormData) {
   const username = String(formData.get('username') || '')
   const password = String(formData.get('password') || '')
-  if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) redirect('/admin/login?error=1')
+
+  if (!hasAdminCredentials()) redirect('/admin/login?error=config')
+  if (!validateAdminCredentials(username, password)) redirect('/admin/login?error=invalid')
+
   await setAdminCookie(signAdminSession(username))
   redirect('/admin')
 }

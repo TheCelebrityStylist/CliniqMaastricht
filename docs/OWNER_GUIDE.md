@@ -1,6 +1,6 @@
 # Cliniq Maastricht Admin Manual
 
-The website now uses a built-in admin dashboard, not Sanity. Open `https://www.cliniqmaastricht.nl/admin` and log in with `ADMIN_USERNAME` and `ADMIN_PASSWORD` from Vercel.
+The website now uses a built-in admin dashboard, not Sanity. Open `https://www.cliniqmaastricht.nl/admin` and log in with `ADMIN_USERNAME` and `ADMIN_PASSWORD` from Vercel. You can use an email address as `ADMIN_USERNAME`; the login system is email-safe and ignores accidental spaces around environment variable values.
 
 ## What the admin manages
 - **Dashboard:** upcoming events, new leads, image count and quick actions.
@@ -29,6 +29,12 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 
 ## Important image note
 Images pasted into chat are not repository files. To use those exact photos, upload the original image files through `/admin/media` after Vercel Blob is connected, paste real hosted Cliniq image URLs, or place the source files in `public/images/cliniq/` so they can be referenced by the site.
+
+## Login troubleshooting
+- If login keeps returning to the login screen, make sure you deployed the latest commit after changing Vercel environment variables. Vercel does not apply new env vars to an already-built deployment.
+- `ADMIN_USERNAME` can be a normal username or email address.
+- Do not include extra quotes in Vercel values. The app now strips accidental wrapping quotes/spaces, but the safest setup is to paste plain values.
+- `ADMIN_SESSION_SECRET` should be a long random value and should stay the same between deployments, otherwise old sessions will be logged out.
 
 ## Deployment variables
 Required:
