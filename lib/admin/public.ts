@@ -9,7 +9,7 @@ export async function getAgendaEvents(includePast = false) {
     .filter((event) => event.published !== false)
     .filter((event) => includePast || event.date >= today)
     .sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
-    .map((event) => ({ ...event, imageUrl: event.imageUrl || images.fallbackEvent }))
+    .map((event) => ({ ...event, imageUrl: event.imageUrl || images.fallbackEvent, relatedAlbumSlug: store.albums.find((album) => album.id === event.relatedAlbumId)?.slug }))
 }
 
 export async function getAgendaEventBySlug(slug: string) {

@@ -91,6 +91,7 @@ export async function saveEventAction(formData: FormData) {
     fullDescriptionNl: String(formData.get('fullDescriptionNl') || ''),
     fullDescriptionEn: String(formData.get('fullDescriptionEn') || ''),
     ticketUrl: String(formData.get('ticketUrl') || ''),
+    relatedAlbumId: String(formData.get('relatedAlbumId') || ''),
     imageUrl: String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
     imagePosition: String(formData.get('imagePosition') || 'center'),
     featured: formData.get('featured') === 'on',
@@ -160,10 +161,12 @@ export async function savePageAction(formData: FormData) {
   const key = String(formData.get('key'))
   const page = store.pages.find((item) => item.key === key)
   if (page) {
-    const files = formFiles(formData, 'pageImageFiles')
-    const uploaded = await uploadFiles(files)
-    const uploadedMedia = uploaded.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${page.titleNl} gallery ${index + 1}`, usage: [page.key, 'gallery'], focalPoint: 'center' }))
-    store.media.unshift(...uploadedMedia)
+    const heroFiles = formFiles(formData, 'heroImageFiles')
+    const galleryFiles = formFiles(formData, 'pageImageFiles')
+    const [uploadedHero, uploadedGallery] = await Promise.all([uploadFiles(heroFiles), uploadFiles(galleryFiles)])
+    const heroMedia = uploadedHero.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${page.titleNl} hero ${index + 1}`, usage: [page.key, 'hero'], focalPoint: 'center' }))
+    const uploadedMedia = uploadedGallery.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${page.titleNl} gallery ${index + 1}`, usage: [page.key, 'gallery'], focalPoint: 'center' }))
+    store.media.unshift(...heroMedia, ...uploadedMedia)
 
     page.heroTitleNl = String(formData.get('heroTitleNl') || '')
     page.heroTitleEn = String(formData.get('heroTitleEn') || '')
@@ -175,7 +178,7 @@ export async function savePageAction(formData: FormData) {
     page.secondaryCtaEn = String(formData.get('secondaryCtaEn') || '')
     page.bodyNl = String(formData.get('bodyNl') || '')
     page.bodyEn = String(formData.get('bodyEn') || '')
-    page.heroImageId = String(formData.get('heroImageId') || '') || page.heroImageId || uploadedMedia[0]?.id || ''
+    page.heroImageId = heroMedia[0]?.id || String(formData.get('heroImageId') || '') || page.heroImageId || uploadedMedia[0]?.id || ''
     page.galleryImageIds = [...formData.getAll('galleryImageIds').map(String).filter(Boolean), ...uploadedMedia.map((media) => media.id)]
   }
   await writeStore(store)

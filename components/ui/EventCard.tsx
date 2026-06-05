@@ -4,7 +4,9 @@ import type { AgendaEvent } from '@/lib/admin/types'
 import { images } from '@/lib/site'
 import SafeImage from './SafeImage'
 
-export function EventCard({ event, lang = 'nl', priority = false }: { event: AgendaEvent; lang?: 'nl' | 'en'; priority?: boolean }) {
+type EventWithAlbum = AgendaEvent & { relatedAlbumSlug?: string }
+
+export function EventCard({ event, lang = 'nl', priority = false }: { event: EventWithAlbum; lang?: 'nl' | 'en'; priority?: boolean }) {
   const title = lang === 'en' ? event.titleEn || event.title : event.titleNl || event.title
   const description = lang === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription
   const href = lang === 'en' ? `/en/nightlife/${event.slug?.current || event._id}` : `/uitgaan/${event.slug?.current || event._id}`
@@ -28,6 +30,7 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Age
       <p className="min-h-[3.5rem] text-white/70">{description || (lang === 'en' ? 'Details will follow soon. Expect a polished Cliniq night with cocktails, music and Maastricht energy.' : 'Details volgen binnenkort. Reken op een verzorgde Cliniq-avond met cocktails, muziek en Maastrichtse energie.')}</p>
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <Link href={href} className="font-black text-gold hover:text-white">Details →</Link>
+        {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="rounded-full border border-white/15 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/75 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'}</Link> : null}
         {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="rounded-full bg-magenta px-4 py-2 text-xs font-black uppercase tracking-widest text-white hover:bg-white hover:text-ink">Tickets / RSVP</Link> : null}
       </div>
     </div>

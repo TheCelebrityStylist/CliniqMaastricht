@@ -9,6 +9,8 @@ export type MediaAsset = {
   usage?: string[]
   focalPoint?: string
   createdAt: string
+  recommendedPageUsage?: string[]
+  fallbackPriority?: number
 }
 
 export type AgendaEvent = {
@@ -37,6 +39,7 @@ export type AgendaEvent = {
   imageAlt?: string
   imagePosition?: string
   galleryImageIds?: string[]
+  relatedAlbumId?: string
 }
 
 export type Faq = { id: string; pageKey: string; language: Lang; question: string; answer: string; published: boolean; order: number }

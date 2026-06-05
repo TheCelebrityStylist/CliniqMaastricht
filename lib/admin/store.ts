@@ -130,6 +130,7 @@ export async function upsertEvent(input: Partial<AgendaEvent> & { title: string;
     imageAlt: input.imageAlt,
     imagePosition: input.imagePosition || 'center',
     galleryImageIds: input.galleryImageIds || [],
+    relatedAlbumId: input.relatedAlbumId,
   }
   const index = store.events.findIndex((item) => item._id === id)
   if (index >= 0) store.events[index] = event
