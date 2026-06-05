@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents, getPageContent } from '@/lib/admin/public'
+import { getAgendaEvents, getPageContent, getPhotoAlbums } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import { cmsMetadata } from '@/lib/pageMetadata'
@@ -11,6 +11,7 @@ export default async function HomeEn() {
   const content = await getPageContent('home', 'en')
   const heroImage = content?.images?.[0]?.url || images.hero
   const events = (await getAgendaEvents()).filter((event) => event.featured).slice(0, 3)
+  const albums = (await getPhotoAlbums()).slice(0, 3)
   return <>
     <section className="relative min-h-[92vh] overflow-hidden pt-32">
       <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht premium nightlife and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover brightness-[1.08]" />
@@ -19,6 +20,9 @@ export default async function HomeEn() {
     </section>
     <section className="border-y border-white/10 bg-white/[0.04] py-5"><div className="container-premium grid gap-4 text-sm font-black uppercase tracking-[0.18em] text-white/70 md:grid-cols-4"><span>{site.address.street}</span><span>Club Maastricht</span><span>Cocktail workshops</span><span>Private events</span></div></section>
     <section className="container-premium py-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Agenda</p><h2 className="h2 mt-3">Featured events.</h2></div><Link href="/en/nightlife" className="btn-secondary hidden sm:inline-flex">All events</Link></div>{events.length ? <div className="grid gap-6 md:grid-cols-3">{events.map((event) => <EventCard key={event._id} event={event} lang="en" />)}</div> : <p className="card rounded-3xl p-8 text-white/70">New events will be announced soon. Follow Cliniq for the latest agenda.</p>}</section>
+
+    <section className="container-premium pb-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Nights at Cliniq</p><h2 className="h2 mt-3">Photos worth coming back for.</h2></div><Link href="/en/albums" className="btn-secondary hidden sm:inline-flex">View all photos</Link></div><div className="grid gap-5 md:grid-cols-3">{albums.map((album)=>{ const cover=album.cover || album.photos[0]; const title=album.titleEn || album.titleNl; return <Link key={album.id} href={`/en/albums/${album.slug}`} className="group image-frame aspect-[4/5] p-5"><SafeImage src={cover?.url} fallbackSrc={images.fallbackWide} alt={cover?.altEn || title} fill sizes="33vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/35 to-transparent"/><div className="absolute bottom-5 left-5 right-5"><p className="eyebrow">{album.date} · {album.photos.length} photos</p><h3 className="mt-2 text-3xl font-black">{title}</h3><p className="mt-3 font-black text-gold">View album →</p></div></Link>})}</div></section>
+
     <section className="container-premium grid gap-6 pb-24 lg:grid-cols-2"><Promo href="/en/cocktail-workshop" image={images.bar} label="Cocktail workshop Maastricht" title="Shake, stir and start the night properly." text="A premium group activity for team events, birthdays, bachelor and bachelorette weekends." /><Promo href="/en/event-space" image={images.crowd} label="Venue hire Maastricht" title="Your private event at Cliniq." text="From corporate parties to launches: sound, lighting, bar and atmosphere are ready." /></section>
   </>
 }

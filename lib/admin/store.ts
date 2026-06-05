@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { sql } from '@vercel/postgres'
 import { defaultStore } from './defaults'
-import type { AdminStore, AgendaEvent, Lead, MediaAsset } from './types'
+import type { AdminStore, AgendaEvent, Lead, MediaAsset, PhotoAlbum } from './types'
 
 const isVercel = Boolean(process.env.VERCEL)
 const dataDir = isVercel ? path.join('/tmp', 'cliniq-admin') : path.join(process.cwd(), '.data')
@@ -69,6 +69,7 @@ export async function readStore(): Promise<AdminStore> {
       events: parsed.events?.length ? parsed.events : cloneDefaultStore().events,
       pages: parsed.pages?.length ? parsed.pages : cloneDefaultStore().pages,
       faqs: parsed.faqs && parsed.faqs.length >= 12 ? parsed.faqs : mergeDefaultFaqs(parsed.faqs || []),
+      albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,
       leads: parsed.leads || [],
       seo: parsed.seo || [],
       jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
@@ -143,6 +144,29 @@ export async function createMedia(input: Pick<MediaAsset, 'url' | 'title' | 'alt
   store.media.unshift(media)
   await writeStore(store)
   return media
+}
+
+
+export async function upsertAlbum(input: Partial<PhotoAlbum> & { titleNl: string; date: string; imageIds?: string[] }) {
+  const store = await readStore()
+  const id = input.id || slugify(`${input.titleNl}-${input.date}`)
+  const album: PhotoAlbum = {
+    id,
+    slug: input.slug || slugify(`${input.titleNl}-${input.date}`),
+    titleNl: input.titleNl,
+    titleEn: input.titleEn || input.titleNl,
+    date: input.date,
+    relatedEventId: input.relatedEventId,
+    coverImageId: input.coverImageId || input.imageIds?.[0],
+    imageIds: input.imageIds || [],
+    published: input.published !== false,
+    createdAt: input.createdAt || new Date().toISOString(),
+  }
+  const index = store.albums.findIndex((item) => item.id === id)
+  if (index >= 0) store.albums[index] = album
+  else store.albums.unshift(album)
+  await writeStore(store)
+  return album
 }
 
 export async function createLead(input: Omit<Lead, 'id' | 'createdAt' | 'status'> & { status?: Lead['status'] }) {

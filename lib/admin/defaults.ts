@@ -35,6 +35,10 @@ export const defaultStore: AdminStore = {
     ...contactFaqsNl.map((item, index) => ({ id: `contact-nl-${index + 1}`, pageKey: 'contact', language: 'nl' as const, question: item.question, answer: item.answer, published: true, order: index + 1 })),
     ...contactFaqsEn.map((item, index) => ({ id: `contact-en-${index + 1}`, pageKey: 'contact', language: 'en' as const, question: item.question, answer: item.answer, published: true, order: index + 1 })),
   ],
+  albums: [
+    { id: 'friday-club-night-album', slug: 'friday-club-night-12-june', titleNl: 'Friday Club Night — 12 juni', titleEn: 'Friday Club Night — 12 June', date: '2026-06-12', relatedEventId: 'friday-club-night', coverImageId: 'club', imageIds: ['club', 'hero', 'party'], published: true, createdAt: now },
+    { id: 'cocktail-workshop-album', slug: 'cocktail-workshop-maastricht', titleNl: 'Cocktail workshops bij Cliniq', titleEn: 'Cocktail workshops at Cliniq', date: '2026-06-04', coverImageId: 'bar', imageIds: ['bar', 'hero', 'party'], published: true, createdAt: now },
+  ],
   seo: [],
   leads: [],
   jobs: [{ _id: 'open', title: 'Open sollicitatie', type: 'Parttime', description: 'Wij zoeken hospitality talent voor bar, floor en events.', requirements: ['Gastvrij', 'Beschikbaar in avonden/weekenden', 'Teamspeler'], published: true }],

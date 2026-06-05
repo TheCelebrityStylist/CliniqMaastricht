@@ -14,6 +14,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
   const usedBy = (id: string) => [
     ...store.pages.filter((page) => page.heroImageId === id || page.galleryImageIds?.includes(id)).map((page) => page.titleNl),
     ...store.events.filter((event) => event.imageUrl && store.media.find((media) => media.id === id)?.url === event.imageUrl).map((event) => event.titleNl || event.title),
+    ...store.albums.filter((album) => album.coverImageId === id || album.imageIds.includes(id)).map((album) => album.titleNl),
   ]
   const errorMessage = query?.error === 'blob-token'
     ? 'Upload failed because Vercel Blob is not connected yet. Add BLOB_READ_WRITE_TOKEN in Vercel, redeploy, or paste hosted Cliniq image URLs instead.'

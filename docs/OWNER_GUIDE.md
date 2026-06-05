@@ -6,6 +6,7 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 - **Dashboard:** upcoming events, new leads, image count and quick actions.
 - **Events Manager:** add/edit internal title, NL/EN public titles, subtitles, descriptions, date, opening time, closing time, age limit, Media Library poster, focal point, ticket link, featured and published toggles; duplicate events and publish/unpublish from the list.
 - **Media Library:** drag/drop or multi-upload approved Cliniq photos when `BLOB_READ_WRITE_TOKEN` is configured, preview them instantly, tag them by use, set alt text/focal point, see where they are used and delete unused images. Uploaded/admin-selected images are used first; branded Cliniq fallbacks are used only when an image is missing.
+- **Albums:** create public photo albums for specific nights with NL/EN titles, date, related event, cover image, mass-uploaded photos and published/draft control.
 - **Page Editor:** edit homepage, nightlife, cocktail workshop, event space, contact, jobs and house-rules hero text, body copy, CTAs, hero image and galleries in Dutch and English.
 - **FAQ Manager:** add detailed FAQ answers per page and language.
 - **Forms / Leads:** view contact, workshop, event-space and job inquiries, change status and export CSV.
@@ -29,6 +30,20 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 
 ## Important image note
 Images pasted into chat are not repository files. To use those exact photos, upload the original image files through `/admin/media` after Vercel Blob is connected, paste real hosted Cliniq image URLs, or place the source files in `public/images/cliniq/` so they can be referenced by the site.
+
+
+## Create a photo album
+1. Go to `/admin/albums`.
+2. Fill album title NL/EN and album date.
+3. Optionally connect the album to an existing event.
+4. Select a cover image or upload new photos directly in the album form.
+5. Select existing Media Library photos if needed.
+6. Toggle **Published** and save. The album appears at `/albums` and `/en/albums` with a shareable detail URL.
+
+## Public galleries
+- Homepage and Uitgaan show recent albums with **Bekijk alle foto’s** / **View all photos** links.
+- `/albums` and `/en/albums` list all published albums.
+- Each album has a shareable URL and photo navigation with previous/next controls.
 
 ## Login troubleshooting
 - If login keeps returning to the login screen, make sure you deployed the latest commit after changing Vercel environment variables. Vercel does not apply new env vars to an already-built deployment.

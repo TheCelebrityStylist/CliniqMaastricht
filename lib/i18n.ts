@@ -10,6 +10,7 @@ export const localizedPaths: Record<string, { nl: string; en: string }> = {
   contact: { nl: '/contact', en: '/en/contact' },
   jobs: { nl: '/vacatures', en: '/en/jobs' },
   houseRules: { nl: '/house-rules', en: '/en/house-rules' },
+  albums: { nl: '/albums', en: '/en/albums' },
 }
 
 export const switchPathMap = new Map<string, string>(

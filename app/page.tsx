@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { images, imageSets, site } from '@/lib/site'
-import { getAgendaEvents, getPageContent } from '@/lib/admin/public'
+import { getAgendaEvents, getPageContent, getPhotoAlbums } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import { cmsMetadata } from '@/lib/pageMetadata'
@@ -12,6 +12,7 @@ export default async function Home() {
   const gallery = content?.images?.length ? content.images : imageSets.home.map((url) => ({ url, alt: 'Cliniq Maastricht sfeerbeeld', focalPoint: 'center' }))
   const heroImage = gallery[0]?.url || images.hero
   const events = (await getAgendaEvents()).filter((event) => event.featured).slice(0, 3)
+  const albums = (await getPhotoAlbums()).slice(0, 3)
 
   return <>
     <section className="section-lift relative min-h-[94vh] overflow-hidden pt-32">
@@ -26,6 +27,9 @@ export default async function Home() {
     <section className="section-lift container-premium py-24"><div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr]"><div className="sticky top-28 h-fit"><p className="eyebrow">Waarom Cliniq</p><h2 className="h2 mt-3">De avond begint zodra je binnenloopt.</h2><p className="prose-premium mt-6">Geen lege zaal, geen anonieme clubnacht, geen standaard groepsactiviteit. Cliniq combineert de warmte van een cocktailbar met de energie van een club en de flexibiliteit van een eventlocatie. Dat maakt de locatie sterk voor uitgaan Maastricht, cocktail workshop Maastricht en ruimte huren Maastricht.</p><Link className="btn-secondary mt-8" href="/contact">Plan je bezoek</Link></div><div className="grid gap-4 sm:grid-cols-2">{gallery.slice(1,5).map((item, index)=><div key={`${item.url}-${index}`} className={`image-frame ${index === 0 ? 'sm:mt-16' : ''} aspect-[4/5]`}><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt || `Cliniq Maastricht sfeerbeeld ${index + 1}`} fill sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 hover:scale-105" objectPosition={item.focalPoint || 'center'} /></div>)}</div></div></section>
 
     <section className="container-premium py-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Agenda</p><h2 className="h2 mt-3">Featured events.</h2><p className="prose-premium mt-4 max-w-2xl">Ontdek de avonden die Cliniq laten leven: premium clubnights, specials en events in hartje Maastricht.</p></div><Link href="/uitgaan" className="btn-secondary hidden sm:inline-flex">Alle events</Link></div>{events.length ? <div className="grid gap-6 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="luxury-panel rounded-3xl p-8"><h3 className="h3">Nieuwe events verschijnen binnenkort.</h3><p className="mt-3 text-white/70">De agenda wordt vanuit de admin beheerd. Tot die tijd kun je Cliniq boeken voor private events, workshops en groepsavonden.</p></div>}</section>
+
+
+    <section className="container-premium pb-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Nights at Cliniq</p><h2 className="h2 mt-3">Foto’s die de avond terugbrengen.</h2><p className="prose-premium mt-4 max-w-2xl">Van club foto’s Maastricht tot cocktail workshop momenten: blader door recente Cliniq avonden en deel je favoriete herinnering.</p></div><Link href="/albums" className="btn-secondary hidden sm:inline-flex">Bekijk alle foto’s</Link></div><div className="grid gap-5 md:grid-cols-3">{albums.map((album) => { const cover = album.cover || album.photos[0]; return <Link key={album.id} href={`/albums/${album.slug}`} className="group image-frame aspect-[4/5] p-5"><SafeImage src={cover?.url} fallbackSrc={images.fallbackWide} alt={cover?.altNl || album.titleNl} fill sizes="33vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" objectPosition={cover?.focalPoint || 'center'} /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/35 to-transparent"/><div className="absolute bottom-5 left-5 right-5"><p className="eyebrow">{album.date} · {album.photos.length} foto’s</p><h3 className="mt-2 text-3xl font-black">{album.titleNl}</h3><p className="mt-3 font-black text-gold">Bekijk album →</p></div></Link> })}</div></section>
 
     <section className="container-premium grid gap-6 pb-24 lg:grid-cols-2"><Promo href="/cocktail-workshop" image={gallery[2]?.url || images.bar} label="Cocktail workshop Maastricht" title="Shake, stir & celebrate." text="Een premium workshop voor vrijgezellenfeest, bedrijfsuitje, verjaardag of vriendenweekend — met echte barenergie in plaats van een standaard cursus." /><Promo href="/event-space" image={gallery[3]?.url || images.crowd} label="Ruimte huren Maastricht" title="Jouw private event bij Cliniq." text="Van bedrijfsfeest tot gala: licht, sound, bar, cocktails en hospitality staan klaar voor een avond die niet voelt als zaalhuur." /></section>
 

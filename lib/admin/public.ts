@@ -17,6 +17,24 @@ export async function getAgendaEventBySlug(slug: string) {
   return events.find((event) => event.slug?.current === slug || event._id === slug) || null
 }
 
+
+export async function getPhotoAlbums(includeDrafts = false) {
+  const store = await readStore()
+  return store.albums
+    .filter((album) => includeDrafts || album.published)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((album) => {
+      const cover = store.media.find((media) => media.id === album.coverImageId) || store.media.find((media) => album.imageIds.includes(media.id))
+      const photos = album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as typeof store.media
+      return { ...album, cover, photos }
+    })
+}
+
+export async function getPhotoAlbumBySlug(slug: string) {
+  const albums = await getPhotoAlbums()
+  return albums.find((album) => album.slug === slug || album.id === slug) || null
+}
+
 export async function getJobs() {
   const store = await readStore()
   return store.jobs.filter((job) => job.published !== false)

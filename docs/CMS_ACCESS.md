@@ -32,3 +32,7 @@ If `/admin/login` does not accept your login, check these points first:
 2. Redeploy after changing environment variables. Existing Vercel deployments do not automatically receive new values.
 3. You may use an email address as `ADMIN_USERNAME`; the session cookie now supports dots in email addresses.
 4. Paste values without wrapping quotes. Accidental spaces/quotes are now tolerated, but plain values are best.
+
+## Albums and mass photo upload
+
+Use `/admin/albums` for public night galleries. Create an album, upload many photos at once, choose a cover image, set NL/EN titles and publish it. Published albums appear on `/albums`, `/en/albums`, and gallery sections across the public site.

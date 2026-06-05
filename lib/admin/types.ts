@@ -40,8 +40,9 @@ export type AgendaEvent = {
 }
 
 export type Faq = { id: string; pageKey: string; language: Lang; question: string; answer: string; published: boolean; order: number }
-export type PageContent = { slug: string; heroTitle?: string; heroSubtitle?: string; price?: string; minimumGroupSize?: number; capacity?: string; ctaLabel?: string; faqs?: { question: string; answer: string }[]; images?: { url: string; alt?: string }[] }
+export type PageContent = { slug: string; heroTitle?: string; heroSubtitle?: string; price?: string; minimumGroupSize?: number; capacity?: string; ctaLabel?: string; secondaryCtaLabel?: string; body?: string; faqs?: { question: string; answer: string }[]; images?: { url: string; alt?: string; focalPoint?: string }[] }
 export type EditablePage = { key: string; titleNl: string; titleEn: string; heroTitleNl?: string; heroTitleEn?: string; heroSubtitleNl?: string; heroSubtitleEn?: string; bodyNl?: string; bodyEn?: string; primaryCtaNl?: string; primaryCtaEn?: string; secondaryCtaNl?: string; secondaryCtaEn?: string; heroImageId?: string; galleryImageIds?: string[]; price?: string; minimumGroupSize?: number; capacity?: string }
+export type PhotoAlbum = { id: string; slug: string; titleNl: string; titleEn?: string; date: string; relatedEventId?: string; coverImageId?: string; imageIds: string[]; published: boolean; createdAt: string }
 export type SeoSettings = { pageKey: string; language: Lang; seoTitle?: string; metaDescription?: string; ogTitle?: string; ogDescription?: string; socialImageId?: string; canonicalUrl?: string }
 export type Lead = { id: string; createdAt: string; formType: 'contact' | 'workshop' | 'event-space' | 'job'; status: 'new' | 'contacted' | 'handled' | 'archived' | 'in-progress'; sourcePage?: string; name: string; email: string; phone?: string; message: string; payload?: Record<string, unknown>; notes?: string }
 export type Job = { _id: string; title: string; type?: string; description?: string; requirements?: string[]; published?: boolean }
@@ -53,6 +54,7 @@ export type AdminStore = {
   events: AgendaEvent[]
   pages: EditablePage[]
   faqs: Faq[]
+  albums: PhotoAlbum[]
   seo: SeoSettings[]
   leads: Lead[]
   jobs: Job[]
