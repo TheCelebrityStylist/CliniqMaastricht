@@ -36,8 +36,11 @@ export async function saveEventAction(formData: FormData) {
     ageLimit: String(formData.get('ageLimit') || ''),
     shortDescriptionNl: String(formData.get('shortDescriptionNl') || ''),
     shortDescriptionEn: String(formData.get('shortDescriptionEn') || ''),
+    fullDescriptionNl: String(formData.get('fullDescriptionNl') || ''),
+    fullDescriptionEn: String(formData.get('fullDescriptionEn') || ''),
     ticketUrl: String(formData.get('ticketUrl') || ''),
     imageUrl: String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
+    imagePosition: String(formData.get('imagePosition') || 'center'),
     featured: formData.get('featured') === 'on',
     published: formData.get('published') === 'on',
   })
@@ -48,22 +51,30 @@ export async function saveEventAction(formData: FormData) {
 }
 
 export async function saveMediaAction(formData: FormData) {
-  const file = formData.get('file')
-  let url = String(formData.get('url') || '')
+  const files = formData.getAll('files').filter((file): file is File => file instanceof File && file.size > 0)
+  const legacyFile = formData.get('file')
+  if (legacyFile instanceof File && legacyFile.size > 0) files.push(legacyFile)
 
-  if (file instanceof File && file.size > 0) {
+  let urls = String(formData.get('url') || '').split('\n').map((item) => item.trim()).filter(Boolean)
+
+  if (files.length) {
     try {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
-      const blob = await put(`cliniq/${Date.now()}-${safeName}`, file, { access: 'public' })
-      url = blob.url
+      const uploaded = await Promise.all(files.map(async (file) => {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
+        const blob = await put(`cliniq/${Date.now()}-${safeName}`, file, { access: 'public' })
+        return blob.url
+      }))
+      urls = [...urls, ...uploaded]
     } catch (error) {
       console.error('Vercel Blob upload failed.', error)
       redirect('/admin/media?error=blob-token')
     }
   }
 
-  if (!url) redirect('/admin/media?error=image-required')
-  await createMedia({ url, title: String(formData.get('title') || ''), altNl: String(formData.get('altNl') || ''), altEn: String(formData.get('altEn') || ''), usage: String(formData.get('usage') || '').split(',').map((item) => item.trim()).filter(Boolean) })
+  if (!urls.length) redirect('/admin/media?error=image-required')
+  const usage = String(formData.get('usage') || '').split(',').map((item) => item.trim()).filter(Boolean)
+  const focalPoint = String(formData.get('focalPoint') || 'center')
+  await Promise.all(urls.map((url, index) => createMedia({ url, title: String(formData.get('title') || `Cliniq image ${index + 1}`), altNl: String(formData.get('altNl') || ''), altEn: String(formData.get('altEn') || ''), usage, focalPoint })))
   revalidatePath('/admin/media')
   redirect('/admin/media?saved=1')
 }
@@ -79,10 +90,19 @@ export async function savePageAction(formData: FormData) {
     page.heroSubtitleEn = String(formData.get('heroSubtitleEn') || '')
     page.primaryCtaNl = String(formData.get('primaryCtaNl') || '')
     page.primaryCtaEn = String(formData.get('primaryCtaEn') || '')
+    page.secondaryCtaNl = String(formData.get('secondaryCtaNl') || '')
+    page.secondaryCtaEn = String(formData.get('secondaryCtaEn') || '')
+    page.bodyNl = String(formData.get('bodyNl') || '')
+    page.bodyEn = String(formData.get('bodyEn') || '')
     page.heroImageId = String(formData.get('heroImageId') || '')
+    page.galleryImageIds = formData.getAll('galleryImageIds').map(String).filter(Boolean)
   }
   await writeStore(store)
   revalidatePath('/')
+  revalidatePath('/uitgaan')
+  revalidatePath('/cocktail-workshop')
+  revalidatePath('/event-space')
+  revalidatePath('/contact')
   redirect('/admin/pages?saved=1')
 }
 
@@ -92,6 +112,31 @@ export async function saveFaqAction(formData: FormData) {
   await writeStore(store)
   revalidatePath('/')
   redirect('/admin/faqs?saved=1')
+}
+
+
+export async function toggleEventPublishedAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  const event = store.events.find((item) => item._id === id)
+  if (event) event.published = event.published === false
+  await writeStore(store)
+  revalidatePath('/')
+  revalidatePath('/uitgaan')
+  revalidatePath('/en/nightlife')
+  redirect('/admin/events?saved=1')
+}
+
+export async function deleteMediaAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  const used = store.pages.some((page) => page.heroImageId === id || page.galleryImageIds?.includes(id)) || store.events.some((event) => event.galleryImageIds?.includes(id))
+  if (!used) {
+    store.media = store.media.filter((item) => item.id !== id)
+    await writeStore(store)
+  }
+  revalidatePath('/admin/media')
+  redirect(used ? '/admin/media?error=in-use' : '/admin/media?deleted=1')
 }
 
 export async function updateLeadStatusAction(formData: FormData) {

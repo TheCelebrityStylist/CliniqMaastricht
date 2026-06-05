@@ -7,6 +7,7 @@ export type MediaAsset = {
   altNl?: string
   altEn?: string
   usage?: string[]
+  focalPoint?: string
   createdAt: string
 }
 
@@ -27,11 +28,14 @@ export type AgendaEvent = {
   shortDescriptionNl?: string
   shortDescriptionEn?: string
   fullDescription?: string
+  fullDescriptionNl?: string
+  fullDescriptionEn?: string
   ticketUrl?: string
   featured?: boolean
   published?: boolean
   imageUrl?: string
   imageAlt?: string
+  imagePosition?: string
   galleryImageIds?: string[]
 }
 
@@ -39,7 +43,7 @@ export type Faq = { id: string; pageKey: string; language: Lang; question: strin
 export type PageContent = { slug: string; heroTitle?: string; heroSubtitle?: string; price?: string; minimumGroupSize?: number; capacity?: string; ctaLabel?: string; faqs?: { question: string; answer: string }[]; images?: { url: string; alt?: string }[] }
 export type EditablePage = { key: string; titleNl: string; titleEn: string; heroTitleNl?: string; heroTitleEn?: string; heroSubtitleNl?: string; heroSubtitleEn?: string; bodyNl?: string; bodyEn?: string; primaryCtaNl?: string; primaryCtaEn?: string; secondaryCtaNl?: string; secondaryCtaEn?: string; heroImageId?: string; galleryImageIds?: string[]; price?: string; minimumGroupSize?: number; capacity?: string }
 export type SeoSettings = { pageKey: string; language: Lang; seoTitle?: string; metaDescription?: string; ogTitle?: string; ogDescription?: string; socialImageId?: string; canonicalUrl?: string }
-export type Lead = { id: string; createdAt: string; formType: 'contact' | 'workshop' | 'event-space' | 'job'; status: 'new' | 'in-progress' | 'handled' | 'archived'; sourcePage?: string; name: string; email: string; phone?: string; message: string; payload?: Record<string, unknown>; notes?: string }
+export type Lead = { id: string; createdAt: string; formType: 'contact' | 'workshop' | 'event-space' | 'job'; status: 'new' | 'contacted' | 'handled' | 'archived' | 'in-progress'; sourcePage?: string; name: string; email: string; phone?: string; message: string; payload?: Record<string, unknown>; notes?: string }
 export type Job = { _id: string; title: string; type?: string; description?: string; requirements?: string[]; published?: boolean }
 export type SiteSettings = { phone: string; email: string; whatsapp: string; address: string; openingHours: string[]; instagram: string; tiktok: string }
 export type AnalyticsEvent = { id: string; type: string; path?: string; label?: string; createdAt: string }

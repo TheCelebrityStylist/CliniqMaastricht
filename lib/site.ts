@@ -18,4 +18,14 @@ export const images = {
   bar: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/820c06b1-de40-417c-808f-9c1b3b25dc1f/20240822_Cliniq_HR_SanderPaulussen-50.jpg',
   club: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/25d285a5-e73e-4f38-a55c-a3d9fcd73d60/003_EnriqueMeesters_Maastricht+-+Cliniq_20230204.jpg',
   party: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/4fa88dae-1327-459e-95c4-6f2e95bf02b3/4_Wildschieters_JtT_Cliniq_20230318.JPG',
+  fallbackHero: '/images/cliniq/fallback-hero.svg',
+  fallbackEvent: '/images/cliniq/fallback-event.svg',
+  fallbackWide: '/images/cliniq/fallback-wide.svg',
+}
+
+export const imageSets = {
+  home: [images.hero, images.crowd, images.bar, images.club, images.party],
+  nightlife: [images.club, images.party, images.hero],
+  workshop: [images.bar, images.hero, images.party],
+  eventSpace: [images.crowd, images.club, images.bar, images.party],
 }

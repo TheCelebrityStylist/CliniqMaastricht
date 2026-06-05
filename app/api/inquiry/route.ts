@@ -22,14 +22,18 @@ export async function POST(request: Request) {
   await createLead({ formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage, payload: data })
 
   if (process.env.RESEND_API_KEY) {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
-      from: process.env.FORM_FROM_EMAIL || 'Cliniq Website <onboarding@resend.dev>',
-      to: process.env.FORM_TO_EMAIL || 'contact@cafecliniq.com',
-      subject: `Nieuwe ${data.type} aanvraag van ${data.name}`,
-      replyTo: data.email,
-      text: Object.entries(data).map(([key, value]) => `${key}: ${String(value)}`).join('\n'),
-    })
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      await resend.emails.send({
+        from: process.env.FORM_FROM_EMAIL || 'Cliniq Website <onboarding@resend.dev>',
+        to: process.env.FORM_TO_EMAIL || 'contact@cafecliniq.com',
+        subject: `Nieuwe ${data.type} aanvraag van ${data.name}`,
+        replyTo: data.email,
+        text: Object.entries(data).map(([key, value]) => `${key}: ${String(value)}`).join('\n'),
+      })
+    } catch (error) {
+      console.error('Lead was saved, but email notification failed.', error)
+    }
   }
 
   return NextResponse.json({ ok: true })

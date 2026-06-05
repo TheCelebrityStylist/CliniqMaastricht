@@ -12,6 +12,16 @@ function cloneDefaultStore(): AdminStore {
   return JSON.parse(JSON.stringify(defaultStore)) as AdminStore
 }
 
+
+function mergeDefaultFaqs(currentFaqs: AdminStore['faqs']) {
+  const defaultFaqs = cloneDefaultStore().faqs
+  const seen = new Set(currentFaqs.map((faq) => `${faq.pageKey}:${faq.language}:${faq.question}`))
+  return [
+    ...currentFaqs,
+    ...defaultFaqs.filter((faq) => !seen.has(`${faq.pageKey}:${faq.language}:${faq.question}`)),
+  ]
+}
+
 async function ensureStore() {
   if (process.env.POSTGRES_URL) return
   await fs.mkdir(dataDir, { recursive: true })
@@ -58,7 +68,7 @@ export async function readStore(): Promise<AdminStore> {
       media: parsed.media?.length ? parsed.media : cloneDefaultStore().media,
       events: parsed.events?.length ? parsed.events : cloneDefaultStore().events,
       pages: parsed.pages?.length ? parsed.pages : cloneDefaultStore().pages,
-      faqs: parsed.faqs?.length ? parsed.faqs : cloneDefaultStore().faqs,
+      faqs: parsed.faqs && parsed.faqs.length >= 12 ? parsed.faqs : mergeDefaultFaqs(parsed.faqs || []),
       leads: parsed.leads || [],
       seo: parsed.seo || [],
       jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
@@ -110,11 +120,14 @@ export async function upsertEvent(input: Partial<AgendaEvent> & { title: string;
     shortDescriptionNl: input.shortDescriptionNl || input.shortDescription,
     shortDescriptionEn: input.shortDescriptionEn || input.shortDescription,
     fullDescription: input.fullDescription,
+    fullDescriptionNl: input.fullDescriptionNl,
+    fullDescriptionEn: input.fullDescriptionEn,
     ticketUrl: input.ticketUrl,
     featured: Boolean(input.featured),
     published: input.published !== false,
     imageUrl: input.imageUrl,
     imageAlt: input.imageAlt,
+    imagePosition: input.imagePosition || 'center',
     galleryImageIds: input.galleryImageIds || [],
   }
   const index = store.events.findIndex((item) => item._id === id)
@@ -124,9 +137,9 @@ export async function upsertEvent(input: Partial<AgendaEvent> & { title: string;
   return event
 }
 
-export async function createMedia(input: Pick<MediaAsset, 'url' | 'title' | 'altNl' | 'altEn'> & { usage?: string[] }) {
+export async function createMedia(input: Pick<MediaAsset, 'url' | 'title' | 'altNl' | 'altEn'> & { usage?: string[]; focalPoint?: string }) {
   const store = await readStore()
-  const media: MediaAsset = { id: slugify(`${input.title}-${Date.now()}`), url: input.url, title: input.title, altNl: input.altNl, altEn: input.altEn, usage: input.usage || [], createdAt: new Date().toISOString() }
+  const media: MediaAsset = { id: slugify(`${input.title}-${Date.now()}`), url: input.url, title: input.title, altNl: input.altNl, altEn: input.altEn, usage: input.usage || [], focalPoint: input.focalPoint || 'center', createdAt: new Date().toISOString() }
   store.media.unshift(media)
   await writeStore(store)
   return media

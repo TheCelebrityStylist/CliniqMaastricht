@@ -1,8 +1,8 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPageContent } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
+import SafeImage from '@/components/ui/SafeImage'
 import { cmsMetadata } from '@/lib/pageMetadata'
 
 export async function generateMetadata() { return cmsMetadata('home', 'en') }
@@ -13,7 +13,7 @@ export default async function HomeEn() {
   const events = (await getAgendaEvents()).filter((event) => event.featured).slice(0, 3)
   return <>
     <section className="relative min-h-[92vh] overflow-hidden pt-32">
-      <Image src={heroImage} alt="Cliniq Maastricht premium nightlife and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover" />
+      <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht premium nightlife and cocktail atmosphere" fill priority sizes="100vw" className="-z-10 object-cover brightness-[1.08]" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/70 to-burgundy/25" />
       <div className="container-premium py-20"><p className="eyebrow">Nightlife · Cocktails · Venue hire</p><h1 className="h1 mt-5 max-w-5xl">{content?.heroTitle || 'Premium nightlife in Maastricht.'}</h1><p className="mt-7 max-w-2xl text-xl leading-8 text-white/70">{content?.heroSubtitle || 'Cliniq is a polished Maastricht destination for late nights, cocktails and private events — designed for guests who want atmosphere without giving up style.'}</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link className="btn-primary" href="/en/nightlife">View agenda</Link><Link className="btn-secondary" href="/en/event-space">Request venue</Link></div></div>
     </section>
@@ -22,4 +22,4 @@ export default async function HomeEn() {
     <section className="container-premium grid gap-6 pb-24 lg:grid-cols-2"><Promo href="/en/cocktail-workshop" image={images.bar} label="Cocktail workshop Maastricht" title="Shake, stir and start the night properly." text="A premium group activity for team events, birthdays, bachelor and bachelorette weekends." /><Promo href="/en/event-space" image={images.crowd} label="Venue hire Maastricht" title="Your private event at Cliniq." text="From corporate parties to launches: sound, lighting, bar and atmosphere are ready." /></section>
   </>
 }
-function Promo({ href, image, label, title, text }: { href: string; image: string; label: string; title: string; text: string }) { return <Link href={href} className="card group relative min-h-[440px] overflow-hidden rounded-[2rem] p-8"><Image src={image} alt={label} fill sizes="50vw" className="-z-10 object-cover transition duration-700 group-hover:scale-105" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/50 to-transparent" /><p className="eyebrow">{label}</p><h2 className="h2 mt-44 max-w-lg">{title}</h2><p className="mt-4 max-w-md text-white/70">{text}</p></Link> }
+function Promo({ href, image, label, title, text }: { href: string; image: string; label: string; title: string; text: string }) { return <Link href={href} className="card group relative min-h-[440px] overflow-hidden rounded-[2rem] p-8"><SafeImage src={image} fallbackSrc={images.fallbackWide} alt={label} fill sizes="50vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/50 to-transparent" /><p className="eyebrow">{label}</p><h2 className="h2 mt-44 max-w-lg">{title}</h2><p className="mt-4 max-w-md text-white/70">{text}</p></Link> }

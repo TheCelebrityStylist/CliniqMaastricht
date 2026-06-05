@@ -4,9 +4,9 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 
 ## What the admin manages
 - **Dashboard:** upcoming events, new leads, image count and quick actions.
-- **Events Manager:** add/edit event title, subtitles, date, opening time, closing time, age limit, image URL, ticket link, featured and published toggles.
-- **Media Library:** upload approved Cliniq photos when `BLOB_READ_WRITE_TOKEN` is configured, or add an already-hosted Cliniq image URL. Uploaded/admin-selected images are used first; Cliniq fallback assets are used only when an image is missing.
-- **Page Editor:** edit homepage, nightlife, cocktail workshop, event space, contact, jobs and house-rules text in Dutch and English.
+- **Events Manager:** add/edit internal title, NL/EN public titles, subtitles, descriptions, date, opening time, closing time, age limit, Media Library poster, focal point, ticket link, featured and published toggles; duplicate events and publish/unpublish from the list.
+- **Media Library:** drag/drop or multi-upload approved Cliniq photos when `BLOB_READ_WRITE_TOKEN` is configured, preview them instantly, tag them by use, set alt text/focal point, see where they are used and delete unused images. Uploaded/admin-selected images are used first; branded Cliniq fallbacks are used only when an image is missing.
+- **Page Editor:** edit homepage, nightlife, cocktail workshop, event space, contact, jobs and house-rules hero text, body copy, CTAs, hero image and galleries in Dutch and English.
 - **FAQ Manager:** add detailed FAQ answers per page and language.
 - **Forms / Leads:** view contact, workshop, event-space and job inquiries, change status and export CSV.
 - **SEO Settings:** edit SEO title, meta description, OG title, OG description, canonical URL and social image per page/language.
@@ -22,10 +22,10 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 
 ## Change a photo
 1. Go to `/admin/media`.
-2. Upload the approved Cliniq image file, or paste an already-hosted Cliniq image URL.
-3. Add a clear title and Dutch/English alt text.
+2. Drag one or more approved Cliniq image files into the upload box, or paste already-hosted Cliniq image URLs.
+3. Add a clear title, Dutch/English alt text, usage tag and focal point.
 4. Go to `/admin/pages` or `/admin/events`.
-5. Assign that image to the page/event and save.
+5. Assign that image as hero, gallery image or event poster and save.
 
 ## Important image note
 Images pasted into chat are not repository files. To use those exact photos, upload the original image files through `/admin/media` after Vercel Blob is connected, paste real hosted Cliniq image URLs, or place the source files in `public/images/cliniq/` so they can be referenced by the site.
@@ -56,3 +56,8 @@ Optional:
 
 ## Redirects
 Redirects are server-side in `next.config.ts`. `/lockers` permanently redirects to `https://cliniq.elockers.shop/cliniq/lockers`; all previous SEO redirects are preserved.
+
+## Premium design and image QA
+- Public pages now use safer image fallbacks, brighter image treatment, varied galleries and stronger section rhythm.
+- If an uploaded image is too dark or cropped badly, edit the Media Library focal point or replace the image globally.
+- Check the homepage, agenda, workshop and event-space pages on mobile after replacing imagery.
