@@ -14,7 +14,7 @@ function formFiles(formData: FormData, key = 'files') {
   return files
 }
 
-async function uploadFiles(files: File[]) {
+async function uploadFiles(files: File[]): Promise<Array<{ url: string; name: string }>> {
   if (!files.length) return []
   try {
     return await Promise.all(files.map(async (file) => {
@@ -25,6 +25,7 @@ async function uploadFiles(files: File[]) {
   } catch (error) {
     console.error('Vercel Blob upload failed.', error)
     redirect('/admin/media?error=blob-token')
+    return []
   }
 }
 
@@ -101,7 +102,7 @@ export async function saveMediaAction(formData: FormData) {
   const files = formFiles(formData)
   const uploaded = await uploadFiles(files)
   const urls = [
-    ...String(formData.get('url') || '').split('\n').map((item) => item.trim()).filter(Boolean).map((url) => ({ url })),
+    ...String(formData.get('url') || '').split('\n').map((item) => item.trim()).filter(Boolean).map((url) => ({ url, name: '' })),
     ...uploaded,
   ]
 
