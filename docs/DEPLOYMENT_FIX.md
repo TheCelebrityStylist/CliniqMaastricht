@@ -1,6 +1,6 @@
 # Vercel deployment fix
 
-If Vercel shows `Invalid package name "date-fns/locale"`, it is deploying an old commit that still contains an invalid dependency. The current codebase no longer uses `date-fns` or `date-fns/locale`.
+If Vercel shows `Invalid package name "date-fns/locale"`, it is deploying an old commit that still contains an invalid dependency. The current codebase no longer uses `date-fns` or `date-fns/locale`. This pass also pins Next.js to the patched 15.5.16 release and uses the current Vercel Blob SDK range so installs do not fail on outdated package versions.
 
 ## Correct production deployment
 
@@ -16,6 +16,7 @@ Run these before deploying:
 
 ```bash
 npm run preflight
+node scripts/validate-package.js
 git diff --check
 ```
 

@@ -4,7 +4,8 @@ import { sql } from '@vercel/postgres'
 import { defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, Lead, MediaAsset } from './types'
 
-const dataDir = path.join(process.cwd(), '.data')
+const isVercel = Boolean(process.env.VERCEL)
+const dataDir = isVercel ? path.join('/tmp', 'cliniq-admin') : path.join(process.cwd(), '.data')
 const dataFile = path.join(dataDir, 'cliniq-admin.json')
 
 function cloneDefaultStore(): AdminStore {
@@ -36,8 +37,20 @@ async function readDatabaseStore() {
 export async function readStore(): Promise<AdminStore> {
   await ensureStore()
   try {
-    const databaseRaw = await readDatabaseStore()
-    const raw = databaseRaw || (process.env.POSTGRES_URL ? JSON.stringify(cloneDefaultStore()) : await fs.readFile(dataFile, 'utf8'))
+    let databaseRaw: string | null = null
+    try {
+      databaseRaw = await readDatabaseStore()
+    } catch (error) {
+      console.error('Postgres admin store read failed; using file/default fallback.', error)
+    }
+    let raw = databaseRaw
+    if (!raw) {
+      try {
+        raw = await fs.readFile(dataFile, 'utf8')
+      } catch {
+        raw = JSON.stringify(cloneDefaultStore())
+      }
+    }
     const parsed = JSON.parse(raw) as Partial<AdminStore>
     return {
       ...cloneDefaultStore(),
@@ -60,13 +73,17 @@ export async function readStore(): Promise<AdminStore> {
 export async function writeStore(store: AdminStore) {
   const payload = JSON.stringify(store, null, 2)
   if (process.env.POSTGRES_URL) {
-    await ensureDatabaseStore()
-    await sql`INSERT INTO cliniq_admin_store (id, data, updated_at) VALUES ('main', ${payload}::jsonb, NOW()) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`
+    try {
+      await ensureDatabaseStore()
+      await sql`INSERT INTO cliniq_admin_store (id, data, updated_at) VALUES ('main', ${payload}::jsonb, NOW()) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`
+      return
+    } catch (error) {
+      console.error('Postgres admin store write failed; using temporary file fallback.', error)
+    }
   }
-  if (!process.env.POSTGRES_URL) {
-    await fs.mkdir(dataDir, { recursive: true })
-    await fs.writeFile(dataFile, payload)
-  }
+
+  await fs.mkdir(dataDir, { recursive: true })
+  await fs.writeFile(dataFile, payload)
 }
 
 export function slugify(input: string) {

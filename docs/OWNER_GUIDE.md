@@ -5,7 +5,7 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 ## What the admin manages
 - **Dashboard:** upcoming events, new leads, image count and quick actions.
 - **Events Manager:** add/edit event title, subtitles, date, opening time, closing time, age limit, image URL, ticket link, featured and published toggles.
-- **Media Library:** add approved Cliniq photos, alt text and usage tags. Uploaded/admin-selected images are used first; Cliniq fallback assets are used only when an image is missing.
+- **Media Library:** upload approved Cliniq photos when `BLOB_READ_WRITE_TOKEN` is configured, or add an already-hosted Cliniq image URL. Uploaded/admin-selected images are used first; Cliniq fallback assets are used only when an image is missing.
 - **Page Editor:** edit homepage, nightlife, cocktail workshop, event space, contact, jobs and house-rules text in Dutch and English.
 - **FAQ Manager:** add detailed FAQ answers per page and language.
 - **Forms / Leads:** view contact, workshop, event-space and job inquiries, change status and export CSV.
@@ -22,13 +22,13 @@ The website now uses a built-in admin dashboard, not Sanity. Open `https://www.c
 
 ## Change a photo
 1. Go to `/admin/media`.
-2. Add the approved Cliniq image URL and alt text.
-3. Go to `/admin/pages` or `/admin/events`.
-4. Assign that image to the page/event.
-5. Save.
+2. Upload the approved Cliniq image file, or paste an already-hosted Cliniq image URL.
+3. Add a clear title and Dutch/English alt text.
+4. Go to `/admin/pages` or `/admin/events`.
+5. Assign that image to the page/event and save.
 
 ## Important image note
-Images pasted into chat are not repository files. To use those exact photos, upload them through the admin/media workflow as real hosted URLs, or place the source files in `public/images/cliniq/` so they can be referenced by the site.
+Images pasted into chat are not repository files. To use those exact photos, upload the original image files through `/admin/media` after Vercel Blob is connected, paste real hosted Cliniq image URLs, or place the source files in `public/images/cliniq/` so they can be referenced by the site.
 
 ## Deployment variables
 Required:
@@ -36,6 +36,10 @@ Required:
 - `ADMIN_PASSWORD`
 - `ADMIN_SESSION_SECRET`
 - `LEADS_EXPORT_TOKEN`
+
+Strongly recommended for production:
+- `POSTGRES_URL` — stores admin edits, events, pages, FAQs, SEO, settings and leads permanently. Without it, Vercel can only use a temporary fallback.
+- `BLOB_READ_WRITE_TOKEN` — enables direct photo uploads in Media Library. Without it, you can still paste already-hosted image URLs.
 
 Optional:
 - `RESEND_API_KEY`

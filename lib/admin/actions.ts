@@ -49,9 +49,14 @@ export async function saveMediaAction(formData: FormData) {
   let url = String(formData.get('url') || '')
 
   if (file instanceof File && file.size > 0) {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
-    const blob = await put(`cliniq/${Date.now()}-${safeName}`, file, { access: 'public' })
-    url = blob.url
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
+      const blob = await put(`cliniq/${Date.now()}-${safeName}`, file, { access: 'public' })
+      url = blob.url
+    } catch (error) {
+      console.error('Vercel Blob upload failed.', error)
+      redirect('/admin/media?error=blob-token')
+    }
   }
 
   if (!url) redirect('/admin/media?error=image-required')
