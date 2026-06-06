@@ -1,31 +1,36 @@
 import Link from 'next/link'
-import { getAgendaEvents, getPageContent, getPhotoAlbums } from '@/lib/admin/public'
-import { EventCard } from '@/components/ui/EventCard'
-import SafeImage from '@/components/ui/SafeImage'
-import { images } from '@/lib/site'
-import JsonLd from '@/components/ui/JsonLd'
-import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import { faqSchema } from '@/lib/seo'
+import { images } from '@/lib/site'
+import { getAgendaEvents, getPhotoAlbums } from '@/lib/admin/public'
+import { EventCard } from '@/components/ui/EventCard'
+import { AlbumGrid } from '@/components/gallery/AlbumGrid'
+import JsonLd from '@/components/ui/JsonLd'
+import { nightlifeFaqsNl as faqs } from '@/lib/faqs'
 import { cmsMetadata } from '@/lib/pageMetadata'
+import SafeImage from '@/components/ui/SafeImage'
 
 export async function generateMetadata() { return cmsMetadata('nightlife', 'nl') }
 
-export default async function UitgaanPage() {
-  const [events, content, albums] = await Promise.all([getAgendaEvents(), getPageContent('nightlife'), getPhotoAlbums()])
-  const faqs = content?.faqs?.length ? content.faqs : fallbackFaqs
+export default async function NightlifePage() {
+  const [events, albums] = await Promise.all([getAgendaEvents(), getPhotoAlbums()])
+  const photos = [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar]
+
   return <>
-    <section className="relative min-h-[78vh] overflow-hidden pt-36">
-      <SafeImage src={images.redCrowd} fallbackSrc={images.fallbackHero} alt="Clubavond bij CLINIQ Maastricht met rood en blauw licht" fill priority sizes="100vw" className="-z-10 object-cover brightness-[1.08]" />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.42),rgba(0,0,0,.7)),linear-gradient(0deg,rgba(8,6,7,.94),transparent_45%)]" />
-      <div className="container-premium py-24"><p className="eyebrow">Agenda</p><h1 className="h1 mt-5 max-w-5xl">Uitgaan bij CLINIQ</h1><p className="mt-7 max-w-2xl text-xl leading-8 text-white/76">Elke donderdag, vrijdag en zaterdag. Check de agenda en neem je ID mee.</p></div>
+    <section className="hero-section relative min-h-[82vh] overflow-hidden pt-36">
+      <SafeImage src={images.redCrowd} fallbackSrc={images.fallbackHero} alt="Uitgaan bij CLINIQ Maastricht met rood en blauw licht" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/60 to-black/25" />
+      <div className="container-premium py-24"><p className="eyebrow mb-4">Agenda</p><h1 className="h1 max-w-5xl">Uitgaan bij CLINIQ</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Elke donderdag, vrijdag en zaterdag verandert CLINIQ in een clubavond met DJ’s, cocktails en een volwassen sfeer midden in Maastricht. Check de agenda, kom op tijd en neem je ID mee.</p></div>
     </section>
 
-    <section className="container-premium py-20">{events.length ? <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="CLINIQ Maastricht dansvloer" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h2 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h2></div>}</section>
+    <section className="container-premium py-24"><div className="flex flex-col justify-between gap-4 md:flex-row md:items-end"><div><p className="eyebrow">Upcoming</p><h2 className="h2 mt-3">Aankomende events</h2></div><Link className="btn-secondary" href="/fotos">Bekijk foto’s</Link></div>{events.length ? <div className="mt-10 grid gap-7 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="mt-10 rounded-[2rem] border border-white/10 p-8 text-white/70">Nieuwe events worden binnenkort toegevoegd.</div>}</section>
 
-    <section className="container-premium pb-20"><div className="mb-8 flex items-center justify-between gap-4"><h2 className="eyebrow">Recent nights</h2><Link className="btn-secondary" href="/fotos">Bekijk alle foto’s</Link></div><div className="grid gap-4 md:grid-cols-3">{albums.slice(0,3).map((album)=>{ const cover=album.cover || album.photos[0]; return <Link key={album.id} href={`/fotos/${album.slug}`} className="group image-frame aspect-[4/5] p-5"><SafeImage src={cover?.url} fallbackSrc={images.fallbackWide} alt={cover?.altNl || album.titleNl} fill sizes="33vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/40 to-transparent"/><div className="absolute bottom-5 left-5 right-5"><p className="eyebrow">{album.date} · {album.photos.length} foto’s</p><h3 className="mt-2 text-2xl font-black">{album.titleNl}</h3><p className="mt-3 font-black text-gold">Bekijk album →</p></div></Link>})}</div></section>
+    <section className="container-premium pb-24"><div className="grid auto-rows-[180px] gap-4 md:grid-cols-6 md:auto-rows-[240px]">{photos.map((src, index)=><div key={src} className={`photo-tile image-frame ${index === 0 || index === 3 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'}`}><SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Uitgaan Maastricht sfeerbeeld ${index + 1}`} fill sizes="33vw" className="object-cover brightness-[1.08]" /></div>)}</div></section>
 
-    <section className="container-premium pb-24"><div className="max-w-5xl"><h2 className="eyebrow">Praktisch</h2><div className="mt-6 grid gap-4 md:grid-cols-2">{faqs.map((f) => <details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></div></section>
-    <JsonLd data={events.map((event) => ({ '@context': 'https://schema.org', '@type': 'Event', name: event.titleNl || event.title, startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`, endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', eventStatus: 'https://schema.org/EventScheduled', location: { '@type': 'Place', name: 'Cliniq Maastricht', address: 'Platielstraat 9A, 6211 GV Maastricht' }, image: event.imageUrl ? [event.imageUrl] : undefined, description: event.shortDescriptionNl || event.shortDescription }))} />
+    <section className="container-premium pb-24"><div className="mb-8"><p className="eyebrow">Fotoalbums</p><h2 className="h2 mt-3">Recente avonden</h2></div><AlbumGrid albums={albums.slice(0, 3)} /></section>
+
+    <section className="container-premium grid gap-8 pb-24 lg:grid-cols-[.85fr_1.15fr]"><div><p className="eyebrow">Praktisch</p><h2 className="h2 mt-4">Goed om te weten</h2><div className="mt-8 grid gap-4 text-white/72 sm:grid-cols-2"><p>Donderdag, vrijdag en zaterdag.</p><p>Controleer de minimumleeftijd per event.</p><p>Neem altijd een geldig ID mee.</p><p>Lockers regel je via /lockers.</p></div></div><div className="seo-panel rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-9"><h2 className="h3">Club Maastricht, agenda en nightlife</h2><p className="mt-5 text-lg leading-8 text-white/70">CLINIQ is een club en cocktailbar in Maastricht voor wie een avond uit zoekt zonder standaard kroeggevoel. De locatie ligt aan de Platielstraat, op loopafstand van het Vrijthof, de Markt en de belangrijkste uitgaansstraten. In de agenda vind je de aankomende clubavonden, speciale events en thema-avonden. De minimumleeftijd kan per avond verschillen; controleer daarom altijd de eventinformatie voordat je komt.</p></div></section>
+
+    <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Veelgestelde vragen</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></section>
     <JsonLd data={faqSchema(faqs)} />
   </>
 }

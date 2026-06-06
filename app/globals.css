@@ -34,3 +34,11 @@ details summary::-webkit-details-marker { display:none; }
 details[open] { @apply border-gold/40 bg-white/[0.085]; }
 @keyframes soft-reveal { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: translateY(0); } }
 .reveal { animation: soft-reveal .7s ease both; }
+.hero-media { transform: scale(1.03); animation: hero-drift 18s ease-out both; }
+.reveal-up { animation: soft-reveal .65s ease both; }
+.photo-tile { animation: soft-reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% cover 32%; }
+.seo-panel { animation: soft-reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% cover 30%; }
+.faq-grid details p { overflow: hidden; }
+@keyframes hero-drift { from { transform: scale(1.08) translateY(1.5rem); } to { transform: scale(1.03) translateY(0); } }
+@supports not (animation-timeline: view()) { .photo-tile, .seo-panel { animation: soft-reveal .7s ease both; } }
+@media (prefers-reduced-motion: reduce) { .hero-media, .reveal-up, .photo-tile, .seo-panel { animation: none !important; transform: none !important; } }
