@@ -1,4 +1,4 @@
-import { deleteMediaAction, saveMediaAction, updateMediaAction } from '@/lib/admin/actions'
+import { bulkDeleteMediaAction, deleteMediaAction, saveMediaAction, updateMediaAction } from '@/lib/admin/actions'
 import { readStore } from '@/lib/admin/store'
 import MediaUploadField from '@/components/admin/MediaUploadField'
 import SafeImage from '@/components/ui/SafeImage'
@@ -39,6 +39,8 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
       {errorMessage ? <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-700">{errorMessage}</p> : null}
       {query?.saved ? <p className="mt-5 rounded-2xl bg-green-50 p-4 text-sm font-bold text-green-700">Media saved.</p> : null}
       {query?.deleted ? <p className="mt-5 rounded-2xl bg-green-50 p-4 text-sm font-bold text-green-700">Unused image deleted.</p> : null}
+
+      <form action={bulkDeleteMediaAction} className="mt-6 rounded-[2rem] bg-white p-4 shadow-sm"><div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"><div><h2 className="text-lg font-black">Bulk delete unused images</h2><p className="mt-1 text-sm text-black/55">Select multiple unused images. Images used by pages, events or albums are protected.</p></div><button className="rounded-full border border-red-200 px-4 py-2 text-xs font-black uppercase tracking-widest text-red-600">Delete selected</button></div><div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{filteredMedia.map((media)=><label key={media.id} className="flex items-center gap-2 rounded-2xl bg-[#f7f1e7] px-3 py-2 text-xs font-bold"><input type="checkbox" name="mediaIds" value={media.id}/><span className="truncate">{media.title}</span></label>)}</div></form>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredMedia.map((media) => {
           const usage = usedBy(media.id)

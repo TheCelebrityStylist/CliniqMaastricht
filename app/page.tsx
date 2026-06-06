@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { images, imageSets, site } from '@/lib/site'
-import { getAgendaEvents, getPageContent, getPhotoAlbums } from '@/lib/admin/public'
+import { images, site } from '@/lib/site'
+import { getAgendaEvents } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import { cmsMetadata } from '@/lib/pageMetadata'
@@ -9,33 +9,52 @@ import { ui } from '@/lib/i18n'
 export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 
 export default async function Home() {
-  const content = await getPageContent('home')
   const t = ui.nl
-  const gallery = content?.images?.length ? content.images : imageSets.home.map((url) => ({ url, alt: 'Cliniq Maastricht sfeerbeeld', focalPoint: 'center' }))
-  const heroImage = gallery[0]?.url || images.hero
-  const events = (await getAgendaEvents()).filter((event) => event.featured).slice(0, 3)
-  const albums = (await getPhotoAlbums()).slice(0, 3)
+  const events = (await getAgendaEvents()).slice(0, 3)
+  const photos = [images.crowd, images.bar, images.mojito, images.party, images.club, images.contactInterior]
 
   return <>
-    <section className="section-lift relative min-h-[94vh] overflow-hidden pt-32">
-      <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht clubnacht met cocktails en event sfeer" fill priority sizes="100vw" className="-z-10 object-cover brightness-[1.08] contrast-[1.05]" objectPosition={gallery[0]?.focalPoint || 'center'} />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.88),rgba(0,0,0,.55),rgba(54,16,31,.20)),linear-gradient(0deg,rgba(8,6,7,.95),transparent_40%)]" />
-      <div className="container-premium py-20">
-        <div className="max-w-5xl reveal"><p className="eyebrow">{t.home.eyebrow}</p><h1 className="h1 mt-5">{content?.heroTitle || t.home.hero}</h1><p className="mt-7 max-w-2xl text-xl leading-8 text-white/75">{content?.heroSubtitle || t.home.intro}</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/event-space">{t.common.requestVenue}</Link></div></div>
-        <div className="mt-16 grid gap-3 md:grid-cols-4">{t.home.proof.map((item)=><div key={item} className="luxury-panel rounded-3xl p-4 text-sm font-black uppercase tracking-[0.16em] text-white/75">{item}</div>)}</div>
+    <section className="relative min-h-screen overflow-hidden pt-28">
+      <SafeImage src={images.hero} fallbackSrc={images.fallbackHero} alt="Dansvloer van CLINIQ Maastricht met warm licht en publiek" fill priority sizes="100vw" className="-z-10 object-cover brightness-[1.08] contrast-[1.04]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.34),rgba(0,0,0,.72)),linear-gradient(0deg,rgba(8,6,7,.96),transparent_38%)]" />
+      <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
+        <div className="reveal max-w-5xl">
+          <h1 className="h1">CLINIQ Maastricht</h1>
+          <p className="mt-5 text-2xl font-black tracking-[-0.03em] text-white/82 sm:text-4xl">Club. Cocktails. Events.</p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/event-space">{t.common.requestVenue}</Link></div>
+        </div>
       </div>
     </section>
 
-    <section className="section-lift container-premium py-24"><div className="grid gap-12 lg:grid-cols-[.85fr_1.15fr]"><div className="sticky top-28 h-fit"><p className="eyebrow">{t.home.whyEyebrow}</p><h2 className="h2 mt-3">{t.home.whyTitle}</h2><p className="prose-premium mt-6">{content?.body || t.home.whyText}</p><Link className="btn-secondary mt-8" href="/contact">{t.home.plan}</Link></div><div className="grid gap-4 sm:grid-cols-2">{gallery.slice(1,5).map((item, index)=><div key={`${item.url}-${index}`} className={`image-frame ${index === 0 ? 'sm:mt-16' : ''} aspect-[4/5]`}><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt || `Cliniq Maastricht sfeerbeeld ${index + 1}`} fill sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 hover:scale-105" objectPosition={item.focalPoint || 'center'} /></div>)}</div></div></section>
+    <section className="container-premium py-20">
+      <div className="mb-8 flex items-center justify-between gap-4"><h2 className="eyebrow">This week at CLINIQ</h2><Link href="/uitgaan" className="btn-secondary hidden sm:inline-flex">{t.common.allEvents}</Link></div>
+      {events.length ? <div className="grid gap-6 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="CLINIQ Maastricht clubavond" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
+    </section>
 
-    <section className="container-premium py-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Agenda</p><h2 className="h2 mt-3">{t.home.eventsTitle}</h2><p className="prose-premium mt-4 max-w-2xl">{t.home.eventsText}</p></div><Link href="/uitgaan" className="btn-secondary hidden sm:inline-flex">{t.common.allEvents}</Link></div>{events.length ? <div className="grid gap-6 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="luxury-panel rounded-3xl p-8"><h3 className="h3">{t.home.noEventsTitle}</h3><p className="mt-3 text-white/70">{t.home.noEventsText}</p></div>}</section>
+    <section className="container-premium pb-20">
+      <div className="mb-8 flex items-center justify-between gap-4"><h2 className="eyebrow">Photo highlights</h2><Link href="/fotos" className="btn-secondary hidden sm:inline-flex">{t.common.allPhotos}</Link></div>
+      <div className="grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">{photos.map((src, index) => <Link key={src} href="/fotos" className={`image-frame group rounded-3xl ${index === 0 || index === 5 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'}`}><SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`CLINIQ Maastricht foto ${index + 1}`} fill sizes="(min-width:768px) 33vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /></Link>)}</div>
+      <Link href="/fotos" className="btn-primary mt-8 sm:hidden">{t.common.allPhotos}</Link>
+    </section>
 
-    <section className="container-premium pb-24"><div className="mb-10 flex items-end justify-between gap-6"><div><p className="eyebrow">Nights at Cliniq</p><h2 className="h2 mt-3">{t.home.albumsTitle}</h2><p className="prose-premium mt-4 max-w-2xl">{t.home.albumsText}</p></div><Link href="/fotos" className="btn-secondary hidden sm:inline-flex">{t.common.allPhotos}</Link></div><div className="grid gap-5 md:grid-cols-3">{albums.map((album) => { const cover = album.cover || album.photos[0]; return <Link key={album.id} href={`/fotos/${album.slug}`} className="group image-frame aspect-[4/5] p-5"><SafeImage src={cover?.url} fallbackSrc={images.fallbackWide} alt={cover?.altNl || album.titleNl} fill sizes="33vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" objectPosition={cover?.focalPoint || 'center'} /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/35 to-transparent"/><div className="absolute bottom-5 left-5 right-5"><p className="eyebrow">{album.date} · {album.photos.length} {t.common.photos}</p><h3 className="mt-2 text-3xl font-black">{album.titleNl}</h3><p className="mt-3 font-black text-gold">{t.common.allPhotos} →</p></div></Link> })}</div></section>
+    <section className="container-premium grid gap-5 pb-20 lg:grid-cols-2">
+      <Promo href="/cocktail-workshop" image={images.workshopBar} title="Cocktail workshop." text="Voor groepen die iets leukers zoeken dan een standaard borrel." cta="Meer informatie" />
+      <Promo href="/event-space" image={images.redRoom} title="Ruimte huren." text="Voor bedrijfsfeesten, verjaardagen, borrels en private events." cta="Bekijk mogelijkheden" />
+    </section>
 
-    <section className="container-premium grid gap-6 pb-24 lg:grid-cols-2"><Promo href="/cocktail-workshop" image={gallery[2]?.url || images.bar} label="Cocktail workshop Maastricht" title="Shake, stir & celebrate." text="Een workshop voor vrijgezellenfeest, bedrijfsuitje, verjaardag of vriendenweekend — met echte barenergie in plaats van een standaard cursus." /><Promo href="/event-space" image={gallery[3]?.url || images.crowd} label="Ruimte huren Maastricht" title="Jouw private event bij Cliniq." text="Van bedrijfsfeest tot gala: licht, sound, bar, cocktails en hospitality staan klaar voor een avond die niet voelt als zaalhuur." /></section>
-
-    <section className="bg-ivory py-20 text-ink"><div className="container-premium grid gap-8 lg:grid-cols-[1fr_.8fr]"><div><p className="font-black uppercase tracking-[0.28em] text-magenta">Contact</p><h2 className="h2 mt-3">{t.home.readyTitle}</h2></div><div className="text-lg leading-8"><p>{site.address.street}, {site.address.city}. {t.home.readyText}</p><div className="mt-7 flex flex-wrap gap-3"><Link className="btn-primary" href="/contact">{t.common.contact}</Link><Link className="btn-secondary border-ink/20 bg-ink text-white" href="/cocktail-workshop">{t.common.bookWorkshop}</Link></div></div></div></section>
+    <section className="bg-ivory py-20 text-ink">
+      <div className="container-premium grid gap-8 lg:grid-cols-[1fr_.75fr] lg:items-end">
+        <div><h2 className="text-5xl font-black leading-none tracking-[-0.055em] sm:text-7xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}.<br/>Midden in Maastricht.</p></div>
+        <div className="flex flex-wrap gap-3 lg:justify-end"><Link className="btn-primary" href="/contact">Neem contact op</Link><Link className="btn-secondary border-ink/25 bg-ink text-white hover:border-ink hover:bg-ink/90 hover:text-white" href="/cocktail-workshop">Workshop aanvragen</Link></div>
+      </div>
+    </section>
   </>
 }
 
-function Promo({ href, image, label, title, text }: { href: string; image: string; label: string; title: string; text: string }) { return <Link href={href} className="group image-frame min-h-[480px] rounded-[2rem] p-8"><SafeImage src={image} fallbackSrc={images.fallbackWide} alt={label} fill sizes="50vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/55 to-transparent" /><p className="eyebrow">{label}</p><h2 className="h2 mt-52 max-w-lg">{title}</h2><p className="mt-4 max-w-md text-white/75">{text}</p></Link> }
+function Promo({ href, image, title, text, cta }: { href: string; image: string; title: string; text: string; cta: string }) {
+  return <Link href={href} className="group image-frame min-h-[520px] rounded-[2rem] p-8">
+    <SafeImage src={image} fallbackSrc={images.fallbackWide} alt={title} fill sizes="50vw" className="-z-10 object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" />
+    <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
+    <div className="absolute bottom-8 left-8 right-8"><h2 className="h2 max-w-lg">{title}</h2><p className="mt-4 max-w-md text-xl font-semibold text-white/78">{text}</p><p className="mt-7 font-black uppercase tracking-[0.18em] text-gold">{cta} →</p></div>
+  </Link>
+}

@@ -245,6 +245,21 @@ export async function deleteMediaAction(formData: FormData) {
   redirect(used ? '/admin/media?error=in-use' : '/admin/media?deleted=1')
 }
 
+
+export async function bulkDeleteMediaAction(formData: FormData) {
+  const store = await readStore()
+  const ids = new Set(formData.getAll('mediaIds').map(String).filter(Boolean))
+  const isUsed = (id: string) => store.pages.some((page) => page.heroImageId === id || page.galleryImageIds?.includes(id)) || store.events.some((event) => event.galleryImageIds?.includes(id) || store.media.find((media) => media.id === id)?.url === event.imageUrl) || store.albums.some((album) => album.coverImageId === id || album.imageIds.includes(id))
+  const blocked = [...ids].some(isUsed)
+  if (!blocked) {
+    store.media = store.media.filter((item) => !ids.has(item.id))
+    await writeStore(store)
+  }
+  revalidatePath('/admin/media')
+  revalidatePublic()
+  redirect(blocked ? '/admin/media?error=in-use' : '/admin/media?deleted=1')
+}
+
 export async function updateLeadStatusAction(formData: FormData) {
   const store = await readStore()
   const id = String(formData.get('id'))

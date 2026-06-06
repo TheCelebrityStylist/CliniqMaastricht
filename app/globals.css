@@ -15,8 +15,8 @@ a { text-underline-offset: 4px; }
 .h2 { @apply text-4xl font-black leading-[0.98] tracking-[-0.045em] sm:text-5xl lg:text-6xl; }
 .h3 { @apply text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl; }
 .card { @apply border border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur; }
-.btn-primary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full bg-magenta px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-ink; }
-.btn-secondary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:border-gold hover:bg-gold hover:text-ink; }
+.btn-primary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full bg-magenta px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:brightness-110; }
+.btn-secondary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full border border-white/25 bg-black/35 px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 hover:brightness-110; }
 .input { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-base text-white placeholder:text-white/30; }
 .label { @apply mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/70; }
 .prose-premium { @apply text-lg leading-8 text-white/70; }
@@ -29,7 +29,6 @@ a { text-underline-offset: 4px; }
 .premium-grid { background-image: linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px); background-size: 80px 80px; }
 .card, .luxury-panel, .image-frame { transform: translateZ(0); }
 .card { @apply transition duration-300 hover:border-white/20 hover:bg-white/[0.075]; }
-.btn-primary, .btn-secondary { box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 18px 45px rgba(240,38,136,.22); }
 details { @apply transition duration-300; }
 details summary::-webkit-details-marker { display:none; }
 details[open] { @apply border-gold/40 bg-white/[0.085]; }
