@@ -1,6 +1,20 @@
 import Link from 'next/link'
-import { ArrowRight, X } from 'lucide-react'
 import { PHOTOS, SITE } from '@/lib/content'
+
+
+const ArrowRightIcon = ({ className = '' }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <path d="M5 12h14" />
+    <path d="m12 5 7 7-7 7" />
+  </svg>
+)
+
+const CloseIcon = ({ className = '' }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+)
 
 interface LandingLayoutProps {
   meta: { title: string; description: string }
@@ -41,7 +55,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
               {ctaPrimary.label}
             </a>
             <Link href="/" className="text-white/35 transition-colors hover:text-white" aria-label="Sluiten">
-              <X className="h-4 w-4" />
+              <CloseIcon className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -60,7 +74,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
             {...externalProps(hero.ctaHref)}
           >
             {hero.ctaLabel}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </a>
         </div>
       </section>

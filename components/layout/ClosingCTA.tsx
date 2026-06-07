@@ -3,9 +3,16 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
 import { useLang } from '@/lib/lang'
 import { PHOTOS } from '@/lib/content'
+
+
+const ArrowRightIcon = ({ className = '' }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <path d="M5 12h14" />
+    <path d="m12 5 7 7-7 7" />
+  </svg>
+)
 
 const CARDS_NL = [
   {
@@ -123,7 +130,7 @@ export default function ClosingCTA() {
                 className="group inline-flex items-center gap-2.5 self-start bg-magenta px-8 py-4 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
               >
                 {lang === 'nl' ? 'Alle opties bekijken' : 'See all options'}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                <ArrowRightIcon className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
               <div className="mt-4 flex items-center gap-5">
                 <a
@@ -169,7 +176,7 @@ export default function ClosingCTA() {
                     </p>
                     <p className="text-sm text-white/35">{card.body}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4 flex-shrink-0 text-white/20 transition-all duration-300 group-hover:translate-x-1 group-hover:text-magenta" />
+                  <ArrowRightIcon className="h-4 w-4 flex-shrink-0 text-white/20 transition-all duration-300 group-hover:translate-x-1 group-hover:text-magenta" />
                 </Link>
               </motion.div>
             ))}
