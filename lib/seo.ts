@@ -25,7 +25,7 @@ export function organizationSchema() {
 }
 
 export function localBusinessSchema() {
-  return { '@context': 'https://schema.org', '@type': ['LocalBusiness', 'NightClub', 'BarOrPub', 'EventVenue'], name: site.name, url: site.url, telephone: site.phone, email: site.email, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country }, sameAs: [site.instagram, site.tiktok], priceRange: '€€', servesCuisine: 'Cocktails', openingHoursSpecification: site.hours.map((h) => ({ '@type': 'OpeningHoursSpecification', description: h })) }
+  return { '@context': 'https://schema.org', '@type': ['LocalBusiness', 'NightClub', 'EventVenue'], name: site.name, url: site.url, telephone: site.phone, email: site.email, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country }, sameAs: [site.instagram, site.tiktok], priceRange: '€€', openingHoursSpecification: site.hours.map((h) => ({ '@type': 'OpeningHoursSpecification', description: h })) }
 }
 
 export function faqSchema(items: { question: string; answer: string }[]) {

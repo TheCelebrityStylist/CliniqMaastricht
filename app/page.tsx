@@ -21,14 +21,14 @@ export default async function Home() {
         <div className="reveal max-w-5xl">
           <p className="eyebrow mb-4">Platielstraat 9A</p>
           <h1 className="h1">CLINIQ Maastricht</h1>
-          <p className="mt-5 max-w-3xl text-2xl font-black tracking-[-0.03em] text-white/84 sm:text-4xl">Club, cocktailbar en eventlocatie aan de Platielstraat.</p>
+          <p className="mt-5 max-w-3xl text-2xl font-black tracking-[-0.03em] text-white/84 sm:text-4xl">Uitgaan, events en workshops aan de Platielstraat.</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/event-space">{t.common.requestVenue}</Link></div>
         </div>
       </div>
     </section>
 
     <section className="container-premium py-24">
-      <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Donderdag, vrijdag en zaterdag draait het bij CLINIQ om muziek, cocktails en een volle dansvloer. Check de agenda voor de eerstvolgende avonden." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
+      <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Donderdag, vrijdag en zaterdag draait het bij CLINIQ om muziek, drankjes en een volle dansvloer. Check de agenda voor de eerstvolgende avonden." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
       {events.length ? <div className="mt-10 grid gap-7 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
     </section>
 
@@ -46,13 +46,13 @@ export default async function Home() {
     <section className="container-premium pb-24">
       <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
         <div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan, cocktails en events in hartje Maastricht</h2></div>
-        <div className="prose-premium"><p>CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. De locatie combineert club, cocktailbar en eventruimte onder één dak. Daardoor kun je bij CLINIQ terecht voor een avond uit, een cocktail workshop met een groep of het huren van een ruimte voor een besloten feest. Zoek je een club in Maastricht, een cocktailbar in Maastricht of een feestlocatie met meer sfeer dan een standaard zaal, dan is CLINIQ een logische plek om te beginnen.</p></div>
+        <div className="prose-premium"><p>CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je komt hier voor clubavonden, een avondje uit met vrienden, vrijgezellenavonden, private events en cocktail workshops. Door de combinatie van muziek, bar, licht, geluid en een centrale ligging is CLINIQ een logische plek voor wie wil stappen in Maastricht of een groepsevent zoekt dat niet voelt als een standaard zaal.</p></div>
       </div>
     </section>
 
     <section className="bg-ivory py-20 text-ink">
       <div className="container-premium grid gap-8 lg:grid-cols-[1fr_.75fr] lg:items-end">
-        <div><h2 className="text-[40px] font-black leading-none tracking-[-0.055em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}. Club, cocktailbar en eventlocatie in het centrum van Maastricht.</p></div>
+        <div><h2 className="text-[40px] font-black leading-none tracking-[-0.055em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}. Clubavonden, groepen en events in het centrum van Maastricht.</p></div>
         <div className="flex flex-col gap-3 sm:flex-row lg:justify-end"><Link className="btn-primary" href="/contact">Neem contact op</Link><Link className="btn-secondary border-ink/25 bg-ink text-white hover:border-ink hover:bg-ink/90 hover:text-white" href="/cocktail-workshop">Workshop aanvragen</Link></div>
       </div>
     </section>

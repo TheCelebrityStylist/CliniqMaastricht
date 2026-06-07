@@ -15,7 +15,7 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
   const description = (lang === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription) || fallbackLine
   const href = lang === 'en' ? `/en/nightlife/${event.slug?.current || event._id}` : `/uitgaan/${event.slug?.current || event._id}`
 
-  return <article className="group">
+  return <article className="event-card group">
     <Link href={href} className="block" data-track="agenda_card_click">
       <div className="image-frame aspect-[3/4] rounded-[1.5rem] border-white/5">
         <SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || `${title} bij CLINIQ Maastricht`} fill priority={priority} sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105" objectPosition={event.imagePosition || 'center'} />

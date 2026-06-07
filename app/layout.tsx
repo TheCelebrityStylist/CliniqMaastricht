@@ -14,7 +14,7 @@ const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tig
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: 'Cliniq Maastricht | Club, cocktails & events in hartje stad', template: '%s | Cliniq Maastricht' },
+  title: { default: 'CLINIQ Maastricht | Uitgaan, Clubavonden & Events', template: '%s | CLINIQ Maastricht' },
   description: site.description,
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'add-google-search-console-code' },
 }

@@ -1,7 +1,7 @@
 export const site = {
   name: 'CLINIQ Maastricht',
   url: 'https://www.cliniqmaastricht.nl',
-  description: 'Club, cocktailbar en eventlocatie aan de Platielstraat in Maastricht.',
+  description: 'Clubavonden, events en cocktail workshops aan de Platielstraat in Maastricht.',
   address: { street: 'Platielstraat 9A', postalCode: '6211 GV', city: 'Maastricht', country: 'NL' },
   phone: '+31 6 12530987',
   email: 'contact@cafecliniq.com',

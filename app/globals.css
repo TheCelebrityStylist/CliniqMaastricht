@@ -34,11 +34,36 @@ details summary::-webkit-details-marker { display:none; }
 details[open] { @apply border-gold/40 bg-white/[0.085]; }
 @keyframes soft-reveal { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: translateY(0); } }
 .reveal { animation: soft-reveal .7s ease both; }
-.hero-media { transform: scale(1.03); animation: hero-drift 18s ease-out both; }
+.hero-media { transform: scale(1); animation: hero-drift 2.2s ease-out both; }
 .reveal-up { animation: soft-reveal .65s ease both; }
 .photo-tile { animation: soft-reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% cover 32%; }
 .seo-panel { animation: soft-reveal .7s ease both; animation-timeline: view(); animation-range: entry 0% cover 30%; }
 .faq-grid details p { overflow: hidden; }
-@keyframes hero-drift { from { transform: scale(1.08) translateY(1.5rem); } to { transform: scale(1.03) translateY(0); } }
 @supports not (animation-timeline: view()) { .photo-tile, .seo-panel { animation: soft-reveal .7s ease both; } }
 @media (prefers-reduced-motion: reduce) { .hero-media, .reveal-up, .photo-tile, .seo-panel { animation: none !important; transform: none !important; } }
+.nav-link { @apply relative text-xs font-extrabold uppercase tracking-[0.18em] text-white/70 transition hover:text-white; }
+.nav-link::after { content:""; position:absolute; left:0; right:0; bottom:-.55rem; height:1px; transform:scaleX(0); transform-origin:left; background:var(--pink); transition:transform .25s ease; }
+.nav-link:hover::after, .nav-link-active::after { transform:scaleX(1); }
+.nav-link-active { @apply text-white; }
+.hero-section .eyebrow { animation: soft-reveal .7s ease .12s both; }
+.hero-section .h1 { animation: soft-reveal .72s ease .12s both; }
+.hero-section .h1 + p { animation: soft-reveal .72s ease .22s both; }
+.hero-section .btn-primary, .hero-section .btn-secondary { animation: soft-reveal .72s ease .32s both; }
+.btn-primary, .btn-secondary { will-change: transform, filter; }
+.btn-primary:active, .btn-secondary:active { transform: translateY(0) scale(.98); }
+.event-card { @apply rounded-[1.6rem] border border-transparent p-1 transition duration-300; animation: soft-reveal .7s ease both; }
+.event-card:hover { @apply -translate-y-1 border-magenta/35; }
+.event-card:nth-child(2), .photo-tile:nth-child(2) { animation-delay: .08s; }
+.event-card:nth-child(3), .photo-tile:nth-child(3) { animation-delay: .16s; }
+.photo-tile { clip-path: inset(8% round 2rem); }
+.photo-tile img { transition: transform .7s ease, filter .7s ease; }
+.photo-tile:hover img { transform: scale(1.04); }
+.lightbox-panel { animation: lightbox-in .28s ease both; }
+.faq-grid details summary { position:relative; padding-right:2rem; }
+.faq-grid details summary::after { content:"+"; position:absolute; right:0; top:0; color:var(--pink); transition:transform .25s ease; }
+.faq-grid details[open] summary::after { transform:rotate(45deg); }
+.faq-grid details[open] p { animation: faq-open .28s ease both; }
+@keyframes hero-drift { from { transform: scale(1.04); } to { transform: scale(1); } }
+@keyframes lightbox-in { from { opacity:0; transform:scale(.985); } to { opacity:1; transform:scale(1); } }
+@keyframes faq-open { from { opacity:0; transform:translateY(-.35rem); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .nav-link::after, .event-card, .lightbox-panel, .faq-grid details[open] p { animation:none !important; transition:none !important; } }
