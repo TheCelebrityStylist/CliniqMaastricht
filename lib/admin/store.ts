@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import { sql } from '@vercel/postgres'
-import { defaultStore } from './defaults'
+import { defaultAgendaEvents, defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, Lead, MediaAsset, PhotoAlbum } from './types'
 
 const isVercel = Boolean(process.env.VERCEL)
@@ -10,6 +10,49 @@ const dataFile = path.join(dataDir, 'cliniq-admin.json')
 
 function cloneDefaultStore(): AdminStore {
   return JSON.parse(JSON.stringify(defaultStore)) as AdminStore
+}
+
+
+function normalizeEventTitle(value?: string) {
+  return (value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
+function isPlaceholderEvent(event: AgendaEvent) {
+  const title = normalizeEventTitle(event.titleNl || event.title)
+  return title === 'cliniq friday' || title === 'cliniq saturday' || title === 'friday at cliniq' || title === 'saturday at cliniq'
+}
+
+function mergeDefaultEvents(currentEvents: AdminStore['events']) {
+  const merged = [...currentEvents]
+  for (const planned of defaultAgendaEvents) {
+    const sameIdIndex = merged.findIndex((event) => event._id === planned._id)
+    const sameDateSameDjIndex = merged.findIndex((event) => event.date === planned.date && normalizeEventTitle(event.titleNl || event.title) === normalizeEventTitle(planned.titleNl || planned.title))
+    const placeholderIndex = merged.findIndex((event) => event.date === planned.date && isPlaceholderEvent(event))
+    const index = sameIdIndex >= 0 ? sameIdIndex : sameDateSameDjIndex >= 0 ? sameDateSameDjIndex : placeholderIndex
+
+    if (index >= 0) {
+      const existing = merged[index]
+      const preserveManual = !isPlaceholderEvent(existing)
+      merged[index] = {
+        ...planned,
+        ...(preserveManual ? {
+          _id: existing._id,
+          slug: existing.slug || planned.slug,
+          imageUrl: existing.imageUrl || planned.imageUrl,
+          imageAlt: existing.imageAlt || planned.imageAlt,
+          imagePosition: existing.imagePosition || planned.imagePosition,
+          ticketUrl: existing.ticketUrl,
+          relatedAlbumId: existing.relatedAlbumId,
+          galleryImageIds: existing.galleryImageIds,
+        } : {}),
+        featured: existing.featured === true,
+        published: true,
+      }
+    } else {
+      merged.push(planned)
+    }
+  }
+  return merged.sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
 }
 
 
@@ -61,12 +104,13 @@ export async function readStore(): Promise<AdminStore> {
         raw = JSON.stringify(cloneDefaultStore())
       }
     }
+    if (!raw) raw = JSON.stringify(cloneDefaultStore())
     const parsed = JSON.parse(raw) as Partial<AdminStore>
     return {
       ...cloneDefaultStore(),
       ...parsed,
       media: parsed.media?.length ? parsed.media : cloneDefaultStore().media,
-      events: parsed.events?.length ? parsed.events : cloneDefaultStore().events,
+      events: parsed.events?.length ? mergeDefaultEvents(parsed.events) : cloneDefaultStore().events,
       pages: parsed.pages?.length ? parsed.pages : cloneDefaultStore().pages,
       faqs: parsed.faqs && parsed.faqs.length >= 12 ? parsed.faqs : mergeDefaultFaqs(parsed.faqs || []),
       albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,

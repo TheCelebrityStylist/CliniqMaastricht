@@ -1,8 +1,68 @@
 import { images, site } from '@/lib/site'
 import { contactFaqsEn, contactFaqsNl, eventSpaceFaqsEn, eventSpaceFaqsNl, nightlifeFaqsEn, nightlifeFaqsNl, workshopFaqsEn, workshopFaqsNl } from '@/lib/faqs'
-import type { AdminStore } from './types'
+import type { AdminStore, AgendaEvent } from './types'
 
 const now = '2026-06-04T00:00:00.000Z'
+
+
+const agendaPlan: Array<{ date: string; dj: string }> = [
+  { date: '2026-06-11', dj: 'JINK' },
+  { date: '2026-06-12', dj: 'Paul Gouda' },
+  { date: '2026-06-13', dj: 'DJANBE' },
+  { date: '2026-06-18', dj: 'DJANBE' },
+  { date: '2026-06-19', dj: 'DJ Hadless' },
+  { date: '2026-06-20', dj: 'DJ BIG ROB' },
+  { date: '2026-06-25', dj: 'DJ SDNX' },
+  { date: '2026-06-26', dj: 'DJ BIG ROB' },
+  { date: '2026-06-27', dj: 'DJ AK' },
+  { date: '2026-07-02', dj: 'DJ SDNX' },
+  { date: '2026-07-03', dj: 'Paul Gouda' },
+  { date: '2026-07-04', dj: 'DJ BIG ROB' },
+  { date: '2026-07-09', dj: 'DJ SDNX' },
+  { date: '2026-07-10', dj: 'DJANBE' },
+  { date: '2026-07-11', dj: 'DJ AK' },
+  { date: '2026-07-16', dj: 'DJ SDNX' },
+  { date: '2026-07-17', dj: 'DJ AK' },
+  { date: '2026-07-18', dj: 'DJANBE' },
+  { date: '2026-07-23', dj: 'JINK' },
+  { date: '2026-07-24', dj: 'DJ Hadless' },
+  { date: '2026-07-25', dj: 'Paul Gouda' },
+  { date: '2026-07-30', dj: 'DJ Hadless' },
+  { date: '2026-07-31', dj: 'DJANBE' },
+  { date: '2026-08-01', dj: 'DJ BIG ROB' },
+]
+
+const eventImages = [images.redCrowd, images.club, images.party, images.hero]
+
+export const defaultAgendaEvents: AgendaEvent[] = agendaPlan.map(({ date, dj }, index) => {
+  const day = new Date(`${date}T00:00:00`).getUTCDay()
+  const isThursday = day === 4
+  const startTime = '22:00'
+  const endTime = isThursday ? '02:00' : '03:00'
+  const ageLimit = isThursday ? '18+' : '21+'
+  return {
+    _id: `agenda-${date}-${dj.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`,
+    title: dj,
+    titleNl: dj,
+    titleEn: dj,
+    subtitleNl: 'Clubavond bij CLINIQ',
+    subtitleEn: 'Club night at CLINIQ',
+    slug: { current: `${date}-${dj.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}` },
+    date,
+    startTime,
+    endTime,
+    ageLimit,
+    shortDescriptionNl: `${isThursday ? 'Donderdag' : day === 5 ? 'Vrijdag' : 'Zaterdag'} vanaf 22:00.`,
+    shortDescriptionEn: `${isThursday ? 'Thursday' : day === 5 ? 'Friday' : 'Saturday'} from 22:00.`,
+    fullDescriptionNl: 'Op stap bij CLINIQ aan de Platielstraat. Muziek vanaf 22:00.',
+    fullDescriptionEn: 'A night out at CLINIQ on Platielstraat. Music from 22:00.',
+    featured: false,
+    published: true,
+    imageUrl: eventImages[index % eventImages.length],
+    imageAlt: `${dj} bij CLINIQ Maastricht`,
+    imagePosition: 'center',
+  }
+})
 
 export const defaultStore: AdminStore = {
   media: [
@@ -20,10 +80,7 @@ export const defaultStore: AdminStore = {
     { id: 'whiskey', url: images.whiskey, title: 'Whiskey cocktail', altNl: 'Cocktail met sinaasappelgarnering op de bar van CLINIQ', altEn: 'Cocktail with orange garnish on the CLINIQ bar', usage: ['cocktail', 'bar', 'gallery'], recommendedPageUsage: ['cocktail-workshop'], fallbackPriority: 12, focalPoint: 'center', createdAt: now },
     { id: 'mixing', url: images.mixing, title: 'Cocktail mixing detail', altNl: 'Cocktail wordt gemixt aan de bar van CLINIQ', altEn: 'Cocktail being mixed at the CLINIQ bar', usage: ['cocktail', 'workshop', 'bar', 'gallery'], recommendedPageUsage: ['cocktail-workshop'], fallbackPriority: 13, focalPoint: 'center', createdAt: now },
   ],
-  events: [
-    { _id: 'cliniq-friday', title: 'CLINIQ Friday', titleNl: 'CLINIQ Friday', titleEn: 'CLINIQ Friday', slug: { current: 'cliniq-friday' }, date: '2026-06-12', startTime: '22:00', endTime: '03:00', ageLimit: '21+', shortDescriptionNl: 'Vrijdag vanaf 22:00.', shortDescriptionEn: 'Friday from 22:00.', featured: true, published: true, imageUrl: images.club, imageAlt: 'CLINIQ Friday at CLINIQ Maastricht' },
-    { _id: 'cliniq-saturday', title: 'CLINIQ Saturday', titleNl: 'CLINIQ Saturday', titleEn: 'CLINIQ Saturday', slug: { current: 'cliniq-saturday' }, date: '2026-06-20', startTime: '22:00', endTime: '03:00', ageLimit: '21+', shortDescriptionNl: 'Zaterdag vanaf 22:00.', shortDescriptionEn: 'Saturday from 22:00.', featured: false, published: true, imageUrl: images.party, imageAlt: 'CLINIQ Saturday at CLINIQ Maastricht' },
-  ],
+  events: defaultAgendaEvents,
   pages: [
     { key: 'home', titleNl: 'Homepage', titleEn: 'Homepage', heroTitleNl: 'CLINIQ Maastricht', heroTitleEn: 'CLINIQ Maastricht', heroSubtitleNl: 'Uitgaan, events en workshops aan de Platielstraat.', heroSubtitleEn: 'Nights, events and workshops on Platielstraat.', bodyNl: '', bodyEn: '', primaryCtaNl: 'Bekijk agenda', primaryCtaEn: 'View agenda', secondaryCtaNl: 'Ruimte huren', secondaryCtaEn: 'Hire the venue', heroImageId: 'hero', galleryImageIds: ['red-crowd', 'bar', 'workshop-bar', 'party', 'club', 'contact-interior'] },
     { key: 'nightlife', titleNl: 'Uitgaan', titleEn: 'Nightlife', heroTitleNl: 'Uitgaan bij CLINIQ', heroTitleEn: 'Nightlife at CLINIQ', heroSubtitleNl: 'Op donderdag, vrijdag en zaterdag is CLINIQ open voor clubavonden en groepen. Midden in Maastricht, met muziek, drankjes en een duidelijke agenda per avond.', heroSubtitleEn: 'On Thursday, Friday and Saturday, CLINIQ is open for club nights and groups. In central Maastricht, with music, drinks and a clear agenda per night.', bodyNl: 'Voor uitgaan Maastricht zonder anonieme massa: goede ontvangst, sterke bar en muziek die de avond opbouwt.', bodyEn: 'For Maastricht nightlife without the anonymous crowd: warm hosting, a strong bar and music that builds the night.', heroImageId: 'red-crowd', galleryImageIds: ['hero', 'club', 'party'] },
@@ -44,7 +101,7 @@ export const defaultStore: AdminStore = {
     ...contactFaqsEn.map((item, index) => ({ id: `contact-en-${index + 1}`, pageKey: 'contact', language: 'en' as const, question: item.question, answer: item.answer, published: true, order: index + 1 })),
   ],
   albums: [
-    { id: 'cliniq-friday-album', slug: 'cliniq-friday-12-june', titleNl: 'CLINIQ Friday — 12 juni', titleEn: 'CLINIQ Friday — 12 June', date: '2026-06-12', relatedEventId: 'cliniq-friday', coverImageId: 'red-crowd', imageIds: ['red-crowd', 'hero', 'party', 'red-room'], published: true, descriptionNl: 'Foto’s van CLINIQ Friday aan de Platielstraat.', descriptionEn: 'Photos from CLINIQ Friday on Platielstraat.', createdAt: now },
+    { id: 'cliniq-friday-album', slug: 'cliniq-friday-12-june', titleNl: 'CLINIQ Friday — 12 juni', titleEn: 'CLINIQ Friday — 12 June', date: '2026-06-12', relatedEventId: 'agenda-2026-06-12-paul-gouda', coverImageId: 'red-crowd', imageIds: ['red-crowd', 'hero', 'party', 'red-room'], published: true, descriptionNl: 'Foto’s van CLINIQ Friday aan de Platielstraat.', descriptionEn: 'Photos from CLINIQ Friday on Platielstraat.', createdAt: now },
     { id: 'cocktail-workshop-album', slug: 'cocktail-workshop-maastricht', titleNl: 'Cocktail workshops bij CLINIQ', titleEn: 'Cocktail workshops at CLINIQ', date: '2026-06-04', coverImageId: 'workshop-bar', imageIds: ['workshop-bar', 'mojito', 'whiskey', 'espresso', 'passion', 'mixing'], published: true, descriptionNl: 'Shakers, glaswerk en cocktails achter de bar bij CLINIQ.', descriptionEn: 'Shakers, glassware and cocktails behind the CLINIQ bar.', createdAt: now },
   ],
   seo: [],

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { faqSchema } from '@/lib/seo'
-import { images } from '@/lib/site'
+import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPhotoAlbums } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
@@ -14,6 +14,18 @@ export async function generateMetadata() { return cmsMetadata('nightlife', 'nl')
 export default async function NightlifePage() {
   const [events, albums] = await Promise.all([getAgendaEvents(), getPhotoAlbums()])
   const photos = [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar]
+  const eventSchemas = events.map((event) => ({
+    '@type': 'Event',
+    name: event.titleNl || event.title,
+    startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
+    endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    image: event.imageUrl ? [event.imageUrl] : undefined,
+    description: event.fullDescriptionNl || event.shortDescriptionNl || event.shortDescription,
+    url: `${site.url}/uitgaan/${event.slug?.current || event._id}`,
+    location: { '@type': 'Place', name: site.name, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country } },
+  }))
 
   return <>
     <section className="hero-section relative min-h-[82vh] overflow-hidden pt-36">
@@ -35,7 +47,7 @@ export default async function NightlifePage() {
     <section className="container-premium pb-24"><div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Maastricht nightlife</p><h2 className="h2 mt-4">Voor groepen, vrienden en late plannen</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">CLINIQ zit precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.</p></div><div className="space-y-5 text-lg leading-[1.7] text-white/72"><p>Wie zoekt naar uitgaan in Maastricht, club Maastricht, nachtleven Maastricht of stappen met vrienden, zoekt meestal geen uitleg van drie alinea’s voordat de avond begint. Je wilt weten wanneer er iets gebeurt, hoe laat je moet komen, wat de sfeer is en of je met je groep goed zit. Daarom houdt CLINIQ de agenda duidelijk en praktisch.</p><p>De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of verzamelen en daarna willen doorpakken. Het Vrijthof, de Markt, hotels, parkeergarages en andere uitgaansplekken liggen dichtbij. Dat maakt CLINIQ geschikt voor spontane avonden uit, geplande verjaardagen, vrijgezellenavonden en groepen die in Maastricht willen starten zonder extra omweg.</p><p>Kom op tijd, neem een geldig ID mee en check per event de minimumleeftijd, openingstijden en eventuele ticketinformatie. Voor grotere groepen of een besloten invulling kun je ook contact opnemen over ruimte huren of een private event.</p></div></div></section>
 
     <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Veelgestelde vragen</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></section>
-    <JsonLd data={faqSchema(faqs)} />
+    <JsonLd data={faqSchema(faqs)} /><JsonLd data={{ '@context': 'https://schema.org', '@graph': eventSchemas }} />
   </>
 }
 function Practical({ title, text }: { title: string; text: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"><h3 className="text-xl font-black tracking-[-0.03em]">{title}</h3><p className="mt-3 text-white/66">{text}</p></article> }
