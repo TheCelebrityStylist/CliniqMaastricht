@@ -1,23 +1,19 @@
 export const workshopFaqsNl = [
-  { question: 'Wat zit er inbegrepen bij de cocktail workshop?', answer: 'Tijdens de cocktail workshop maak je meerdere cocktails onder begeleiding van onze bartenders. We zorgen voor ingrediënten, bar tools, glaswerk en duidelijke uitleg. Je staat echt achter de bar, waardoor de workshop meer voelt als een avond uit dan als een les. Er is genoeg tijd om te proeven, vragen te stellen en samen te borrelen.' },
-  { question: 'Wat kost de cocktail workshop?', answer: 'De workshop start vanaf €45 per persoon, afhankelijk van groepsgrootte, datum en gewenste invulling. In de basis rekenen we met meerdere cocktails, materialen en begeleiding. Wil je extra cocktails, een borrel achteraf of een combinatie met ruimte huren, dan nemen we dat mee in het voorstel. Stuur je wensen mee, dan reageren we met een duidelijke prijs.' },
-  { question: 'Hoeveel personen zijn minimaal nodig?', answer: 'We organiseren de cocktail workshop meestal vanaf 15 personen. Dat aantal werkt goed omdat er genoeg energie in de groep zit en iedereen actief kan meedoen achter de bar. Is je groep kleiner, neem dan alsnog contact op. Soms kunnen we meedenken over een aangepaste planning of combinatie met een andere avond.' },
-  { question: 'Hoe lang duurt de workshop?', answer: 'Reken gemiddeld op ongeveer twee uur. Dat geeft genoeg tijd om binnen te komen, uitleg te krijgen, cocktails te maken en tussendoor te proeven. Veel groepen plannen de workshop aan het begin van de avond. Daarna kun je blijven borrelen of verder Maastricht in.' },
-  { question: 'Moet je ervaring hebben?', answer: 'Nee, ervaring is niet nodig. Onze bartenders leggen stap voor stap uit hoe je smaken opbouwt, hoe je met bar tools werkt en hoe je een cocktail netjes serveert. De workshop is toegankelijk voor beginners, maar nog steeds leuk voor mensen die al vaker cocktails maken. Het draait om doen, proeven en samen een goede start van de avond hebben.' },
-  { question: 'Is de workshop geschikt voor vrijgezellenfeesten?', answer: 'Ja, vrijgezellenfeesten boeken de cocktail workshop vaak omdat het actief is zonder formeel te worden. Je doet iets samen, hebt direct sfeer en hoeft niet stil aan een tafel te zitten. De workshop past goed vóór het uitgaan of als onderdeel van een groter programma in Maastricht. Geef bij je aanvraag door wat voor groep je hebt, dan denken we mee over timing en opzet.' },
-  { question: 'Kunnen we dieetwensen of allergieën doorgeven?', answer: 'Ja. Geef allergieën, dieetwensen of alcoholvrije voorkeuren meteen door bij je aanvraag. Dan kunnen we vooraf bekijken wat mogelijk is en zorgen dat de workshop veilig en prettig verloopt. Alcoholvrije cocktails of aangepaste ingrediënten zijn vaak mogelijk, maar we stemmen dit graag vooraf af.' },
-  { question: 'Hoe vraag ik een workshop aan?', answer: 'Gebruik het formulier op deze pagina en vermeld je gewenste datum, groepsgrootte, telefoonnummer en eventuele wensen. Hoe completer je aanvraag, hoe sneller we kunnen reageren met beschikbaarheid en prijs. We nemen daarna contact op om de details af te stemmen. Je aanvraag komt automatisch in het leads dashboard terecht.' },
+  { question: 'Wat kost een cocktail workshop bij Cliniq?', answer: '€15 per cocktail, minimaal 3 per persoon. Geen extra kosten voor ruimte of bartenders.' },
+  { question: 'Hoeveel personen zijn minimaal nodig?', answer: 'Minimaal 15 personen.' },
+  { question: 'Hoe boek ik een workshop?', answer: 'Mail contact@cafecliniq.com of stuur een WhatsApp. Geef datum, groepsgrootte en gewenste starttijd door.' },
+  { question: 'Kan ik na de workshop blijven voor de avond?', answer: 'Ja, je bent welkom voor de reguliere clubavond. Normale entreeregels gelden.' },
+  { question: 'Op welke dagen zijn workshops?', answer: 'Donderdag, vrijdag en zaterdag. Start tussen 19:00 en 20:30 in overleg.' },
+  { question: 'Is het geschikt voor een vrijgezellenavond?', answer: 'Ja, een van onze populairste activiteiten voor vrijgezellenfeesten. Exclusieve ruimte en totaalpakket mogelijk.' },
 ]
 
 export const workshopFaqsEn = [
-  { question: 'What is included in the cocktail workshop?', answer: 'During the cocktail workshop, you make several cocktails with guidance from our bartenders. We provide ingredients, bar tools, glassware and clear explanations. You work behind a real bar, so the workshop feels more like the start of a night out than a classroom. There is enough time to taste, ask questions and have drinks together.' },
-  { question: 'What does the cocktail workshop cost?', answer: 'The workshop starts from €45 per person, depending on group size, date and setup. The basic proposal includes several cocktails, materials and guidance. If you want extra cocktails, drinks afterwards or a combination with venue hire, we include that in the proposal. Send your wishes and we will reply with a clear price.' },
-  { question: 'What is the minimum group size?', answer: 'We usually organise the cocktail workshop from 15 people. That group size works well because there is enough energy and everyone can take part behind the bar. If your group is smaller, contact us anyway. Sometimes we can suggest a different planning or combine it with another evening.' },
-  { question: 'How long does the workshop take?', answer: 'Plan on about two hours. That gives enough time to arrive, get an explanation, make cocktails and taste along the way. Many groups schedule the workshop at the start of the evening. Afterwards, you can stay for drinks or continue into Maastricht.' },
-  { question: 'Do we need experience?', answer: 'No experience is needed. Our bartenders explain step by step how to build flavours, use bar tools and serve a cocktail properly. The workshop is accessible for beginners, but still fun for people who already make cocktails sometimes. It is about doing, tasting and starting the evening together.' },
-  { question: 'Is it suitable for bachelor or bachelorette parties?', answer: 'Yes, bachelor and bachelorette parties often book the workshop because it is active without becoming formal. You do something together, the atmosphere starts quickly and nobody has to sit quietly at a table. It works well before going out or as part of a larger Maastricht programme. Tell us about your group and we will help with timing and setup.' },
-  { question: 'Can we share dietary wishes or allergies?', answer: 'Yes. Please mention allergies, dietary wishes or alcohol-free preferences in your inquiry. That lets us check what is possible before the workshop and prepare properly. Alcohol-free cocktails or adjusted ingredients are often possible, but it is best to align this in advance.' },
-  { question: 'How do I request a workshop?', answer: 'Use the form on this page and include your preferred date, group size, phone number and any wishes. The more complete your request is, the faster we can reply with availability and pricing. We will then contact you to align the details. Your inquiry is automatically stored in the leads dashboard.' },
+  { question: 'How much does a workshop cost?', answer: '€15 per cocktail, minimum 3 per person. No venue or bartender surcharge.' },
+  { question: 'What is the minimum group size?', answer: '15 people minimum.' },
+  { question: 'How do I book?', answer: "Email contact@cafecliniq.com or WhatsApp. Share your date, group size and preferred start time." },
+  { question: 'Can we stay after the workshop?', answer: "Yes — stay for the club night. Normal entry rules apply." },
+  { question: 'Which days are available?', answer: 'Thursday, Friday and Saturday. Start between 19:00 and 20:30.' },
+  { question: 'Is it good for a hen party?', answer: "Yes, one of our most-booked hen night activities. Exclusive use and full packages available." },
 ]
 
 export const eventSpaceFaqsNl = [
@@ -41,35 +37,33 @@ export const eventSpaceFaqsEn = [
 ]
 
 export const nightlifeFaqsNl = [
-  { question: 'Wanneer is CLINIQ geopend?', answer: 'CLINIQ is normaal gesproken geopend op donderdag, vrijdag en zaterdag. Tijden kunnen per event verschillen, dus check altijd de agenda of het event zelf voor de actuele openingstijd en eindtijd.' },
-  { question: 'Wat is de minimumleeftijd?', answer: 'De minimumleeftijd kan per avond verschillen. Donderdag is vaak 18+, vrijdag en zaterdag vaak 21+. Neem altijd een geldig ID mee; zonder ID kunnen we geen toegang garanderen.' },
-  { question: 'Hoe werkt het deurbeleid?', answer: 'We letten op sfeer, veiligheid en respect. Kom verzorgd, op tijd en met een normale houding naar personeel en andere gasten. Bij agressie, zichtbare dronkenschap, overlast of drukte kan toegang worden geweigerd.' },
-  { question: 'Heb ik tickets of een reservering nodig?', answer: 'Dat hangt af van de avond. Sommige events werken met tickets of RSVP, andere avonden met reguliere deurtoegang. Als er een ticketlink beschikbaar is, staat die bij het event in de agenda.' },
-  { question: 'Is er een dresscode?', answer: 'Kom verzorgd en passend bij een avond uit. Sportkleding, slippers en tracksuits passen meestal niet bij de sfeer die we binnen willen houden. Twijfel je, kies dan liever iets netter.' },
-  { question: 'Zijn er lockers?', answer: 'Ja. Lockers regel je via de officiële lockeromgeving. De knop /lockers op de website stuurt je direct naar de externe locker shop van CLINIQ.' },
-  { question: 'Waar vind ik de agenda?', answer: 'Alle gepubliceerde aankomende events staan op /uitgaan. De agenda sorteert automatisch op datum. Oude events verdwijnen uit de lijst met aankomende avonden.' },
+  { question: 'Hoe laat gaat Cliniq open?', answer: 'Cliniq opent elke donderdag, vrijdag en zaterdag om 22:00. Donderdag sluit om 02:00, vrijdag en zaterdag om 03:00.' },
+  { question: 'Wat is de minimumleeftijd?', answer: 'Op donderdag is de minimumleeftijd 18 jaar. Op vrijdag en zaterdag 21 jaar. Neem altijd een geldig legitimatiebewijs mee.' },
+  { question: 'Is er een dresscode?', answer: 'Ja. Tracksuits, sportbroeken en sportschoenen zijn niet toegestaan. Twijfel je? Kies liever netjes.' },
+  { question: 'Waar kan ik parkeren?', answer: 'Er zijn meerdere parkeergarages op loopafstand van de Platielstraat.' },
+  { question: 'Kan ik entree vooraf betalen?', answer: 'Verschilt per avond. Bij speciale avonden kan presale beschikbaar zijn. Reguliere avonden zijn aan de deur te betalen.' },
+  { question: 'Zijn er lockers?', answer: 'Ja, reserveer via cliniq.elockers.shop.' },
 ]
 
 export const nightlifeFaqsEn = [
-  { question: 'When is CLINIQ open?', answer: 'CLINIQ is usually open on Thursday, Friday and Saturday. Times can differ by event, so always check the agenda or the event page for current opening and closing times.' },
-  { question: 'What is the minimum age?', answer: 'The minimum age can vary per night. Thursday is often 18+, Friday and Saturday often 21+. Always bring a valid ID; without ID, entry cannot be guaranteed.' },
-  { question: 'How does the door policy work?', answer: 'We pay attention to atmosphere, safety and respect. Arrive well-presented, on time and with a normal attitude towards staff and guests. Entry may be refused because of aggression, intoxication, nuisance or capacity.' },
-  { question: 'Do I need tickets or a reservation?', answer: 'It depends on the night. Some events use tickets or RSVP, others use regular door entry. If a ticket link is available, it appears in the agenda.' },
-  { question: 'Is there a dress code?', answer: 'Dress well and in a way that fits a night out. Sportswear, flip-flops and tracksuits usually do not match the atmosphere we want inside. If in doubt, dress a little sharper.' },
-  { question: 'Are lockers available?', answer: 'Yes. Lockers are handled through the official external locker shop. The /lockers link on the website takes you there directly.' },
-  { question: 'Where can I find the agenda?', answer: 'All published upcoming events are listed on /en/nightlife. The agenda sorts automatically by date. Past events disappear from the upcoming list.' },
+  { question: 'What time does Cliniq open?', answer: 'Every Thursday, Friday and Saturday at 22:00. Thursday closes at 02:00; Friday and Saturday at 03:00.' },
+  { question: 'What is the minimum age?', answer: 'Thursday 18+. Friday and Saturday 21+. Always bring a valid ID.' },
+  { question: 'Is there a dress code?', answer: "Yes. Tracksuits, sports trousers and trainers aren't allowed. When in doubt, overdress." },
+  { question: 'Where can I park?', answer: 'Several car parks within easy walking distance of Platielstraat.' },
+  { question: 'Can I buy tickets in advance?', answer: 'Depends on the night. Check the agenda — regular nights are pay at the door.' },
+  { question: 'Are lockers available?', answer: 'Yes. Reserve at cliniq.elockers.shop.' },
 ]
 
 export const contactFaqsNl = [
   { question: 'Wat is de snelste manier om contact op te nemen?', answer: 'Voor korte praktische vragen kun je mailen of bellen. Voor een cocktail workshop of het huren van CLINIQ werkt het formulier beter, omdat we dan meteen datum, groepsgrootte en wensen ontvangen.' },
   { question: 'Waar zit CLINIQ precies?', answer: 'CLINIQ zit aan de Platielstraat 9A, 6211 GV Maastricht, midden in het centrum en vlak bij het Vrijthof. Vanaf omliggende parkeergarages loop je in enkele minuten naar de locatie.' },
   { question: 'Wat doe ik als ik iets ben verloren?', answer: 'Stuur een bericht met een duidelijke omschrijving van het item, de datum van je bezoek en je contactgegevens. We controleren gevonden voorwerpen en nemen contact op als er een match is.' },
-  { question: 'Waar kan ik terecht met vragen over events of workshops?', answer: 'Gebruik bij voorkeur het formulier op de cocktail workshop of event space pagina. Daar vragen we precies de informatie die nodig is om beschikbaarheid en mogelijkheden goed te beoordelen.' },
+  { question: '👗 Is er een dresscode?', answer: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sneakers laten we liever thuis — dat geldt voor iedereen.' },
 ]
 
 export const contactFaqsEn = [
   { question: 'What is the fastest way to contact CLINIQ?', answer: 'For short practical questions, call or email. For a cocktail workshop or venue hire, the form is better because it immediately gives us the date, group size and wishes we need.' },
   { question: 'Where exactly is CLINIQ located?', answer: 'CLINIQ is at Platielstraat 9A, 6211 GV Maastricht, in the city centre close to Vrijthof. Nearby parking garages are only a short walk away.' },
   { question: 'What should I do if I lost something?', answer: 'Send us a message with a clear description of the item, the date of your visit and your contact details. We check lost and found and contact you if there is a match.' },
-  { question: 'Where can I ask about events or workshops?', answer: 'Use the form on the cocktail workshop or event space page. It asks for the information we need to check availability and respond properly.' },
+  { question: '👗 Is there a dress code?', answer: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed — for anyone." },
 ]

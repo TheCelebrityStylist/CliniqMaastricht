@@ -23,14 +23,14 @@ export default async function Home() {
           <p className="eyebrow mb-4">Platielstraat 9A</p>
           <h1 className="hero-clean-title">CLINIQ Maastricht</h1>
           <p className="hero-clean-subline">Uitgaan, events en workshops aan de Platielstraat.</p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/event-space">{t.common.requestVenue}</Link></div>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/fotos">{t.home.heroCta2}</Link></div>
         </div>
       </div>
     </HeroFrame>
 
     <section className="event-section py-24">
       <div className="container-premium">
-        <SectionIntro eyebrow="Agenda" title="Agenda" text="De eerstvolgende avonden bij CLINIQ." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
+        <SectionIntro eyebrow="Agenda" title={t.home.eventsTitle} text="De eerstvolgende avonden bij CLINIQ." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
         {events.length ? <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
       </div>
     </section>
