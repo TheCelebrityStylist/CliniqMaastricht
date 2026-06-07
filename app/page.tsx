@@ -3,6 +3,7 @@ import { images, site } from '@/lib/site'
 import { getAgendaEvents } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
+import HeroFrame from '@/components/ui/HeroFrame'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import { ui } from '@/lib/i18n'
 
@@ -14,18 +15,20 @@ export default async function Home() {
   const photos = [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero]
 
   return <>
-    <section className="hero-section relative min-h-screen overflow-hidden pt-28">
+    <HeroFrame>
       <SafeImage src={images.hero} fallbackSrc={images.fallbackHero} alt="Dansvloer van CLINIQ Maastricht met warm licht en publiek" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]" />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.84),rgba(0,0,0,.28),rgba(0,0,0,.66)),linear-gradient(0deg,rgba(8,6,7,.96),transparent_42%)]" />
+      <div className="hero-light" />
+      <div className="hero-grain" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.20),rgba(0,0,0,.58)),linear-gradient(0deg,rgba(8,6,7,.96),transparent_48%)]" />
       <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
-        <div className="reveal max-w-5xl">
+        <div className="max-w-6xl">
           <p className="eyebrow mb-4">Platielstraat 9A</p>
-          <h1 className="h1">CLINIQ Maastricht</h1>
-          <p className="mt-5 max-w-3xl text-2xl font-black tracking-[-0.03em] text-white/84 sm:text-4xl">Uitgaan, events en workshops aan de Platielstraat.</p>
+          <h1 className="hero-cover-title"><span>CLINIQ</span><span>Maastricht</span></h1>
+          <p className="hero-cover-subline">De plek waar Maastricht samenkomt.</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/event-space">{t.common.requestVenue}</Link></div>
         </div>
       </div>
-    </section>
+    </HeroFrame>
 
     <NightTicker text="CLINIQ · PLATIELSTRAAT 9A · DONDERDAG · VRIJDAG · ZATERDAG · MUSIC · DRINKS · LATE" />
 
@@ -41,6 +44,13 @@ export default async function Home() {
       <SectionIntro eyebrow="Foto’s" title="Foto’s van recente avonden" text="Bekijk de sfeer van clubnachten, borrels en events bij CLINIQ." ctaHref="/fotos" ctaLabel={t.common.allPhotos} />
       <div className="mt-10 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">{photos.map((src, index) => <Link key={src} href="/fotos" className={`photo-tile image-frame group rounded-3xl ${index === 0 || index === 5 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'}`}><SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`} fill sizes="(min-width:768px) 33vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /></Link>)}</div>
       <Link href="/fotos" className="btn-primary mt-8 sm:hidden">{t.common.allPhotos}</Link>
+    </section>
+
+    <section className="container-premium pb-24">
+      <div className="proof-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr] lg:items-end">
+        <div><p className="eyebrow">Social proof</p><h2 className="h2 mt-4">Een vaste naam in Maastricht.</h2><p className="mt-5 text-lg leading-[1.65] text-white/70 md:text-xl">CLINIQ is geen concept op papier, maar een plek waar groepen, verenigingen, bedrijven en vriendengroepen al jaren samenkomen.</p></div>
+        <div className="grid gap-4 sm:grid-cols-2">{['Clubavonden', 'Studentenverenigingen', 'Bedrijven', 'Verjaardagen', 'Vrijgezellenavonden', 'Vriendengroepen'].map((item)=><div key={item} className="proof-item"><span>{item}</span></div>)}</div>
+      </div>
     </section>
 
     <section className="container-premium space-y-8 pb-24">
