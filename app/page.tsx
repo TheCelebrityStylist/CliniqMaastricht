@@ -11,7 +11,7 @@ export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 export default async function Home() {
   const t = ui.nl
   const events = (await getAgendaEvents()).slice(0, 3)
-  const photos = [images.crowd, images.bar, images.mojito, images.party, images.club, images.contactInterior]
+  const photos = [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero]
 
   return <>
     <section className="hero-section relative min-h-screen overflow-hidden pt-28">
@@ -27,9 +27,14 @@ export default async function Home() {
       </div>
     </section>
 
-    <section className="container-premium py-24">
-      <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Donderdag, vrijdag en zaterdag draait het bij CLINIQ om muziek, drankjes en een volle dansvloer. Check de agenda voor de eerstvolgende avonden." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
-      {events.length ? <div className="mt-10 grid gap-7 md:grid-cols-3">{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
+    <NightTicker text="CLINIQ · PLATIELSTRAAT 9A · DONDERDAG · VRIJDAG · ZATERDAG · MUSIC · DRINKS · LATE" />
+
+    <section className="event-section py-24">
+      <div className="container-premium">
+        <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Eerstvolgende avonden aan de Platielstraat." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
+        {events.length ? <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
+        <PhotoStrip photos={photos} href="/fotos" label="Bekijk foto’s" />
+      </div>
     </section>
 
     <section className="container-premium pb-24">
@@ -45,7 +50,7 @@ export default async function Home() {
 
     <section className="container-premium pb-24">
       <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
-        <div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan, cocktails en events in hartje Maastricht</h2></div>
+        <div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan, workshops en events in hartje Maastricht</h2></div>
         <div className="prose-premium"><p>CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je komt hier voor clubavonden, een avondje uit met vrienden, vrijgezellenavonden, private events en cocktail workshops. Door de combinatie van muziek, bar, licht, geluid en een centrale ligging is CLINIQ een logische plek voor wie wil stappen in Maastricht of een groepsevent zoekt dat niet voelt als een standaard zaal.</p></div>
       </div>
     </section>
@@ -57,6 +62,14 @@ export default async function Home() {
       </div>
     </section>
   </>
+}
+
+function NightTicker({ text }: { text: string }) {
+  return <div className="night-ticker border-y border-white/10 bg-black/35 py-3 text-gold/85"><div className="night-ticker-track"><span>{text}</span><span>{text}</span><span>{text}</span></div></div>
+}
+
+function PhotoStrip({ photos, href, label }: { photos: string[]; href: string; label: string }) {
+  return <div className="photo-strip mt-14"><div className="photo-strip-grid">{photos.slice(0, 6).map((src, index) => <Link key={`${src}-${index}`} href={href} className={`photo-strip-item group ${index % 3 === 1 ? 'photo-strip-item-tall' : ''}`}><SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`CLINIQ Maastricht sfeerbeeld ${index + 1}`} fill sizes="(min-width:1024px) 16vw, 45vw" className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /></Link>)}</div><Link href={href} className="cta-arrow mt-6 inline-flex text-sm font-black uppercase tracking-[0.18em] text-gold hover:text-white">{label} <span>→</span></Link></div>
 }
 
 function SectionIntro({ eyebrow, title, text, ctaHref, ctaLabel }: { eyebrow: string; title: string; text: string; ctaHref: string; ctaLabel: string }) {
