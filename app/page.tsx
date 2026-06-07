@@ -6,6 +6,7 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import { ui } from '@/lib/i18n'
+import ClosingCTA from '@/components/layout/ClosingCTA'
 
 export async function generateMetadata() { return cmsMetadata('home', 'nl') }
 
@@ -53,12 +54,7 @@ export default async function Home() {
       </div>
     </section>
 
-    <section className="bg-ivory py-20 text-ink">
-      <div className="container-premium grid gap-8 lg:grid-cols-[1fr_.75fr] lg:items-end">
-        <div><h2 className="text-[40px] font-black leading-none tracking-[-0.03em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}, Maastricht.</p></div>
-        <div className="flex flex-col gap-3 sm:flex-row lg:justify-end"><Link className="btn-primary" href="/contact">Neem contact op</Link><Link className="btn-secondary border-ink/25 bg-ink text-white hover:border-ink hover:bg-ink/90 hover:text-white" href="/cocktail-workshop">Workshop aanvragen</Link></div>
-      </div>
-    </section>
+    <ClosingCTA />
   </>
 }
 

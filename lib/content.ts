@@ -1,3 +1,5 @@
+import { images, site } from './site'
+
 export const SITE_COPY = {
   tagline: {
     nl: 'Club, events en workshops in Maastricht.',
@@ -6,6 +8,26 @@ export const SITE_COPY = {
 } as const
 
 export const TICKER_ITEMS = ['CLINIQ MAASTRICHT', 'DO · VR · ZA', 'PLATIELSTRAAT 9A', 'MAASTRICHT', 'EVENEMENTENLOCATIE', 'CLUBAVONDEN', '400 GASTEN', 'SINCE 2012'] as const
+
+export const SITE = {
+  ...site,
+  address: { ...site.address, postal: site.address.postalCode },
+} as const
+
+export const HOURS = [
+  { abbr: { nl: 'Do', en: 'Thu' }, time: '22:00–02:00' },
+  { abbr: { nl: 'Vr', en: 'Fri' }, time: '22:00–03:00' },
+  { abbr: { nl: 'Za', en: 'Sat' }, time: '22:00–03:00' },
+] as const
+
+export const PHOTOS = {
+  crowd: images.crowd,
+  nightlife: images.redCrowd,
+  workshop1: images.workshopBar,
+  workshop2: images.mixing,
+  venue3: images.redRoom,
+  venue4: images.party,
+} as const
 
 export const EVENT_TYPES = [
   {
@@ -66,7 +88,9 @@ Vrijgezellenavond plannen? Combineer een cocktail workshop met een exclusieve cl
 Aanvragen via het formulier of WhatsApp. We reageren binnen 24 uur.`,
     },
     uitgaan: {
-      heroBody: 'Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00. Cliniq staat op de Platielstraat, midden in het centrum.',
+      heroLabel: 'Cliniq — Platielstraat 9A',
+      heroTitle: 'Uitgaan in\nMaastricht.',
+      heroBody: 'Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00. Platielstraat 9A, midden in het centrum.',
       seoText: `Cliniq Maastricht is hét adres voor wie op zoek is naar een avondje stappen in het centrum. Drie avonden per week — donderdag, vrijdag en zaterdag — open aan de Platielstraat 9A, op loopafstand van de Vrijthof.
 
 Donderdag is voor iedereen vanaf 18 jaar. Vrijdag en zaterdag (21+) trekt Cliniq een gemengd publiek van studenten, locals en bezoekers uit de regio. Het muziekprogramma wisselt per avond — van house en tech-house tot urban en pop.
@@ -165,7 +189,9 @@ Hen party? Combine a cocktail workshop with an exclusive club night. Popular wit
 Enquire via the form or WhatsApp. We respond within 24 hours.`,
     },
     uitgaan: {
-      heroBody: 'Thursday (18+), Friday and Saturday (21+) from 22:00. On Platielstraat, right in the centre of Maastricht.',
+      heroLabel: 'Cliniq — Platielstraat 9A',
+      heroTitle: 'Nightlife in\nMaastricht.',
+      heroBody: 'Thursday (18+), Friday and Saturday (21+) from 22:00. Platielstraat 9A, central Maastricht.',
       seoText: `Cliniq Maastricht is the go-to nightlife venue in the city centre. Open three nights a week — Thursday, Friday and Saturday — on Platielstraat 9A, a short walk from the Vrijthof.
 
 Thursday is 18+. Friday and Saturday (21+) attract a mixed crowd of students, locals and visitors from across the region. The music programme varies by night — house, tech-house, urban and pop.

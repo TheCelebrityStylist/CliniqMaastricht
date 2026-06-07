@@ -6,7 +6,7 @@ import { getLanguageFromPath, getSwitchPath, localizedPaths, navItems, copy } fr
 
 export default function Header() {
   const pathname = usePathname()
-  if (pathname?.startsWith('/admin')) return null
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/vrijgezellenavond') || pathname?.startsWith('/bedrijfsfeest') || pathname?.startsWith('/privefeest')) return null
   const lang = getLanguageFromPath(pathname)
   const t = copy[lang]
   const switchHref = getSwitchPath(pathname)

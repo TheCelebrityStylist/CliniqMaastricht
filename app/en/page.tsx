@@ -6,6 +6,7 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import { ui } from '@/lib/i18n'
+import ClosingCTA from '@/components/layout/ClosingCTA'
 
 export async function generateMetadata() { return cmsMetadata('home', 'en') }
 
@@ -25,7 +26,7 @@ export default async function HomeEn() {
 
     <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Nightlife and events in Maastricht</h2></div><div className="prose-premium"><p>CLINIQ is located on Platielstraat, in the centre of Maastricht. You’ll find club nights, group activities, cocktail workshops and options to hire the venue for a private evening. The agenda changes weekly and the photos page gives an impression of recent nights.</p><p>For anyone looking for nightlife in Maastricht, a night out with friends, a bachelor or bachelorette night, a cocktail workshop or a venue for drinks or a company event, CLINIQ is a central location in the city. Always check the agenda for current times, age indication and event-specific details.</p></div></div></section>
 
-    <section className="bg-ivory py-20 text-ink"><div className="container-premium grid gap-8 lg:grid-cols-[1fr_.75fr] lg:items-end"><div><h2 className="text-[40px] font-black leading-none tracking-[-0.03em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}, Maastricht.</p></div><div className="flex flex-col gap-3 sm:flex-row lg:justify-end"><Link className="btn-primary" href="/en/contact">Contact us</Link><Link className="btn-secondary border-ink/25 bg-ink text-white hover:border-ink hover:bg-ink/90 hover:text-white" href="/en/cocktail-workshop">Request workshop</Link></div></div></section>
+    <ClosingCTA />
   </>
 }
 
