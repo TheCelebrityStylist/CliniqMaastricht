@@ -49,7 +49,7 @@ export default async function Home() {
     <section className="container-premium pb-24">
       <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
         <div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan en events in Maastricht</h2></div>
-        <div className="prose-premium"><p>CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je vindt hier clubavonden, groepsactiviteiten, cocktail workshops en mogelijkheden om de ruimte te huren voor een besloten avond. De agenda wisselt per week en via de fotopagina zie je een indruk van recente avonden.</p><p>Voor wie zoekt naar uitgaan in Maastricht, op stap gaan met vrienden, een vrijgezellenavond, een cocktail workshop of een ruimte voor een borrel of bedrijfsfeest, is CLINIQ een centrale plek in de stad. Controleer altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele bijzonderheden per avond.</p></div>
+        <div className="prose-premium"><p>CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je vindt hier clubavonden, groepsactiviteiten, cocktail workshops en mogelijkheden om de ruimte te huren voor een besloten avond. De agenda wisselt per week en via de fotopagina zie je een indruk van recente avonden.</p><p>Voor wie zoekt naar uitgaan in Maastricht, op stap gaan met vrienden, een vrijgezellenavond, een cocktail workshop of een ruimte voor een borrel of bedrijfsfeest, is CLINIQ een centrale plek in de stad. Controleer altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele details per avond.</p></div>
       </div>
     </section>
 

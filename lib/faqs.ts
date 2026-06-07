@@ -1,21 +1,19 @@
 export const workshopFaqsNl = [
-  { question: 'Wat kost een cocktail workshop bij Cliniq?', answer: '€15 per cocktail, minimaal 3 per persoon. Geen extra kosten voor ruimte of bartenders.' },
+  { question: 'Wat kost een cocktail workshop?', answer: '€15 per cocktail, minimaal 3 per persoon. Geen extra kosten voor ruimte of bartenders.' },
   { question: 'Hoeveel personen zijn minimaal nodig?', answer: 'Minimaal 15 personen.' },
-  { question: 'Hoe boek ik een workshop?', answer: 'Mail contact@cafecliniq.com of stuur een WhatsApp. Geef datum, groepsgrootte en gewenste starttijd door.' },
-  { question: 'Kan ik na de workshop blijven voor de avond?', answer: 'Ja, je bent welkom voor de reguliere clubavond. Normale entreeregels gelden.' },
+  { question: 'Hoe boek ik een workshop?', answer: 'Mail naar contact@cafecliniq.com of stuur een WhatsApp. Geef je datum, groepsgrootte en gewenste starttijd door.' },
+  { question: 'Kan ik na de workshop blijven voor de avond?', answer: 'Ja. Je bent welkom voor de reguliere clubavond. Normale entreeregels gelden.' },
   { question: 'Op welke dagen zijn workshops?', answer: 'Donderdag, vrijdag en zaterdag. Start tussen 19:00 en 20:30 in overleg.' },
-  { question: 'Is het geschikt voor een vrijgezellenavond?', answer: 'Ja, een van onze populairste activiteiten voor vrijgezellenfeesten. Exclusieve ruimte en totaalpakket mogelijk.' },
+  { question: 'Is de workshop geschikt voor een vrijgezellenavond?', answer: 'Ja — een van onze meest geboekte activiteiten voor vrijgezellenfeesten. Exclusieve ruimte en totaalpakket mogelijk.' },
 ]
-
 export const workshopFaqsEn = [
   { question: 'How much does a workshop cost?', answer: '€15 per cocktail, minimum 3 per person. No venue or bartender surcharge.' },
   { question: 'What is the minimum group size?', answer: '15 people minimum.' },
-  { question: 'How do I book?', answer: "Email contact@cafecliniq.com or WhatsApp. Share your date, group size and preferred start time." },
-  { question: 'Can we stay after the workshop?', answer: "Yes — stay for the club night. Normal entry rules apply." },
+  { question: 'How do I book?', answer: 'Email contact@cafecliniq.com or send a WhatsApp. Share your date, group size and preferred start time.' },
+  { question: 'Can we stay after the workshop?', answer: "Yes — stay for the regular club night. Normal entry rules apply." },
   { question: 'Which days are available?', answer: 'Thursday, Friday and Saturday. Start between 19:00 and 20:30.' },
-  { question: 'Is it good for a hen party?', answer: "Yes, one of our most-booked hen night activities. Exclusive use and full packages available." },
+  { question: 'Is it good for a hen party?', answer: "Yes, one of our most-booked activities for hen nights. Exclusive use and full packages available." },
 ]
-
 export const eventSpaceFaqsNl = [
   { question: 'Welke events kan ik bij CLINIQ organiseren?', answer: 'CLINIQ is geschikt voor bedrijfsfeesten, verjaardagen, borrels, vrijgezellenfeesten, studentenavonden, presentaties, product launches en private events. De ruimte heeft al bar, licht, geluid en clubgevoel, waardoor je niet begint met een lege zaal.' },
   { question: 'Voor hoeveel personen is de ruimte geschikt?', answer: 'De capaciteit hangt af van de opstelling en het type event. Een borrel of clubavond vraagt om een andere indeling dan een presentatie of besloten diner. Geef bij je aanvraag het verwachte aantal gasten door, dan denken we mee over een passende setup.' },
@@ -37,33 +35,31 @@ export const eventSpaceFaqsEn = [
 ]
 
 export const nightlifeFaqsNl = [
-  { question: 'Hoe laat gaat Cliniq open?', answer: 'Cliniq opent elke donderdag, vrijdag en zaterdag om 22:00. Donderdag sluit om 02:00, vrijdag en zaterdag om 03:00.' },
-  { question: 'Wat is de minimumleeftijd?', answer: 'Op donderdag is de minimumleeftijd 18 jaar. Op vrijdag en zaterdag 21 jaar. Neem altijd een geldig legitimatiebewijs mee.' },
-  { question: 'Is er een dresscode?', answer: 'Ja. Tracksuits, sportbroeken en sportschoenen zijn niet toegestaan. Twijfel je? Kies liever netjes.' },
-  { question: 'Waar kan ik parkeren?', answer: 'Er zijn meerdere parkeergarages op loopafstand van de Platielstraat.' },
+  { question: 'Hoe laat gaat Cliniq open?', answer: 'Donderdag, vrijdag en zaterdag om 22:00. Donderdag sluit om 02:00, vrijdag en zaterdag om 03:00.' },
+  { question: 'Wat is de minimumleeftijd?', answer: 'Donderdag 18+. Vrijdag en zaterdag 21+. Neem altijd een geldig ID mee.' },
+  { question: 'Is er een dresscode?', answer: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sportschoenen zijn niet toegestaan.' },
+  { question: 'Waar kan ik parkeren?', answer: 'Er zijn meerdere parkeergarages op loopafstand van de Platielstraat. Het centrum is ook goed bereikbaar per fiets of taxi.' },
   { question: 'Kan ik entree vooraf betalen?', answer: 'Verschilt per avond. Bij speciale avonden kan presale beschikbaar zijn. Reguliere avonden zijn aan de deur te betalen.' },
-  { question: 'Zijn er lockers?', answer: 'Ja, reserveer via cliniq.elockers.shop.' },
+  { question: 'Zijn er lockers?', answer: 'Ja. Reserveer vooraf via cliniq.elockers.shop.' },
 ]
-
 export const nightlifeFaqsEn = [
-  { question: 'What time does Cliniq open?', answer: 'Every Thursday, Friday and Saturday at 22:00. Thursday closes at 02:00; Friday and Saturday at 03:00.' },
+  { question: 'What time does Cliniq open?', answer: 'Thursday, Friday and Saturday at 22:00. Thursday closes at 02:00; Friday and Saturday at 03:00.' },
   { question: 'What is the minimum age?', answer: 'Thursday 18+. Friday and Saturday 21+. Always bring a valid ID.' },
-  { question: 'Is there a dress code?', answer: "Yes. Tracksuits, sports trousers and trainers aren't allowed. When in doubt, overdress." },
-  { question: 'Where can I park?', answer: 'Several car parks within easy walking distance of Platielstraat.' },
+  { question: 'Is there a dress code?', answer: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed." },
+  { question: 'Where can I park?', answer: 'Several car parks are within easy walking distance of Platielstraat.' },
   { question: 'Can I buy tickets in advance?', answer: 'Depends on the night. Check the agenda — regular nights are pay at the door.' },
-  { question: 'Are lockers available?', answer: 'Yes. Reserve at cliniq.elockers.shop.' },
+  { question: 'Are lockers available?', answer: 'Yes. Reserve in advance at cliniq.elockers.shop.' },
 ]
-
 export const contactFaqsNl = [
   { question: 'Wat is de snelste manier om contact op te nemen?', answer: 'Voor korte praktische vragen kun je mailen of bellen. Voor een cocktail workshop of het huren van CLINIQ werkt het formulier beter, omdat we dan meteen datum, groepsgrootte en wensen ontvangen.' },
   { question: 'Waar zit CLINIQ precies?', answer: 'CLINIQ zit aan de Platielstraat 9A, 6211 GV Maastricht, midden in het centrum en vlak bij het Vrijthof. Vanaf omliggende parkeergarages loop je in enkele minuten naar de locatie.' },
   { question: 'Wat doe ik als ik iets ben verloren?', answer: 'Stuur een bericht met een duidelijke omschrijving van het item, de datum van je bezoek en je contactgegevens. We controleren gevonden voorwerpen en nemen contact op als er een match is.' },
-  { question: '👗 Is er een dresscode?', answer: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sneakers laten we liever thuis — dat geldt voor iedereen.' },
+  { question: '👗 Is er een dresscode?', answer: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sportschoenen zijn niet welkom — dat geldt voor iedereen.' },
 ]
 
 export const contactFaqsEn = [
   { question: 'What is the fastest way to contact CLINIQ?', answer: 'For short practical questions, call or email. For a cocktail workshop or venue hire, the form is better because it immediately gives us the date, group size and wishes we need.' },
   { question: 'Where exactly is CLINIQ located?', answer: 'CLINIQ is at Platielstraat 9A, 6211 GV Maastricht, in the city centre close to Vrijthof. Nearby parking garages are only a short walk away.' },
   { question: 'What should I do if I lost something?', answer: 'Send us a message with a clear description of the item, the date of your visit and your contact details. We check lost and found and contact you if there is a match.' },
-  { question: '👗 Is there a dress code?', answer: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed — for anyone." },
+  { question: '👗 Is there a dress code?', answer: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed — no exceptions." },
 ]

@@ -17,7 +17,7 @@ const eventTypes = [
   ['Borrel', 'Voor groepen die informeel willen samenkomen met bar en muziek dichtbij.'],
   ['Private party', 'Een eigen avond met deurbeleid, bar en invulling op maat.'],
   ['Studentenfeest', 'Geschikt voor grotere groepen met muziek, licht en duidelijke afspraken.'],
-  ['Productlancering', 'Presenteer je merk of product in een setting die mensen bijblijft. Podium, scherm, bar en licht — alles aanwezig.'],
+  ['Productlancering', 'Presenteer je merk of product in een setting die mensen bijblijft. Podium, scherm, bar en licht aanwezig.'],
   ['Gala / besloten avond', 'Voor een nettere avond met ontvangst, bar en clubgevoel later op de avond.'],
 ]
 

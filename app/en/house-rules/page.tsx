@@ -1,4 +1,6 @@
 import { cmsMetadata } from '@/lib/pageMetadata'
+import { COPY } from '@/lib/content'
+
 export async function generateMetadata() { return cmsMetadata('houseRules', 'en') }
-const rules=['Bring a valid ID. Thursday is 18+, Friday and Saturday are 21+ unless an event states otherwise.','Cliniq uses a polished door policy: arrive stylish, respectful and suited to a premium club night.','Respect guests, staff and neighbours. Aggression, intimidation, discrimination and unwanted behaviour are not tolerated.','Safety comes first. Instructions from staff and security must be followed.','Drugs, weapons and dangerous items are prohibited. Bags may be checked.','Accessibility questions? Contact us in advance so we can help with the best route and support.']
-export default function HouseRulesPage(){return <section className="container-premium pt-36 pb-24"><p className="eyebrow">House rules</p><h1 className="h1 mt-5">House rules for a safe, stylish night.</h1><div className="mt-12 grid gap-5">{rules.map((rule,i)=><article className="card rounded-3xl p-7" key={rule}><p className="eyebrow">Rule {i+1}</p><h2 className="mt-3 text-xl font-black leading-8">{rule}</h2></article>)}</div></section>}
+const rules = COPY.en.houseRules.rules
+export default function HouseRulesPageEn(){return <section className="container-premium py-28"><p className="eyebrow">House rules</p><h1 className="h1 mt-4">House rules</h1><div className="mt-10 grid gap-4">{rules.map((rule,i)=><article key={rule} className="luxury-panel rounded-3xl p-6"><h2 className="text-xl font-black">{String(i+1).padStart(2,'0')}</h2><p className="mt-3 text-lg leading-8 text-white/72">{rule}</p></article>)}</div></section>}
