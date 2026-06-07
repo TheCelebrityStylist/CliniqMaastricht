@@ -8,16 +8,47 @@ import { cmsMetadata } from '@/lib/pageMetadata'
 import SafeImage from '@/components/ui/SafeImage'
 
 export async function generateMetadata() { return cmsMetadata('eventSpace', 'nl') }
+
+const eventTypes = [
+  ['Bedrijfsfeest', 'Voor teams die een avond willen met bar, muziek en genoeg ruimte om te bewegen.'],
+  ['Verjaardag', 'Een besloten verjaardag met cocktails, dansvloer en een centrale locatie in Maastricht.'],
+  ['Vrijgezellenfeest', 'Goed te combineren met cocktails, DJ of een workshop vooraf.'],
+  ['Borrel', 'Voor groepen die informeel willen samenkomen zonder standaard zaalsfeer.'],
+  ['Private party', 'Een eigen avond met deurbeleid, bar en invulling op maat.'],
+  ['Studentenfeest', 'Geschikt voor grotere groepen met muziek, licht en duidelijke afspraken.'],
+  ['Product launch', 'Een setting met sfeer voor presentaties, borrel en avondprogramma.'],
+  ['Gala / besloten avond', 'Voor een nettere avond met ontvangst, bar en clubgevoel later op de avond.'],
+]
+
+const facilities = [
+  ['Bar', 'Een vaste baropstelling met team en drankmogelijkheden.'],
+  ['Licht en geluid', 'De basis voor muziek, speeches en een volle dansvloer is aanwezig.'],
+  ['DJ mogelijkheden', 'We denken mee over DJ, muziekstijl en timing van de avond.'],
+  ['Dansvloer', 'De ruimte voelt direct als een avond uit, niet als een lege zaal.'],
+  ['Cocktailmogelijkheden', 'Cocktails, welkomstdrankjes of drankafspraken zijn mogelijk.'],
+  ['Centrale locatie', 'Platielstraat 9A, midden in het centrum van Maastricht.'],
+  ['Hospitality team', 'Een team dat gewend is aan drukke avonden en groepen.'],
+  ['Garderobe / lockers', 'Lockers en garderobe-afspraken kunnen per event worden afgestemd.'],
+]
+
 export default async function EventSpacePage(){
   const content = await getPageContent('event-space')
   const pageFaqs = content?.faqs?.length ? content.faqs : faqs
-  const gallery = imageSets.eventSpace.map((url) => ({ url, alt: 'Ruimte huren Maastricht bij CLINIQ' }))
+  const gallery = imageSets.eventSpace.map((url) => ({ url, alt: 'Feestlocatie CLINIQ Maastricht' }))
   return <>
-    <section className="hero-section relative min-h-[80vh] overflow-hidden pt-36"><SafeImage src={images.redRoom} fallbackSrc={images.fallbackWide} alt="CLINIQ eventruimte met bar en rode verlichting" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10"/><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Ruimte huren bij CLINIQ</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Een feestlocatie in Maastricht met bar, licht, geluid en clubgevoel. Geschikt voor bedrijfsfeesten, verjaardagen, borrels, vrijgezellenfeesten en private events.</p><a href="#aanvraag" className="btn-primary mt-8">Aanvraag doen</a></div></section>
-    <section className="container-premium py-24"><div className="grid gap-6 md:grid-cols-4"><Info title="Capaciteit" value={content?.capacity || 'Tot circa 250 gasten'} /><Info title="Techniek" value="Licht en geluid" /><Info title="Bar" value="Cocktails en drankafspraken" /><Info title="Locatie" value="Platielstraat 9A" /></div></section>
-    <section className="container-premium grid gap-10 pb-24 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Mogelijkheden</p><h2 className="h2 mt-4">Voor dit soort events</h2><div className="mt-8 grid gap-4 text-white/72 sm:grid-cols-2"><p>Bedrijfsfeesten en borrels.</p><p>Verjaardagen en private parties.</p><p>Vrijgezellenfeesten en studentenavonden.</p><p>Product launches en presentaties.</p></div></div><div className="grid grid-cols-2 gap-4">{gallery.slice(0,4).map((item,i)=><div key={`${item.url}-${i}`} className={`photo-tile image-frame aspect-[4/5] ${i===0?'row-span-2':''}`}><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt} fill sizes="33vw" className="object-cover brightness-[1.08]" /></div>)}</div></section>
-    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Feestzaal en event space in Maastricht</h2></div><p className="text-lg leading-8 text-white/70">CLINIQ is geschikt voor groepen die een ruimte willen huren in Maastricht, maar geen standaard zaal zoeken. Door de combinatie van bar, licht, geluid en dansvloer voelt de locatie meteen als een avond uit. Dat maakt CLINIQ interessant voor bedrijfsfeesten, verjaardagen, borrels, vrijgezellenfeesten, studentenfeesten en andere private events in het centrum van Maastricht.</p></div></section>
-    <section id="aanvraag" className="container-premium grid gap-8 pb-24 lg:grid-cols-2"><div><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Vragen over ruimte huren</h2><div className="faq-grid mt-8 space-y-4">{pageFaqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></div><InquiryForm type="event-space" fields={[{name:'name',label:'Naam',required:true},{name:'email',label:'E-mail',type:'email',required:true},{name:'phone',label:'Telefoon'},{name:'eventType',label:'Type event',options:['Bedrijfsfeest','Verjaardag','Vrijgezellenfeest','Gala','Studentenfeest','Private party','Borrel','Product launch']},{name:'preferredDate',label:'Gewenste datum',type:'date'},{name:'guests',label:'Aantal gasten',type:'number'},{name:'message',label:'Bericht',required:true}]} /></section><JsonLd data={faqSchema(pageFaqs)} />
+    <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={images.redRoom} fallbackSrc={images.fallbackWide} alt="Feestlocatie CLINIQ Maastricht met bar en verlichting" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10"/><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Ruimte huren bij CLINIQ</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Een feestlocatie in Maastricht met bar, licht, geluid en clubgevoel. Geschikt voor bedrijfsfeesten, verjaardagen, borrels, vrijgezellenfeesten en private events.</p><a href="#aanvraag" className="btn-primary mt-8">Vrijblijvende aanvraag</a></div></section>
+
+    <section className="container-premium py-24"><p className="eyebrow">Event types</p><h2 className="h2 mt-4">Waarvoor kun je CLINIQ huren?</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{eventTypes.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
+
+    <section className="container-premium pb-24"><div className="max-w-4xl"><p className="eyebrow">Faciliteiten</p><h2 className="h2 mt-4">Wat is er aanwezig?</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">CLINIQ heeft de basis voor een complete avond al in huis: bar, licht, geluid, dansvloer en een team dat gewend is aan drukke avonden.</p></div><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{facilities.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
+
+    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Feestlocatie en event space in Maastricht</h2></div><p className="text-lg leading-[1.65] text-white/72 md:text-xl">CLINIQ is geschikt voor groepen die een ruimte willen huren in Maastricht, maar geen standaard zaal zoeken. De locatie ligt centraal aan de Platielstraat en voelt direct als een avond uit door de combinatie van bar, licht, geluid en dansvloer. Dat maakt CLINIQ interessant voor bedrijfsfeesten, verjaardagen, borrels, vrijgezellenfeesten en andere private events in het centrum van Maastricht. Afhankelijk van de datum, groepsgrootte en gewenste invulling denken we mee over de opzet van de avond.</p></div></section>
+
+    <section className="container-premium pb-24"><p className="eyebrow">Beeld</p><h2 className="h2 mt-4">De ruimte</h2><div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">{gallery.slice(0,5).map((item,i)=><div key={`${item.url}-${i}`} className={`photo-tile image-frame ${i===0?'md:col-span-2 md:row-span-2':'md:col-span-2'}`}><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt} fill sizes="33vw" className="object-cover brightness-[1.08]" /></div>)}</div></section>
+
+    <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Veelgestelde vragen</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{pageFaqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-base leading-7 text-white/72 md:text-lg">{f.answer}</p></details>)}</div></section>
+
+    <section id="aanvraag" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Aanvraag</p><h2 className="h2 mt-4">Vrijblijvende aanvraag</h2><p className="mt-6 text-lg leading-[1.65] text-white/72">Vertel ons je datum, groepsgrootte en type event. Dan denken we mee over beschikbaarheid, indeling en mogelijkheden.</p></div><InquiryForm type="event-space" fields={[{name:'name',label:'Naam',required:true},{name:'email',label:'E-mail',type:'email',required:true},{name:'phone',label:'Telefoon'},{name:'eventType',label:'Type event',options:['Bedrijfsfeest','Verjaardag','Vrijgezellenfeest','Gala','Studentenfeest','Private party','Borrel','Product launch']},{name:'preferredDate',label:'Gewenste datum',type:'date'},{name:'guests',label:'Aantal gasten',type:'number'},{name:'message',label:'Bericht',required:true}]} /></section><JsonLd data={faqSchema(pageFaqs)} />
   </>
 }
-function Info({ title, value }: { title: string; value: string }) { return <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-7"><p className="eyebrow">{title}</p><p className="mt-4 text-2xl font-black tracking-[-0.04em]">{value}</p></div> }
+function InfoCard({ title, text }: { title: string; text: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"><h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3><p className="mt-3 text-white/66">{text}</p></article> }

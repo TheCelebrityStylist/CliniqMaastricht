@@ -11,15 +11,15 @@ a { text-underline-offset: 4px; }
 .focus-ring { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta; }
 .container-premium { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
 .eyebrow { @apply text-xs font-black uppercase tracking-[0.28em] text-gold; }
-.h1 { @apply text-5xl font-black leading-[0.92] tracking-[-0.055em] sm:text-7xl lg:text-8xl; }
-.h2 { @apply text-4xl font-black leading-[0.98] tracking-[-0.045em] sm:text-5xl lg:text-6xl; }
+.h1 { @apply text-[44px] font-black leading-[0.92] tracking-[-0.055em] sm:text-6xl lg:text-7xl; }
+.h2 { @apply text-[34px] font-black leading-[0.98] tracking-[-0.045em] sm:text-5xl lg:text-[52px]; }
 .h3 { @apply text-2xl font-extrabold tracking-[-0.03em] sm:text-3xl; }
 .card { @apply border border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur; }
 .btn-primary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full bg-magenta px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:brightness-110; }
 .btn-secondary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full border border-white/25 bg-black/35 px-6 py-3 text-sm font-black uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 hover:brightness-110; }
 .input { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-base text-white placeholder:text-white/30; }
 .label { @apply mb-2 block text-xs font-black uppercase tracking-[0.2em] text-white/70; }
-.prose-premium { @apply text-lg leading-8 text-white/70; }
+.prose-premium { @apply text-lg leading-[1.65] text-white/70 md:text-xl; }
 .prose-premium p { @apply mb-5; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 .section-lift { @apply relative overflow-hidden; }
