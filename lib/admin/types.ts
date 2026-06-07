@@ -34,6 +34,8 @@ export type AgendaEvent = {
   fullDescriptionEn?: string
   ticketUrl?: string
   featured?: boolean
+  eventType?: 'regular' | 'featured' | 'special'
+  showDetailCTA?: boolean
   published?: boolean
   imageUrl?: string
   imageAlt?: string

@@ -32,7 +32,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
   return <div className="grid gap-8 xl:grid-cols-[1fr_440px]">
     <section>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div><p className="text-xs font-black uppercase tracking-[0.28em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.05em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Upload real Cliniq images, search them, tag them and replace them globally. The public site uses these images first and branded fallbacks only when needed.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Upload real Cliniq images, search them, tag them and replace them globally. The public site uses these images first and branded fallbacks only when needed.</p></div>
       </div>
       <form className="mt-6 flex flex-col gap-3 sm:flex-row"><input name="q" defaultValue={query?.q || ''} placeholder="Search title, alt text or tag" className="flex-1 rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-bold"/><input type="hidden" name="tag" value={activeTag}/><button className="rounded-full bg-black px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Search</button></form>
       <div className="mt-4 flex flex-wrap gap-2">{tags.map((tag) => <a key={tag} href={`/admin/media?tag=${encodeURIComponent(tag)}${query?.q ? `&q=${encodeURIComponent(query.q)}` : ''}`} className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest ${activeTag === tag ? 'bg-[#f02688] text-white' : 'bg-white text-black/65 hover:bg-black hover:text-white'}`}>{tag}</a>)}</div>
@@ -66,7 +66,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
         <Field name="altEn" label="Alt text EN" />
         <label className="grid gap-2 text-sm font-bold">Usage tags<select name="usage" defaultValue="nightlife, hero" className="rounded-2xl border border-black/10 bg-white px-4 py-3"><option>nightlife, hero</option><option>cocktail workshop, gallery</option><option>event space, gallery</option><option>bar, cocktail workshop</option><option>event poster, nightlife</option></select></label>
         <label className="grid gap-2 text-sm font-bold">Focal point<select name="focalPoint" defaultValue="center" className="rounded-2xl border border-black/10 bg-white px-4 py-3"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select></label>
-        <button className="rounded-full bg-[#f02688] px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white">Save photos</button>
+        <button className="rounded-full bg-[#f02688] px-5 py-3 text-sm font-black uppercase tracking-[0.1em] text-white">Save photos</button>
       </form>
     </aside>
   </div>

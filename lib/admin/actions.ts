@@ -95,6 +95,8 @@ export async function saveEventAction(formData: FormData) {
     imageUrl: String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
     imagePosition: String(formData.get('imagePosition') || 'center'),
     featured: formData.get('featured') === 'on',
+    eventType: String(formData.get('eventType') || 'regular') as 'regular' | 'featured' | 'special',
+    showDetailCTA: formData.get('showDetailCTA') === 'on',
     published: formData.get('published') === 'on',
   })
   revalidatePublic()

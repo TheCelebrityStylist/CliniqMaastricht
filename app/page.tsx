@@ -55,7 +55,7 @@ export default async function Home() {
 
     <section className="bg-ivory py-20 text-ink">
       <div className="container-premium grid gap-8 lg:grid-cols-[1fr_.75fr] lg:items-end">
-        <div><h2 className="text-[40px] font-black leading-none tracking-[-0.055em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}, Maastricht.</p></div>
+        <div><h2 className="text-[40px] font-black leading-none tracking-[-0.03em] sm:text-6xl">CLINIQ Maastricht</h2><p className="mt-5 text-2xl font-bold leading-tight">{site.address.street}, Maastricht.</p></div>
         <div className="flex flex-col gap-3 sm:flex-row lg:justify-end"><Link className="btn-primary" href="/contact">Neem contact op</Link><Link className="btn-secondary border-ink/25 bg-ink text-white hover:border-ink hover:bg-ink/90 hover:text-white" href="/cocktail-workshop">Workshop aanvragen</Link></div>
       </div>
     </section>
@@ -69,6 +69,6 @@ function SectionIntro({ eyebrow, title, text, ctaHref, ctaLabel }: { eyebrow: st
 function ServiceRow({ href, image, eyebrow, title, text, cta, reverse = false }: { href: string; image: string; eyebrow: string; title: string; text: string; cta: string; reverse?: boolean }) {
   return <article className="grid overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.045] lg:grid-cols-[45fr_55fr]">
     <Link href={href} className={`image-frame group min-h-[360px] rounded-none border-0 ${reverse ? 'lg:order-2' : ''}`}><SafeImage src={image} fallbackSrc={images.fallbackWide} alt={title} fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /></Link>
-    <div className="flex flex-col justify-center p-7 md:p-10"><p className="eyebrow">{eyebrow}</p><h2 className="mt-4 max-w-3xl text-[32px] font-black leading-tight tracking-[-0.04em] md:text-[42px]">{title}</h2><p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{text}</p><Link className="btn-primary mt-8 w-fit" href={href}>{cta}</Link></div>
+    <div className="flex flex-col justify-center p-7 md:p-10"><p className="eyebrow">{eyebrow}</p><h2 className="mt-4 max-w-3xl text-[32px] font-black leading-tight tracking-[-0.025em] md:text-[42px]">{title}</h2><p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{text}</p><Link className="btn-primary mt-8 w-fit" href={href}>{cta}</Link></div>
   </article>
 }

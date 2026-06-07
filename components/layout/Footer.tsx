@@ -17,7 +17,7 @@ export default function Footer() {
     <div className="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_70%_0%,rgba(240,38,136,.24),transparent_34rem)]" />
     <div className="container-premium relative">
       <div className="luxury-panel grid gap-8 p-6 md:p-10 lg:grid-cols-[1.15fr_.85fr]">
-        <div><p className="eyebrow">Cliniq Maastricht</p><h2 className="mt-4 text-5xl font-black leading-none tracking-[-0.055em] md:text-7xl">{t.footer.headline}</h2><p className="prose-premium mt-6 max-w-2xl">{t.footer.text}</p><div className="mt-8 flex flex-wrap gap-3"><Link className="btn-primary" href={href('nightlife')}>{t.common.viewAgenda}</Link><Link className="btn-secondary" href={href('eventSpace')}>{t.common.requestVenue}</Link><a data-track="locker_click" className="btn-secondary" href="/lockers">{t.footer.lockers}</a></div></div>
+        <div><p className="eyebrow">Cliniq Maastricht</p><h2 className="mt-4 text-5xl font-black leading-none tracking-[-0.03em] md:text-7xl">{t.footer.headline}</h2><p className="prose-premium mt-6 max-w-2xl">{t.footer.text}</p><div className="mt-8 flex flex-wrap gap-3"><Link className="btn-primary" href={href('nightlife')}>{t.common.viewAgenda}</Link><Link className="btn-secondary" href={href('eventSpace')}>{t.common.requestVenue}</Link><a data-track="locker_click" className="btn-secondary" href="/lockers">{t.footer.lockers}</a></div></div>
         <div className="image-frame min-h-[320px] rounded-3xl bg-black p-8"><SafeImage src={images.footerLogo} fallbackSrc={images.fallbackWide} alt="CLINIQ Maastricht" fill sizes="35vw" className="object-contain p-10" /></div>
       </div>
       <div className="grid gap-10 py-14 lg:grid-cols-[1.2fr_.8fr_.8fr_.8fr]">

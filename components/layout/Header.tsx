@@ -30,8 +30,8 @@ export default function Header() {
         })}
       </nav>
       <div className="flex items-center gap-3">
-        <Link href={localizedPaths.nightlife[lang]} className={`hidden text-xs font-black uppercase tracking-[0.18em] transition sm:inline ${isActive(localizedPaths.nightlife[lang]) ? 'text-white' : 'text-white/70 hover:text-white'}`}>{t.agenda}</Link>
-        <Link href={switchHref} onClick={() => rememberLanguage(lang === 'nl' ? 'en' : 'nl')} className="focus-ring rounded-full border border-white/15 px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white/80 transition hover:border-white hover:text-white active:scale-95">{t.switchTo}</Link>
+        <Link href={localizedPaths.nightlife[lang]} className={`hidden text-xs font-black uppercase tracking-[0.1em] transition sm:inline ${isActive(localizedPaths.nightlife[lang]) ? 'text-white' : 'text-white/70 hover:text-white'}`}>{t.agenda}</Link>
+        <Link href={switchHref} onClick={() => rememberLanguage(lang === 'nl' ? 'en' : 'nl')} className="focus-ring rounded-full border border-white/15 px-3 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-white/80 transition hover:border-white hover:text-white active:scale-95">{t.switchTo}</Link>
         <Link href={localizedPaths.eventSpace[lang]} data-track="cta_click" className="btn-primary px-4 py-2 text-[10px]">{t.cta}</Link>
       </div>
     </div>
