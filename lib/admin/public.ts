@@ -30,6 +30,23 @@ function fallbackMedia(section: PhotoSection, fallbackUrls: string[] = []): Medi
   }))
 }
 
+
+function normalizeName(value?: string) {
+  return (value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
+export function resolveEventImage(event: { title?: string; titleNl?: string; eventType?: string; imageUrl?: string }, store: Awaited<ReturnType<typeof readStore>>) {
+  if (event.imageUrl) return { imageUrl: event.imageUrl, imageSource: 'Event image' as const }
+  const eventName = normalizeName(event.titleNl || event.title)
+  const preset = store.djPresets.find((item) => item.active !== false && (normalizeName(item.name) === eventName || item.aliases.some((alias) => normalizeName(alias) === eventName)))
+  const presetMedia = preset?.defaultImageId ? store.media.find((media) => media.id === preset.defaultImageId) : null
+  if (presetMedia?.url) return { imageUrl: presetMedia.url, imageSource: 'DJ preset' as const, djPreset: preset }
+  const category = preset?.fallbackCategory || event.eventType || 'event'
+  const categoryMedia = store.media.find((media) => (media.usage || []).some((tag) => normalizeName(tag) === normalizeName(category)))
+  if (categoryMedia?.url) return { imageUrl: categoryMedia.url, imageSource: 'Category fallback' as const, djPreset: preset }
+  return { imageUrl: images.fallbackEvent, imageSource: 'General fallback' as const, djPreset: preset }
+}
+
 export async function getAgendaEvents(includePast = false) {
   const today = new Date().toISOString().slice(0, 10)
   const store = await readStore()
@@ -40,7 +57,7 @@ export async function getAgendaEvents(includePast = false) {
     .sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
     .map((event) => ({
       ...event,
-      imageUrl: event.imageUrl || images.fallbackEvent,
+      ...resolveEventImage(event, store),
       relatedAlbumSlug: store.albums.find((album) => album.id === event.relatedAlbumId)?.slug,
     }))
 }

@@ -21,6 +21,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
     ...store.events.filter((event) => event.imageUrl && store.media.find((media) => media.id === id)?.url === event.imageUrl).map((event) => event.titleNl || event.title),
     ...store.albums.filter((album) => album.coverImageId === id || album.imageIds.includes(id)).map((album) => album.titleNl),
   ]
+  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
   const errorMessage = query?.error === 'blob-token'
     ? 'Upload failed because Vercel Blob is not connected yet. Add BLOB_READ_WRITE_TOKEN in Vercel, redeploy, or paste hosted Cliniq image URLs instead.'
     : query?.error === 'image-required'
@@ -34,7 +35,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Drag, drop, tag and reuse photos directly inside CLINIQ admin. No Google Drive, no URL spreadsheet, no developer workflow.</p></div>
       </div>
-      {!process.env.BLOB_READ_WRITE_TOKEN ? <p className="mt-6 rounded-2xl bg-yellow-50 p-4 text-sm font-bold text-yellow-800">Image uploads are not configured yet. Add BLOB_READ_WRITE_TOKEN in Vercel.</p> : null}
+      {!process.env.BLOB_READ_WRITE_TOKEN ? <p className="mt-6 rounded-2xl bg-yellow-50 p-4 text-sm font-bold text-yellow-800">Uploads are not active yet. Add BLOB_READ_WRITE_TOKEN in Vercel → Project Settings → Environment Variables. After redeploy, drag-and-drop upload will work.</p> : null}
       <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-sm">
         <h2 className="text-2xl font-black">Simple upload flow</h2>
         <div className="mt-4 grid gap-3 text-sm text-black/60 md:grid-cols-3">
@@ -69,7 +70,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
       <p className="mt-2 text-sm text-black/60">Drag photos onto the field or select multiple files. URL paste remains as a backup for existing Cliniq/Squarespace assets.</p>
       <form action={saveMediaAction} className="mt-6 grid gap-4">
         <Field name="title" label="Image title / batch name" required />
-        <MediaUploadField />
+        <MediaUploadField disabled={!hasBlob} />
         <label className="grid gap-2 text-sm font-bold">Backup: hosted Cliniq image URLs<textarea name="url" rows={4} placeholder="One Cliniq/Squarespace URL per line" className="rounded-2xl border border-black/10 bg-white px-4 py-3" /></label>
         <Field name="altNl" label="Alt text NL" />
         <Field name="altEn" label="Alt text EN" />

@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { sql } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
-import type { AdminStore, AgendaEvent, Lead, MediaAsset, PhotoAlbum } from './types'
+import type { AdminStore, AgendaEvent, DjPreset, Lead, MediaAsset, PhotoAlbum } from './types'
 
 const isVercel = Boolean(process.env.VERCEL)
 const dataDir = isVercel ? path.join('/tmp', 'cliniq-admin') : path.join(process.cwd(), '.data')
@@ -67,6 +67,15 @@ function mergeDefaultFaqs(currentFaqs: AdminStore['faqs']) {
   ]
 }
 
+
+function mergeDefaultDjPresets(currentPresets: DjPreset[] = []) {
+  const defaults = cloneDefaultStore().djPresets
+  const byName = new Map(currentPresets.map((preset) => [normalizeEventTitle(preset.name), preset]))
+  const merged = defaults.map((preset) => byName.get(normalizeEventTitle(preset.name)) || preset)
+  const defaultNames = new Set(defaults.map((preset) => normalizeEventTitle(preset.name)))
+  return [...merged, ...currentPresets.filter((preset) => !defaultNames.has(normalizeEventTitle(preset.name)))]
+}
+
 async function ensureStore() {
   if (process.env.POSTGRES_URL) return
   await fs.mkdir(dataDir, { recursive: true })
@@ -118,6 +127,7 @@ export async function readStore(): Promise<AdminStore> {
       albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,
       leads: parsed.leads || [],
       seo: parsed.seo || [],
+      djPresets: mergeDefaultDjPresets(parsed.djPresets || []),
       jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
       analytics: parsed.analytics || [],
       settings: parsed.settings || cloneDefaultStore().settings,

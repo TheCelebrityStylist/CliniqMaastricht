@@ -182,6 +182,36 @@ export async function saveBulkEventsAction(formData: FormData) {
   redirect(`/admin/events/bulk?saved=${validRows.length}`)
 }
 
+
+export async function saveDjPresetAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || slugify(String(formData.get('name') || 'dj-preset')))
+  const index = store.djPresets.findIndex((preset) => preset.id === id)
+  const preset = {
+    id,
+    name: String(formData.get('name') || 'DJ'),
+    aliases: String(formData.get('aliases') || '').split(',').map((item) => item.trim()).filter(Boolean),
+    defaultImageId: String(formData.get('defaultImageId') || ''),
+    fallbackCategory: String(formData.get('fallbackCategory') || 'dj'),
+    active: checked(formData, 'active', true),
+  }
+  if (index >= 0) store.djPresets[index] = preset
+  else store.djPresets.push(preset)
+  await writeStore(store)
+  revalidatePublic()
+  redirect('/admin/dj-presets?saved=1')
+}
+
+export async function useDjPresetImageAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  const event = store.events.find((item) => item._id === id)
+  if (event) event.imageUrl = ''
+  await writeStore(store)
+  revalidatePublic()
+  redirect('/admin/events?saved=1')
+}
+
 export async function saveMediaAction(formData: FormData) {
   const files = formFiles(formData)
   const uploaded = await uploadFiles(files)
