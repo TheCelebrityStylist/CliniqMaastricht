@@ -33,7 +33,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
   return <div className="grid gap-8 xl:grid-cols-[1fr_440px]">
     <section>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Drag, drop, tag and reuse photos directly inside CLINIQ admin. No Google Drive, no URL spreadsheet, no developer workflow.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Upload, select, tag and reuse photos directly inside CLINIQ admin.</p></div>
       </div>
       {!process.env.BLOB_READ_WRITE_TOKEN ? <p className="mt-6 rounded-2xl bg-yellow-50 p-4 text-sm font-bold text-yellow-800">Uploads are not active yet. Add BLOB_READ_WRITE_TOKEN in Vercel → Project Settings → Environment Variables. After redeploy, drag-and-drop upload will work.</p> : null}
       <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-sm">

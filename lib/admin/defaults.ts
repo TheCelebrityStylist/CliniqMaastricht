@@ -1,19 +1,19 @@
 import { images, site } from '@/lib/site'
 import { contactFaqsEn, contactFaqsNl, eventSpaceFaqsEn, eventSpaceFaqsNl, nightlifeFaqsEn, nightlifeFaqsNl, workshopFaqsEn, workshopFaqsNl } from '@/lib/faqs'
-import type { AdminStore, AgendaEvent, DjPreset } from './types'
+import type { AdminStore, AgendaEvent, DjImage } from './types'
 
 const now = '2026-06-04T00:00:00.000Z'
 
 
 
-const defaultDjPresets: DjPreset[] = [
-  { id: 'dj-jink', name: 'JINK', aliases: [], fallbackCategory: 'dj', active: true },
-  { id: 'dj-paul-gouda', name: 'Paul Gouda', aliases: [], fallbackCategory: 'dj', active: true },
-  { id: 'dj-djanbe', name: 'DJANBE', aliases: [], fallbackCategory: 'dj', active: true },
-  { id: 'dj-hadless', name: 'DJ Hadless', aliases: ['Len'], fallbackCategory: 'dj', active: true },
-  { id: 'dj-big-rob', name: 'DJ BIG ROB', aliases: ['Big Rob', 'BIG ROB'], fallbackCategory: 'dj', active: true },
-  { id: 'dj-sdnx', name: 'DJ SDNX', aliases: ['Sidney'], fallbackCategory: 'dj', active: true },
-  { id: 'dj-ak', name: 'DJ AK', aliases: [], fallbackCategory: 'dj', active: true },
+const defaultDjImages: DjImage[] = [
+  { id: 'dj-jink', slug: 'jink', name: 'JINK', aliases: [], imageUrl: null, imageAltNl: 'DJ JINK bij CLINIQ Maastricht', imageAltEn: 'DJ JINK at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-paul-gouda', slug: 'paul-gouda', name: 'Paul Gouda', aliases: [], imageUrl: null, imageAltNl: 'DJ Paul Gouda bij CLINIQ Maastricht', imageAltEn: 'DJ Paul Gouda at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-djanbe', slug: 'djanbe', name: 'DJANBE', aliases: [], imageUrl: null, imageAltNl: 'DJ DJANBE bij CLINIQ Maastricht', imageAltEn: 'DJ DJANBE at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-hadless', slug: 'dj-hadless', name: 'DJ Hadless', aliases: ['Len'], imageUrl: null, imageAltNl: 'DJ Hadless bij CLINIQ Maastricht', imageAltEn: 'DJ Hadless at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-big-rob', slug: 'dj-big-rob', name: 'DJ BIG ROB', aliases: ['Big Rob', 'BIG ROB', 'big rob'], imageUrl: null, imageAltNl: 'DJ BIG ROB bij CLINIQ Maastricht', imageAltEn: 'DJ BIG ROB at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-sdnx', slug: 'dj-sdnx', name: 'DJ SDNX', aliases: ['Sidney'], imageUrl: null, imageAltNl: 'DJ SDNX bij CLINIQ Maastricht', imageAltEn: 'DJ SDNX at CLINIQ Maastricht', active: true, updatedAt: now },
+  { id: 'dj-ak', slug: 'dj-ak', name: 'DJ AK', aliases: [], imageUrl: null, imageAltNl: 'DJ AK bij CLINIQ Maastricht', imageAltEn: 'DJ AK at CLINIQ Maastricht', active: true, updatedAt: now },
 ]
 
 const agendaPlan: Array<{ date: string; dj: string }> = [
@@ -116,7 +116,7 @@ export const defaultStore: AdminStore = {
     { id: 'cocktail-workshop-album', slug: 'cocktail-workshop-maastricht', titleNl: 'Cocktail workshops bij CLINIQ', titleEn: 'Cocktail workshops at CLINIQ', date: '2026-06-04', coverImageId: 'workshop-bar', imageIds: ['workshop-bar', 'mojito', 'whiskey', 'espresso', 'passion', 'mixing'], published: true, descriptionNl: 'Shakers, glaswerk en cocktails achter de bar bij CLINIQ.', descriptionEn: 'Shakers, glassware and cocktails behind the CLINIQ bar.', createdAt: now },
   ],
   seo: [],
-  djPresets: defaultDjPresets,
+  djImages: defaultDjImages,
   leads: [],
   jobs: [{ _id: 'open', title: 'Open sollicitatie', type: 'Parttime', description: 'Je staat drie avonden per week achter de bar van een van de drukste clubs van Maastricht. Goed in multitasken, kalm onder druk, altijd vriendelijk. Ervaring is een pré maar geen must.', requirements: ['Gastvrij', 'Beschikbaar in avonden/weekenden', 'Teamspeler'], published: true }],
   settings: { phone: site.phone, email: site.email, whatsapp: site.whatsapp, address: `${site.address.street}, ${site.address.postalCode} ${site.address.city}`, openingHours: site.hours, instagram: site.instagram, tiktok: site.tiktok },

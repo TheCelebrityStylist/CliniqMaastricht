@@ -2,7 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { sql } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
-import type { AdminStore, AgendaEvent, DjPreset, Lead, MediaAsset, PhotoAlbum } from './types'
+import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } from './types'
 
 const isVercel = Boolean(process.env.VERCEL)
 const dataDir = isVercel ? path.join('/tmp', 'cliniq-admin') : path.join(process.cwd(), '.data')
@@ -68,12 +68,33 @@ function mergeDefaultFaqs(currentFaqs: AdminStore['faqs']) {
 }
 
 
-function mergeDefaultDjPresets(currentPresets: DjPreset[] = []) {
-  const defaults = cloneDefaultStore().djPresets
-  const byName = new Map(currentPresets.map((preset) => [normalizeEventTitle(preset.name), preset]))
-  const merged = defaults.map((preset) => byName.get(normalizeEventTitle(preset.name)) || preset)
-  const defaultNames = new Set(defaults.map((preset) => normalizeEventTitle(preset.name)))
-  return [...merged, ...currentPresets.filter((preset) => !defaultNames.has(normalizeEventTitle(preset.name)))]
+function legacyPresetToDjImage(input: Partial<DjImage> & { name?: string; defaultImageId?: string; imageUrl?: string | null; aliases?: string[]; active?: boolean; slug?: string; id?: string }) {
+  const name = input.name || 'DJ'
+  const slug = input.slug || slugify(name)
+  return {
+    id: input.id || `dj-${slug}`,
+    name,
+    slug,
+    aliases: input.aliases || [],
+    imageUrl: input.imageUrl || null,
+    imageAltNl: input.imageAltNl || `DJ ${name} bij CLINIQ Maastricht`,
+    imageAltEn: input.imageAltEn || `DJ ${name} at CLINIQ Maastricht`,
+    active: input.active !== false,
+    updatedAt: input.updatedAt || new Date().toISOString(),
+  }
+}
+
+function mergeDefaultDjImages(currentImages: DjImage[] = [], legacyPresets: Array<{ name?: string; aliases?: string[]; active?: boolean; defaultImageId?: string }> = [], media: MediaAsset[] = []) {
+  const defaults = cloneDefaultStore().djImages
+  const convertedLegacy = legacyPresets.map((preset) => {
+    const mediaUrl = media.find((item) => item.id === preset.defaultImageId)?.url || null
+    return legacyPresetToDjImage({ ...preset, imageUrl: mediaUrl })
+  })
+  const current = [...currentImages, ...convertedLegacy].map((item) => legacyPresetToDjImage(item))
+  const byName = new Map(current.map((image) => [normalizeEventTitle(image.name), image]))
+  const merged = defaults.map((image) => byName.get(normalizeEventTitle(image.name)) || image)
+  const defaultNames = new Set(defaults.map((image) => normalizeEventTitle(image.name)))
+  return [...merged, ...current.filter((image) => !defaultNames.has(normalizeEventTitle(image.name)))]
 }
 
 async function ensureStore() {
@@ -127,7 +148,7 @@ export async function readStore(): Promise<AdminStore> {
       albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,
       leads: parsed.leads || [],
       seo: parsed.seo || [],
-      djPresets: mergeDefaultDjPresets(parsed.djPresets || []),
+      djImages: mergeDefaultDjImages(parsed.djImages || [], (parsed as { djPresets?: Array<{ name?: string; aliases?: string[]; active?: boolean; defaultImageId?: string }> }).djPresets || [], parsed.media || []),
       jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
       analytics: parsed.analytics || [],
       settings: parsed.settings || cloneDefaultStore().settings,

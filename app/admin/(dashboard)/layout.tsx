@@ -5,15 +5,13 @@ import { logoutAction } from '@/lib/admin/actions'
 const nav = [
   ['Dashboard', '/admin'],
   ['Events', '/admin/events'],
-  ['Bulk Events', '/admin/events/bulk'],
-  ['DJ Presets', '/admin/dj-presets'],
-  ['Media Library', '/admin/media'],
+  ['Bulk Events', '/admin/bulk-events'],
+  ['DJ Images', '/admin/dj-images'],
   ['Albums', '/admin/albums'],
   ['Pages', '/admin/pages'],
-  ['FAQs', '/admin/faqs'],
-  ['Forms / Leads', '/admin/leads'],
   ['SEO', '/admin/seo'],
-  ['Site Settings', '/admin/settings'],
+  ['Leads', '/admin/leads'],
+  ['Settings', '/admin/settings'],
 ]
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

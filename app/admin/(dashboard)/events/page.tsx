@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { deleteEventAction, saveEventAction, toggleEventPublishedAction, useDjPresetImageAction } from '@/lib/admin/actions'
+import { deleteEventAction, saveDjImageAction, saveEventAction, toggleEventPublishedAction, useDjImageAction } from '@/lib/admin/actions'
 import { readStore } from '@/lib/admin/store'
 import SafeImage from '@/components/ui/SafeImage'
 import MediaUploadField from '@/components/admin/MediaUploadField'
@@ -19,23 +19,22 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
   const params = (await searchParams) || {}
   const store = await readStore()
   const events = [...store.events].sort((a, b) => `${b.date} ${b.startTime || ''}`.localeCompare(`${a.date} ${a.startTime || ''}`))
-  const media = store.media.filter((item) => (item.usage || []).includes('event') || (item.usage || []).includes('uitgaan') || (item.usage || []).includes('dj') || (item.usage || []).includes('crowd'))
   const sourceEvent = store.events.find((event) => event._id === (params.edit || params.duplicate))
   const editing = params.edit ? sourceEvent : undefined
   const duplicated = params.duplicate ? sourceEvent : undefined
   const formEvent = editing || duplicated
   const formImage = formEvent ? resolveEventImage(formEvent, store) : null
-  const hasFormPreset = Boolean(formImage?.djPreset?.defaultImageId)
+  const hasFormPreset = Boolean(formImage?.djImage?.imageUrl)
   const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 
   return <div className="grid gap-8">
     <section>
       <p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Events</p>
       <h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Simple event manager</h1>
-      <p className="mt-3 max-w-3xl text-black/60">Create, edit, duplicate, publish and image your own agenda directly inside the website. No Google Sheets. No technical CMS.</p>
+      <p className="mt-3 max-w-3xl text-black/60">Create, edit, duplicate, publish and image your own agenda directly inside the website.</p>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href="/admin/events" className="rounded-full bg-[#12070c] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Add Event</Link>
-        <Link href="/admin/events/bulk" className="rounded-full border border-black/10 bg-white px-5 py-3 text-xs font-black uppercase tracking-widest text-black/70">Bulk Events</Link>
+        <Link href="/admin/bulk-events" className="rounded-full border border-black/10 bg-white px-5 py-3 text-xs font-black uppercase tracking-widest text-black/70">Bulk Events</Link>
       </div>
       {params.saved ? <p className="mt-4 rounded-2xl bg-green-50 p-4 text-sm font-bold text-green-800">Saved.</p> : null}
       {params.deleted ? <p className="mt-4 rounded-2xl bg-red-50 p-4 text-sm font-bold text-red-800">Deleted.</p> : null}
@@ -55,6 +54,7 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
 
       <form action={saveEventAction} className="mt-8 grid gap-6">
         {editing ? <input type="hidden" name="_id" value={editing._id} /> : null}
+        {formEvent?.imageUrl ? <input type="hidden" name="imageUrl" value={formEvent.imageUrl} /> : null}
         <datalist id="artists">{quickArtists.map((artist) => <option key={artist} value={artist} />)}</datalist>
         <div className="grid gap-4 lg:grid-cols-4">
           <label className="grid gap-2 text-sm font-bold lg:col-span-2">Event name / DJ
@@ -82,27 +82,19 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
         <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
           <div className="rounded-3xl border border-black/10 p-4">
             <p className="text-sm font-black">Upload/select event image</p>
-            <p className="mt-1 text-xs text-black/50">Regular event images are automatic through DJ presets. Featured/special events can override with an event image.</p>
-            {formEvent ? <div className="mt-4 overflow-hidden rounded-2xl bg-black/5"><div className="relative aspect-[4/3]"><SafeImage src={formImage?.imageUrl || images.fallbackEvent} fallbackSrc={images.fallbackEvent} alt={formEvent.title} fill className="object-cover" /></div><p className="p-3 text-xs font-black uppercase tracking-widest text-black/55">Image source: {formImage?.imageSource}{!hasFormPreset && !formEvent.imageUrl ? ' - No DJ preset image yet' : ''}</p></div> : null}
+            <p className="mt-1 text-xs text-black/50">Regular event images are automatic through DJ images. Featured/special events can override with an event image.</p>
+            {formEvent ? <div className="mt-4 overflow-hidden rounded-2xl bg-black/5"><div className="relative aspect-[4/3]"><SafeImage src={formImage?.imageUrl || images.fallbackEvent} fallbackSrc={images.fallbackEvent} alt={formEvent.title} fill className="object-cover" /></div><p className="p-3 text-xs font-black uppercase tracking-widest text-black/55">Image source: {formImage?.imageSource}{!hasFormPreset && !formEvent.imageUrl ? ' - No DJ image yet' : ''}</p></div> : null}
             <div className="mt-4"><MediaUploadField name="eventImageFiles" multiple={false} disabled={!hasBlob} label="Upload event image override" /></div>
-            <label className="mt-4 grid gap-2 text-sm font-bold">Choose existing image
-              <select name="imageUrl" defaultValue={formEvent?.imageUrl || ''} className="rounded-2xl border border-black/10 px-4 py-3">
-                <option value="">Automatic: DJ preset/category/fallback</option>
-                {media.map((item) => <option key={item.id} value={item.url}>{item.title}</option>)}
-              </select>
-            </label>
-            <label className="mt-4 grid gap-2 text-sm font-bold">Manual image URL (backup only)<input name="manualImageUrl" placeholder="https://..." defaultValue="" className="rounded-2xl border border-black/10 px-4 py-3" /></label>
           </div>
 
-          <div className="rounded-3xl border border-black/10 p-4">
-            <p className="text-sm font-black">Featured-only details</p>
-            <p className="mt-1 text-xs text-black/50">Regular nights ignore descriptions and CTAs on public cards.</p>
+          <details className="rounded-3xl border border-black/10 p-4"><summary className="cursor-pointer text-sm font-black">Featured/special event options</summary>
+            <p className="mt-3 text-xs text-black/50">Regular nights ignore descriptions and CTAs on public cards.</p>
             <div className="mt-4 grid gap-3">
               <textarea name="shortDescriptionNl" defaultValue={formEvent?.shortDescriptionNl || ''} placeholder="Short Dutch description" className="min-h-24 rounded-2xl border border-black/10 px-4 py-3" />
               <textarea name="shortDescriptionEn" defaultValue={formEvent?.shortDescriptionEn || ''} placeholder="Short English description" className="min-h-24 rounded-2xl border border-black/10 px-4 py-3" />
               <input name="ticketUrl" defaultValue={formEvent?.ticketUrl || ''} placeholder="Ticket / CTA link" className="rounded-2xl border border-black/10 px-4 py-3" />
             </div>
-          </div>
+          </details>
         </div>
 
         <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-[#f5f1ea] p-4 text-sm font-bold">
@@ -122,7 +114,7 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
           <thead className="bg-[#12070c] text-xs uppercase tracking-widest text-white/70"><tr><th className="px-4 py-3">Image</th><th className="px-4 py-3">Date</th><th className="px-4 py-3">Name</th><th className="px-4 py-3">Time</th><th className="px-4 py-3">Age</th><th className="px-4 py-3">Type</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Actions</th></tr></thead>
           <tbody className="divide-y divide-black/5">
             {events.map((event) => <tr key={event._id} className="align-middle">
-              <td className="px-4 py-4">{(() => { const resolved = resolveEventImage(event, store); return <div><div className="relative h-16 w-12 overflow-hidden rounded-xl bg-black/5"><SafeImage src={resolved.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.title} fill className="object-cover" /></div><p className="mt-1 text-[10px] font-black uppercase tracking-widest text-black/45">{resolved.imageSource}</p>{!resolved.djPreset?.defaultImageId && !event.imageUrl ? <p className="mt-1 text-[10px] font-bold text-amber-700">No DJ preset</p> : null}</div> })()}</td>
+              <td className="px-4 py-4">{(() => { const resolved = resolveEventImage(event, store); return <div><div className="relative h-16 w-12 overflow-hidden rounded-xl bg-black/5"><SafeImage src={resolved.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.title} fill className="object-cover" /></div><p className="mt-1 text-[10px] font-black uppercase tracking-widest text-black/45">{resolved.imageSource}</p>{!resolved.djImage?.imageUrl && !event.imageUrl ? <form action={saveDjImageAction} className="mt-2 grid gap-1"><input type="hidden" name="id" value={resolved.djImage?.id || ''} /><input type="hidden" name="name" value={event.title} /><input type="hidden" name="returnTo" value="/admin/events" /><label className={`rounded-xl px-2 py-1 text-[10px] font-black uppercase tracking-widest ${hasBlob ? 'cursor-pointer bg-amber-50 text-amber-800' : 'cursor-not-allowed bg-black/5 text-black/35'}`}>Set DJ image<input disabled={!hasBlob} name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" className="sr-only" /></label><button disabled={!hasBlob} className="rounded-xl bg-amber-600 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white disabled:opacity-35">Save</button></form> : null}</div> })()}</td>
               <td className="px-4 py-4 font-black">{event.date}</td>
               <td className="px-4 py-4"><div className="font-black">{event.title}</div><div className="text-xs text-black/45">{event.slug?.current}</div></td>
               <td className="px-4 py-4">{[event.startTime, event.endTime].filter(Boolean).join('–') || '—'}</td>
@@ -132,7 +124,7 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
               <td className="px-4 py-4"><div className="flex flex-wrap gap-2">
                 <Link href={`/admin/events?edit=${event._id}`} className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">Edit</Link>
                 <Link href={`/admin/events?duplicate=${event._id}`} className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">Duplicate</Link>
-                <form action={toggleEventPublishedAction}><input type="hidden" name="id" value={event._id} /><button className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">{event.published === false ? 'Publish' : 'Unpublish'}</button></form><form action={useDjPresetImageAction}><input type="hidden" name="id" value={event._id} /><button className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">Use DJ preset image</button></form>
+                <form action={toggleEventPublishedAction}><input type="hidden" name="id" value={event._id} /><button className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">{event.published === false ? 'Publish' : 'Unpublish'}</button></form><form action={useDjImageAction}><input type="hidden" name="id" value={event._id} /><button className="rounded-full border border-black/10 px-3 py-2 text-xs font-black">Use DJ image</button></form>
                 <form action={deleteEventAction}><input type="hidden" name="id" value={event._id} /><button className="rounded-full bg-red-50 px-3 py-2 text-xs font-black text-red-700">Delete</button></form>
               </div></td>
             </tr>)}

@@ -150,7 +150,7 @@ details[open] { @apply border-gold/40 bg-white/[0.085]; }
   .event-card-time {
     color: rgba(255, 255, 255, 0.76) !important;
     display: block !important;
-    font-size: 0.95rem !important;
+    font-size: 1.2rem !important;
     font-weight: 800;
     letter-spacing: 0.08em;
     line-height: 1.1;

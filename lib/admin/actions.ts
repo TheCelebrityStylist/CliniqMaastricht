@@ -29,6 +29,21 @@ async function uploadFiles(files: File[]): Promise<Array<{ url: string; name: st
   }
 }
 
+function assertImageFile(file: File) {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+  const allowedNames = /\.(jpe?g|png|webp)$/i
+  if (!allowedTypes.includes(file.type) && !allowedNames.test(file.name)) throw new Error('Only JPG, PNG and WebP images are allowed.')
+  if (file.size > 10 * 1024 * 1024) throw new Error('Image must be 10MB or smaller.')
+}
+
+async function uploadFileToPath(file: File, pathPrefix: string) {
+  assertImageFile(file)
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase()
+  const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+  const blob = await put(`${pathPrefix}/${stamp}-${Date.now()}-${safeName}`, file, { access: 'public' })
+  return blob.url
+}
+
 function mediaFromUpload(input: { url: string; name?: string; title: string; altNl?: string; altEn?: string; usage?: string[]; focalPoint?: string }): MediaAsset {
   const title = input.title || input.name || 'Cliniq photo'
   return {
@@ -162,7 +177,8 @@ export async function saveEventAction(formData: FormData) {
 
 export async function saveBulkEventsAction(formData: FormData) {
   const rows = parseBulkEventRows(String(formData.get('rows') || ''))
-  const validRows = rows.filter((row) => row.valid)
+  const existingStore = await readStore()
+  const validRows = rows.filter((row) => row.valid && !existingStore.events.some((event) => event.date === row.date))
   for (const row of validRows) {
     await upsertEvent({
       title: row.title,
@@ -179,30 +195,73 @@ export async function saveBulkEventsAction(formData: FormData) {
     })
   }
   revalidatePublic()
-  redirect(`/admin/events/bulk?saved=${validRows.length}`)
+  redirect(`/admin/bulk-events?saved=${validRows.length}`)
 }
 
 
-export async function saveDjPresetAction(formData: FormData) {
+export async function saveDjImageAction(formData: FormData) {
   const store = await readStore()
-  const id = String(formData.get('id') || slugify(String(formData.get('name') || 'dj-preset')))
-  const index = store.djPresets.findIndex((preset) => preset.id === id)
-  const preset = {
-    id,
-    name: String(formData.get('name') || 'DJ'),
-    aliases: String(formData.get('aliases') || '').split(',').map((item) => item.trim()).filter(Boolean),
-    defaultImageId: String(formData.get('defaultImageId') || ''),
-    fallbackCategory: String(formData.get('fallbackCategory') || 'dj'),
-    active: checked(formData, 'active', true),
+  const id = String(formData.get('id') || '')
+  const name = String(formData.get('name') || '').trim()
+  const returnTo = String(formData.get('returnTo') || '/admin/dj-images')
+  let dj = store.djImages.find((item) => item.id === id)
+  if (!dj && name) {
+    const normalized = name.toLowerCase().trim()
+    dj = store.djImages.find((item) => item.name.toLowerCase() === normalized || item.aliases.some((alias) => alias.toLowerCase() === normalized))
   }
-  if (index >= 0) store.djPresets[index] = preset
-  else store.djPresets.push(preset)
-  await writeStore(store)
-  revalidatePublic()
-  redirect('/admin/dj-presets?saved=1')
+  if (!dj && name) {
+    const slug = slugify(name)
+    dj = {
+      id: `dj-${slug}`,
+      name,
+      slug,
+      aliases: [],
+      imageUrl: null,
+      imageAltNl: `DJ ${name} bij CLINIQ Maastricht`,
+      imageAltEn: `DJ ${name} at CLINIQ Maastricht`,
+      active: true,
+      updatedAt: new Date().toISOString(),
+    }
+    store.djImages.push(dj)
+  }
+  if (!dj) {
+    redirect(`${returnTo}?error=missing`)
+    return
+  }
+  const file = formFiles(formData, 'image')[0]
+  if (!file) {
+    redirect(`${returnTo}?error=image-required`)
+    return
+  }
+  try {
+    const imageUrl = await uploadFileToPath(file, `dj-images/${dj.slug}`)
+    dj.imageUrl = imageUrl
+    dj.imageAltNl = `DJ ${dj.name} bij CLINIQ Maastricht`
+    dj.imageAltEn = `DJ ${dj.name} at CLINIQ Maastricht`
+    dj.updatedAt = new Date().toISOString()
+    await writeStore(store)
+    revalidatePublic()
+  } catch (error) {
+    console.error('DJ image upload failed.', error)
+    redirect(`${returnTo}?error=upload&edit=${dj.id}`)
+  }
+  redirect(`${returnTo}?saved=${dj.id}`)
 }
 
-export async function useDjPresetImageAction(formData: FormData) {
+export async function removeDjImageAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  const dj = store.djImages.find((item) => item.id === id)
+  if (dj) {
+    dj.imageUrl = null
+    dj.updatedAt = new Date().toISOString()
+    await writeStore(store)
+  }
+  revalidatePublic()
+  redirect('/admin/dj-images?removed=1')
+}
+
+export async function useDjImageAction(formData: FormData) {
   const store = await readStore()
   const id = String(formData.get('id') || '')
   const event = store.events.find((item) => item._id === id)

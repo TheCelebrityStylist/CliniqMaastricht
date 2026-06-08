@@ -36,15 +36,14 @@ function normalizeName(value?: string) {
 }
 
 export function resolveEventImage(event: { title?: string; titleNl?: string; eventType?: string; imageUrl?: string }, store: Awaited<ReturnType<typeof readStore>>) {
-  if (event.imageUrl) return { imageUrl: event.imageUrl, imageSource: 'Event image' as const }
+  if (event.imageUrl) return { imageUrl: event.imageUrl, source: 'event' as const, imageSource: 'Event image', altNl: `${event.titleNl || event.title || 'Event'} bij CLINIQ Maastricht`, altEn: `${event.title || event.titleNl || 'Event'} at CLINIQ Maastricht` }
   const eventName = normalizeName(event.titleNl || event.title)
-  const preset = store.djPresets.find((item) => item.active !== false && (normalizeName(item.name) === eventName || item.aliases.some((alias) => normalizeName(alias) === eventName)))
-  const presetMedia = preset?.defaultImageId ? store.media.find((media) => media.id === preset.defaultImageId) : null
-  if (presetMedia?.url) return { imageUrl: presetMedia.url, imageSource: 'DJ preset' as const, djPreset: preset }
-  const category = preset?.fallbackCategory || event.eventType || 'event'
+  const djImage = store.djImages.find((item) => item.active !== false && (normalizeName(item.name) === eventName || item.aliases.some((alias) => normalizeName(alias) === eventName)))
+  if (djImage?.imageUrl) return { imageUrl: djImage.imageUrl, source: 'dj' as const, imageSource: 'DJ image', altNl: djImage.imageAltNl, altEn: djImage.imageAltEn, djImage }
+  const category = event.eventType || 'event'
   const categoryMedia = store.media.find((media) => (media.usage || []).some((tag) => normalizeName(tag) === normalizeName(category)))
-  if (categoryMedia?.url) return { imageUrl: categoryMedia.url, imageSource: 'Category fallback' as const, djPreset: preset }
-  return { imageUrl: images.fallbackEvent, imageSource: 'General fallback' as const, djPreset: preset }
+  if (categoryMedia?.url) return { imageUrl: categoryMedia.url, source: 'type-fallback' as const, imageSource: 'Fallback', altNl: categoryMedia.altNl || 'CLINIQ Maastricht event', altEn: categoryMedia.altEn || 'CLINIQ Maastricht event', djImage }
+  return { imageUrl: images.fallbackEvent, source: 'general-fallback' as const, imageSource: 'Fallback', altNl: 'CLINIQ Maastricht event', altEn: 'CLINIQ Maastricht event', djImage }
 }
 
 export async function getAgendaEvents(includePast = false) {
@@ -55,11 +54,15 @@ export async function getAgendaEvents(includePast = false) {
     .filter((event) => event.published !== false)
     .filter((event) => includePast || event.date >= today)
     .sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
-    .map((event) => ({
-      ...event,
-      ...resolveEventImage(event, store),
-      relatedAlbumSlug: store.albums.find((album) => album.id === event.relatedAlbumId)?.slug,
-    }))
+    .map((event) => {
+      const resolved = resolveEventImage(event, store)
+      return {
+        ...event,
+        ...resolved,
+        imageAlt: resolved.altNl,
+        relatedAlbumSlug: store.albums.find((album) => album.id === event.relatedAlbumId)?.slug,
+      }
+    })
 }
 
 export async function getAgendaEventBySlug(slug: string) {
