@@ -3,15 +3,12 @@ import { readStore } from '@/lib/admin/store'
 import MediaUploadField from '@/components/admin/MediaUploadField'
 import SafeImage from '@/components/ui/SafeImage'
 import { images } from '@/lib/site'
-import { getDriveFolderConfig, getPhotosSyncStatus } from '@/lib/google/photosFromDrive'
 
 type MediaSearchParams = { error?: string; saved?: string; deleted?: string; tag?: string; q?: string }
-const tags = ['all', 'nightlife', 'cocktail workshop', 'event space', 'bar', 'hero', 'gallery', 'event poster']
+const tags = ['all', 'homepage', 'uitgaan', 'cocktail-workshop', 'ruimte-huren', 'event', 'album', 'bar', 'crowd', 'dj', 'workshop', 'private-event']
 
 export default async function MediaAdminPage({ searchParams }: { searchParams?: Promise<MediaSearchParams> }) {
-  const [store, query, photoSync] = await Promise.all([readStore(), searchParams, getPhotosSyncStatus()])
-  const driveConfig = getDriveFolderConfig()
-  const driveUrl = process.env.GOOGLE_DRIVE_ROOT_URL || ''
+  const [store, query] = await Promise.all([readStore(), searchParams])
   const activeTag = query?.tag || 'all'
   const search = (query?.q || '').toLowerCase().trim()
   const filteredMedia = store.media.filter((media) => {
@@ -35,17 +32,15 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
   return <div className="grid gap-8 xl:grid-cols-[1fr_440px]">
     <section>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Photos are managed in Google Drive. Add photos to the correct folder and refresh sync. The upload system below remains available only as a fallback/manual override.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Drag, drop, tag and reuse photos directly inside CLINIQ admin. No Google Drive, no URL spreadsheet, no developer workflow.</p></div>
       </div>
+      {!process.env.BLOB_READ_WRITE_TOKEN ? <p className="mt-6 rounded-2xl bg-yellow-50 p-4 text-sm font-bold text-yellow-800">Image uploads are not configured yet. Add BLOB_READ_WRITE_TOKEN in Vercel.</p> : null}
       <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-black">Google Drive sync</h2><p className="mt-2 text-sm text-black/60">Status: {photoSync.status === 'Not configured' ? 'Google sync is not configured.' : photoSync.status} · Albums: {photoSync.albumCount}</p></div><div className="flex flex-wrap gap-3"><a href="/api/photos/revalidate" className="rounded-full bg-[#f02688] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Refresh photos</a>{driveUrl ? <a href={driveUrl} target="_blank" rel="noopener noreferrer" className="rounded-full border border-black/10 px-5 py-3 text-xs font-black uppercase tracking-widest text-black/70">Open Google Drive</a> : null}</div></div>
-        <div className="mt-4 grid gap-3 text-xs text-black/60 md:grid-cols-2">
-          <p>Homepage: {driveConfig.sections.homepage.folderId || 'Missing'} · {photoSync.folderCounts.homepage || 0} photos</p>
-          <p>Uitgaan: {driveConfig.sections.uitgaan.folderId || 'Missing'} · {photoSync.folderCounts.uitgaan || 0} photos</p>
-          <p>Workshop: {driveConfig.sections.workshop.folderId || 'Missing'} · {photoSync.folderCounts.workshop || 0} photos</p>
-          <p>Event space: {driveConfig.sections['event-space'].folderId || 'Missing'} · {photoSync.folderCounts['event-space'] || 0} photos</p>
-          <p>Contact: {driveConfig.sections.contact.folderId || 'Missing'} · {photoSync.folderCounts.contact || 0} photos</p>
-          <p>Album folders: {driveConfig.albumsRootFolderId || 'Missing'} · {photoSync.albumCount} albums</p>
+        <h2 className="text-2xl font-black">Simple upload flow</h2>
+        <div className="mt-4 grid gap-3 text-sm text-black/60 md:grid-cols-3">
+          <p className="rounded-2xl bg-[#f7f1e7] p-4"><strong>1. Upload</strong><br />Drag one or many images into the upload field.</p>
+          <p className="rounded-2xl bg-[#f7f1e7] p-4"><strong>2. Tag</strong><br />Pick tags like homepage, uitgaan, event, album or workshop.</p>
+          <p className="rounded-2xl bg-[#f7f1e7] p-4"><strong>3. Reuse</strong><br />Select photos in events, pages and albums visually.</p>
         </div>
       </div>
       <form className="mt-6 flex flex-col gap-3 sm:flex-row"><input name="q" defaultValue={query?.q || ''} placeholder="Search title, alt text or tag" className="flex-1 rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-bold"/><input type="hidden" name="tag" value={activeTag}/><button className="rounded-full bg-black px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Search</button></form>
@@ -61,7 +56,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
           return <article key={media.id} className="overflow-hidden rounded-[2rem] bg-white shadow-sm">
             <div className="relative aspect-[4/3]"><SafeImage src={media.url} fallbackSrc={images.fallbackWide} alt={media.altNl || media.title} fill className="object-cover" objectPosition={media.focalPoint || 'center'} /></div>
             <div className="space-y-3 p-4">
-              <form action={updateMediaAction} className="grid gap-2"><input type="hidden" name="id" value={media.id}/><Field name="title" label="Title" defaultValue={media.title}/><Field name="altNl" label="Alt NL" defaultValue={media.altNl}/><Field name="altEn" label="Alt EN" defaultValue={media.altEn}/><Field name="usage" label="Tags" defaultValue={media.usage?.join(', ')}/><Field name="replacementUrl" label="Replace image globally with URL" placeholder="Optional Cliniq/Squarespace image URL"/><label className="grid gap-1 text-xs font-black uppercase tracking-widest text-black/55">Focal point<select name="focalPoint" defaultValue={media.focalPoint || 'center'} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm normal-case tracking-normal"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select></label><button className="rounded-full bg-black px-4 py-2 text-xs font-black uppercase tracking-widest text-white">Save image</button></form>
+              <form action={updateMediaAction} className="grid gap-2"><input type="hidden" name="id" value={media.id}/><Field name="title" label="Title" defaultValue={media.title}/><Field name="altNl" label="Alt NL" defaultValue={media.altNl}/><Field name="altEn" label="Alt EN" defaultValue={media.altEn}/><Field name="usage" label="Tags" defaultValue={media.usage?.join(', ')}/><label className="grid gap-1 text-xs font-black uppercase tracking-widest text-black/55">Replace image upload<input name="replacementFiles" type="file" accept="image/*" className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm normal-case tracking-normal" /></label><Field name="replacementUrl" label="Replace image globally with URL" placeholder="Optional Cliniq/Squarespace image URL"/><label className="grid gap-1 text-xs font-black uppercase tracking-widest text-black/55">Focal point<select name="focalPoint" defaultValue={media.focalPoint || 'center'} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm normal-case tracking-normal"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select></label><button className="rounded-full bg-black px-4 py-2 text-xs font-black uppercase tracking-widest text-white">Save image</button></form>
               <p className="text-sm text-black/60">Used by: {usage.length ? usage.join(', ') : 'Not assigned yet'}</p>
               <form action={deleteMediaAction}><input type="hidden" name="id" value={media.id} /><button className="text-xs font-black uppercase tracking-widest text-red-600 hover:text-black">Delete if unused</button></form>
             </div>
@@ -78,7 +73,7 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
         <label className="grid gap-2 text-sm font-bold">Backup: hosted Cliniq image URLs<textarea name="url" rows={4} placeholder="One Cliniq/Squarespace URL per line" className="rounded-2xl border border-black/10 bg-white px-4 py-3" /></label>
         <Field name="altNl" label="Alt text NL" />
         <Field name="altEn" label="Alt text EN" />
-        <label className="grid gap-2 text-sm font-bold">Usage tags<select name="usage" defaultValue="nightlife, hero" className="rounded-2xl border border-black/10 bg-white px-4 py-3"><option>nightlife, hero</option><option>cocktail workshop, gallery</option><option>event space, gallery</option><option>bar, cocktail workshop</option><option>event poster, nightlife</option></select></label>
+        <label className="grid gap-2 text-sm font-bold">Usage tags<select name="usage" defaultValue="nightlife, hero" className="rounded-2xl border border-black/10 bg-white px-4 py-3"><option>homepage, hero</option><option>uitgaan, crowd</option><option>cocktail-workshop, workshop</option><option>ruimte-huren, private-event</option><option>event, dj</option><option>album, gallery</option></select></label>
         <label className="grid gap-2 text-sm font-bold">Focal point<select name="focalPoint" defaultValue="center" className="rounded-2xl border border-black/10 bg-white px-4 py-3"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select></label>
         <button className="rounded-full bg-[#f02688] px-5 py-3 text-sm font-black uppercase tracking-[0.1em] text-white">Save photos</button>
       </form>

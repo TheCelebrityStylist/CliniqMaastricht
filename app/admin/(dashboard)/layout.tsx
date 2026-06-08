@@ -5,8 +5,9 @@ import { logoutAction } from '@/lib/admin/actions'
 const nav = [
   ['Dashboard', '/admin'],
   ['Events', '/admin/events'],
-  ['Sync', '/admin/sync'],
+  ['Bulk Events', '/admin/events/bulk'],
   ['Media Library', '/admin/media'],
+  ['Albums', '/admin/albums'],
   ['Pages', '/admin/pages'],
   ['FAQs', '/admin/faqs'],
   ['Forms / Leads', '/admin/leads'],
@@ -19,7 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return <div className="min-h-screen bg-[#f5f1ea] text-[#12070c]">
     <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-black/10 bg-[#12070c] p-6 text-white lg:block">
       <Link href="/admin" className="text-2xl font-black tracking-[0.35em]">CLINIQ</Link>
-      <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/50">Admin</p>
+      <p className="mt-2 text-xs uppercase tracking-[0.22em] text-white/50">Simple site editor</p>
       <nav className="mt-10 grid gap-2">
         {nav.map(([label, href]) => <Link key={href} href={href} className="rounded-2xl px-4 py-3 text-sm font-black uppercase tracking-[0.1em] text-white/70 transition hover:bg-white/10 hover:text-white">{label}</Link>)}
       </nav>

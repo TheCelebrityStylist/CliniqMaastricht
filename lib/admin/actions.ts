@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { put } from '@vercel/blob'
 import { createLead, createMedia, readStore, slugify, upsertAlbum, upsertEvent, writeStore } from './store'
 import { clearAdminCookie, hasAdminCredentials, setAdminCookie, signAdminSession, validateAdminCredentials } from './auth'
-import type { MediaAsset } from './types'
+import type { AgendaEvent, MediaAsset } from './types'
 
 function formFiles(formData: FormData, key = 'files') {
   const files = formData.getAll(key).filter((file): file is File => file instanceof File && file.size > 0)
@@ -74,33 +74,112 @@ export async function logoutAction() {
   redirect('/admin/login')
 }
 
+function checked(formData: FormData, key: string, fallback = false) {
+  const values = formData.getAll(key).map(String)
+  if (!values.length) return fallback
+  return values.includes('on') || values.includes('true')
+}
+
+function weekdayDefaults(date: string) {
+  const day = new Date(`${date}T12:00:00Z`).getUTCDay()
+  if (day === 4) return { startTime: '22:00', endTime: '02:00', ageLimit: '18+' }
+  if (day === 5 || day === 6) return { startTime: '22:00', endTime: '03:00', ageLimit: '21+' }
+  return { startTime: '', endTime: '', ageLimit: '' }
+}
+
+function normalizeArtistName(input: string) {
+  const value = input.trim()
+  const lower = value.toLowerCase()
+  if (lower === 'sidney') return 'DJ SDNX'
+  if (lower === 'len') return 'DJ Hadless'
+  if (lower === 'big rob') return 'DJ BIG ROB'
+  return value || 'CLINIQ'
+}
+
+function parseBulkEventRows(rows: string) {
+  return rows.split('\n').map((line, index) => {
+    const [dateRaw, artistRaw] = line.split(',').map((item) => item?.trim() || '')
+    const title = normalizeArtistName(artistRaw)
+    const defaults = weekdayDefaults(dateRaw)
+    return {
+      row: index + 1,
+      valid: /^\d{4}-\d{2}-\d{2}$/.test(dateRaw),
+      date: dateRaw,
+      title,
+      ...defaults,
+    }
+  }).filter((row) => row.date || row.title !== 'CLINIQ')
+}
+
 export async function saveEventAction(formData: FormData) {
+  const store = await readStore()
+  const files = formFiles(formData, 'eventImageFiles')
+  const uploaded = await uploadFiles(files)
+  const uploadedMedia = uploaded.map((item, index) => mediaFromUpload({
+    url: item.url,
+    name: item.name,
+    title: `${String(formData.get('title') || 'Event image')} ${index + 1}`,
+    usage: ['event', 'uitgaan'],
+    focalPoint: String(formData.get('imagePosition') || 'center'),
+  }))
+  if (uploadedMedia.length) {
+    store.media.unshift(...uploadedMedia)
+    await writeStore(store)
+  }
+
+  const date = String(formData.get('date') || '')
+  const defaults = weekdayDefaults(date)
+  const eventType = String(formData.get('eventType') || 'regular') as AgendaEvent['eventType']
+  const title = normalizeArtistName(String(formData.get('title') || ''))
+
   await upsertEvent({
     _id: String(formData.get('_id') || '') || undefined,
-    title: String(formData.get('title') || ''),
-    titleNl: String(formData.get('titleNl') || ''),
-    titleEn: String(formData.get('titleEn') || ''),
+    title,
+    titleNl: String(formData.get('titleNl') || '') || title,
+    titleEn: String(formData.get('titleEn') || '') || title,
     subtitleNl: String(formData.get('subtitleNl') || ''),
     subtitleEn: String(formData.get('subtitleEn') || ''),
-    date: String(formData.get('date') || ''),
-    startTime: String(formData.get('startTime') || ''),
-    endTime: String(formData.get('endTime') || ''),
-    ageLimit: String(formData.get('ageLimit') || ''),
-    shortDescriptionNl: String(formData.get('shortDescriptionNl') || ''),
-    shortDescriptionEn: String(formData.get('shortDescriptionEn') || ''),
-    fullDescriptionNl: String(formData.get('fullDescriptionNl') || ''),
-    fullDescriptionEn: String(formData.get('fullDescriptionEn') || ''),
-    ticketUrl: String(formData.get('ticketUrl') || ''),
+    date,
+    startTime: String(formData.get('startTime') || '') || defaults.startTime,
+    endTime: String(formData.get('endTime') || '') || defaults.endTime,
+    ageLimit: String(formData.get('ageLimit') || '') || defaults.ageLimit,
+    shortDescriptionNl: eventType === 'regular' ? '' : String(formData.get('shortDescriptionNl') || ''),
+    shortDescriptionEn: eventType === 'regular' ? '' : String(formData.get('shortDescriptionEn') || ''),
+    fullDescriptionNl: eventType === 'regular' ? '' : String(formData.get('fullDescriptionNl') || ''),
+    fullDescriptionEn: eventType === 'regular' ? '' : String(formData.get('fullDescriptionEn') || ''),
+    ticketUrl: eventType === 'regular' ? '' : String(formData.get('ticketUrl') || ''),
     relatedAlbumId: String(formData.get('relatedAlbumId') || ''),
-    imageUrl: String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
+    imageUrl: uploadedMedia[0]?.url || String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
     imagePosition: String(formData.get('imagePosition') || 'center'),
-    featured: formData.get('featured') === 'on',
-    eventType: String(formData.get('eventType') || 'regular') as 'regular' | 'featured' | 'special',
-    showDetailCTA: formData.get('showDetailCTA') === 'on',
-    published: formData.get('published') === 'on',
+    featured: checked(formData, 'featured'),
+    eventType,
+    showDetailCTA: eventType === 'regular' ? false : checked(formData, 'showDetailCTA'),
+    published: checked(formData, 'published', true),
   })
   revalidatePublic()
   redirect('/admin/events?saved=1')
+}
+
+export async function saveBulkEventsAction(formData: FormData) {
+  const rows = parseBulkEventRows(String(formData.get('rows') || ''))
+  const validRows = rows.filter((row) => row.valid)
+  for (const row of validRows) {
+    await upsertEvent({
+      title: row.title,
+      titleNl: row.title,
+      titleEn: row.title,
+      date: row.date,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      ageLimit: row.ageLimit,
+      eventType: 'regular',
+      featured: false,
+      showDetailCTA: false,
+      published: true,
+    })
+  }
+  revalidatePublic()
+  redirect(`/admin/events/bulk?saved=${validRows.length}`)
 }
 
 export async function saveMediaAction(formData: FormData) {
@@ -143,7 +222,7 @@ export async function saveAlbumAction(formData: FormData) {
     relatedEventId: String(formData.get('relatedEventId') || ''),
     coverImageId: String(formData.get('coverImageId') || '') || imageIds[0],
     imageIds,
-    published: formData.get('published') === 'on',
+    published: checked(formData, 'published', true),
   })
   revalidatePublic()
   redirect('/admin/albums?saved=1')
@@ -207,6 +286,15 @@ export async function toggleEventPublishedAction(formData: FormData) {
 }
 
 
+export async function deleteEventAction(formData: FormData) {
+  const store = await readStore()
+  const id = String(formData.get('id') || '')
+  store.events = store.events.filter((event) => event._id !== id)
+  await writeStore(store)
+  revalidatePublic()
+  redirect('/admin/events?deleted=1')
+}
+
 export async function deleteAlbumAction(formData: FormData) {
   const store = await readStore()
   const id = String(formData.get('id') || '')
@@ -226,7 +314,9 @@ export async function updateMediaAction(formData: FormData) {
     media.altEn = String(formData.get('altEn') || '')
     media.usage = String(formData.get('usage') || '').split(',').map((item) => item.trim()).filter(Boolean)
     media.focalPoint = String(formData.get('focalPoint') || 'center')
-    const replacementUrl = String(formData.get('replacementUrl') || '').trim()
+    const replacementFiles = formFiles(formData, 'replacementFiles')
+    const uploadedReplacement = await uploadFiles(replacementFiles)
+    const replacementUrl = uploadedReplacement[0]?.url || String(formData.get('replacementUrl') || '').trim()
     if (replacementUrl) media.url = replacementUrl
   }
   await writeStore(store)
