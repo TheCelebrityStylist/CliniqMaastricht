@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
-import { getPageContent } from '@/lib/admin/public'
+import { getPageContent, getSectionPhotoMedia } from '@/lib/admin/public'
 import JsonLd from '@/components/ui/JsonLd'
 import { eventSpaceFaqsNl as faqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
+
+export const revalidate = 600
 
 export const metadata: Metadata = {
   title: 'Ruimte Huren Maastricht | Feestzaal & Eventlocatie Cliniq — Tot 400 pers.',
@@ -58,9 +60,9 @@ const facilities = [
 ]
 
 export default async function EventSpacePage(){
-  const content = await getPageContent('event-space')
+  const [content, driveGallery] = await Promise.all([getPageContent('event-space'), getSectionPhotoMedia('event-space', imageSets.eventSpace)])
   const pageFaqs = content?.faqs?.length ? content.faqs : faqs
-  const gallery = imageSets.eventSpace.map((url) => ({ url, alt: 'Feestlocatie CLINIQ Maastricht' }))
+  const gallery = driveGallery.map((photo) => ({ url: photo.url, alt: photo.altNl || 'Feestlocatie CLINIQ Maastricht' }))
   return <>
     <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={images.redRoom} fallbackSrc={images.fallbackWide} alt="Feestzaal huren Maastricht — Cliniq evenementenlocatie tot 400 personen" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10"/><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Feestzaal & Eventlocatie Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Exclusief te huren voor feesten, bedrijfsevents en private parties. Tot 400 personen.</p><a href="#aanvraag" className="btn-primary mt-8">Vrijblijvende aanvraag</a></div></section>
 

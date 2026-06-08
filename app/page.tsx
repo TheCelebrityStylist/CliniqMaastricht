@@ -2,12 +2,14 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { images } from '@/lib/site'
-import { getAgendaEvents } from '@/lib/admin/public'
+import { getAgendaEvents, getSectionPhotoMedia } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
+
+export const revalidate = 600
 
 export const metadata: Metadata = {
   title: 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A',
@@ -33,12 +35,13 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const t = ui.nl
-  const events = (await getAgendaEvents()).slice(0, 3)
-  const photos = [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero]
+  const [events, homepagePhotos] = await Promise.all([getAgendaEvents(), getSectionPhotoMedia('homepage', [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero])])
+  const photos = homepagePhotos.map((photo) => photo.url)
+  const heroPhoto = homepagePhotos[0]?.url || images.hero
 
   return <>
     <HeroFrame className="hero-clean">
-      <SafeImage src={images.hero} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]" />
+      <SafeImage src={heroPhoto} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
       <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
         <div className="max-w-4xl">
@@ -53,7 +56,7 @@ export default async function Home() {
     <section className="event-section py-24">
       <div className="container-premium">
         <SectionIntro eyebrow="Agenda" title={t.home.eventsTitle} text="De eerstvolgende avonden bij CLINIQ." ctaHref="/uitgaan" ctaLabel={t.common.allEvents} />
-        {events.length ? <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>{events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
+        {events.length ? <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>{events.slice(0, 3).map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}</div> : <div className="image-frame mt-10 min-h-[360px] p-8"><SafeImage src={images.club} fallbackSrc={images.fallbackWide} alt="Clubavond bij CLINIQ aan de Platielstraat" fill sizes="100vw" className="-z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" /><h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3></div>}
       </div>
     </section>
 

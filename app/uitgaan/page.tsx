@@ -2,12 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents, getPhotoAlbums } from '@/lib/admin/public'
+import { getAgendaEvents, getPhotoAlbums, getSectionPhotoMedia } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import JsonLd from '@/components/ui/JsonLd'
 import { nightlifeFaqsNl as faqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
+
+export const revalidate = 600
 
 export const metadata: Metadata = {
   title: 'Uitgaan Maastricht | Club Cliniq — Donderdag, Vrijdag & Zaterdag',
@@ -27,8 +29,8 @@ export const metadata: Metadata = {
 
 
 export default async function NightlifePage() {
-  const [events, albums] = await Promise.all([getAgendaEvents(), getPhotoAlbums()])
-  const photos = [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar]
+  const [events, albums, sectionPhotos] = await Promise.all([getAgendaEvents(), getPhotoAlbums(), getSectionPhotoMedia('uitgaan', [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar])])
+  const photos = sectionPhotos.map((photo) => photo.url)
   const eventSchemas = events.map((event) => ({
     '@context': 'https://schema.org',
     '@type': 'Event',

@@ -4,6 +4,8 @@ import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import { ui } from '@/lib/i18n'
 import { COPY } from '@/lib/content'
 
+export const revalidate = 600
+
 export const metadata: Metadata = {
   title: "Foto's Cliniq Maastricht — Clubavonden, Events & Workshops",
   description: "Bekijk foto's van Cliniq Maastricht. Sfeerimpressies van clubavonden, privéfeesten, cocktail workshops en events op de Platielstraat 9A in het centrum van Maastricht.",

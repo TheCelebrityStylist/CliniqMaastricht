@@ -7,6 +7,8 @@ import { metadata } from '@/lib/seo'
 import { images } from '@/lib/site'
 import { ui } from '@/lib/i18n'
 
+export const revalidate = 600
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const album = await getPhotoAlbumBySlug(slug)

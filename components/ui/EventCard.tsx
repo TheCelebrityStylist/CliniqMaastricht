@@ -13,8 +13,10 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
   const title = (lang === 'en' ? event.titleEn || event.title : event.titleNl || event.title) || fallbackTitle
   const description = lang === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription
   const href = lang === 'en' ? `/en/nightlife/${event.slug?.current || event._id}` : `/uitgaan/${event.slug?.current || event._id}`
-  const time = `${event.startTime || '22:00'}–${event.endTime || '03:00'}`
-  const hasDetail = Boolean(event.showDetailCTA || event.featured || event.eventType === 'featured' || event.eventType === 'special')
+  const time = [event.startTime, event.endTime].filter(Boolean).join('–')
+  const detailEligible = event.eventType === 'featured' || event.eventType === 'special' || event.featured
+  const hasDetail = Boolean(detailEligible && (description || event.showDetailCTA || event.ticketUrl))
+  const shouldLinkDetail = Boolean(detailEligible && (event.showDetailCTA || event.ticketUrl))
 
   const media = <div className="event-card-media">
     <SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || `${title} bij CLINIQ Maastricht`} fill priority={priority} sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.06] contrast-[1.02] transition duration-700 group-hover:scale-105" objectPosition={event.imagePosition || 'center'} />
@@ -25,16 +27,16 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     </div>
     <div className="event-title-block">
       <h3 className="event-card-title">{title}</h3>
-      <p className="event-card-time">{time}</p>
+      {time ? <p className="event-card-time">{time}</p> : null}
     </div>
   </div>
 
   return <article className={`event-card group ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
-    {hasDetail ? <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link> : media}
+    {shouldLinkDetail ? <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link> : media}
     {hasDetail ? <div className="event-card-detail">
       {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
       <div className="mt-4 flex flex-wrap items-center gap-4">
-        <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-gold hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link>
+        {event.showDetailCTA ? <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-gold hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link> : null}
         {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
         {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
       </div>

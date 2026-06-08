@@ -3,12 +3,15 @@ import { readStore } from '@/lib/admin/store'
 import MediaUploadField from '@/components/admin/MediaUploadField'
 import SafeImage from '@/components/ui/SafeImage'
 import { images } from '@/lib/site'
+import { getDriveFolderConfig, getPhotosSyncStatus } from '@/lib/google/photosFromDrive'
 
 type MediaSearchParams = { error?: string; saved?: string; deleted?: string; tag?: string; q?: string }
 const tags = ['all', 'nightlife', 'cocktail workshop', 'event space', 'bar', 'hero', 'gallery', 'event poster']
 
 export default async function MediaAdminPage({ searchParams }: { searchParams?: Promise<MediaSearchParams> }) {
-  const [store, query] = await Promise.all([readStore(), searchParams])
+  const [store, query, photoSync] = await Promise.all([readStore(), searchParams, getPhotosSyncStatus()])
+  const driveConfig = getDriveFolderConfig()
+  const driveUrl = process.env.GOOGLE_DRIVE_ROOT_URL || ''
   const activeTag = query?.tag || 'all'
   const search = (query?.q || '').toLowerCase().trim()
   const filteredMedia = store.media.filter((media) => {
@@ -32,7 +35,18 @@ export default async function MediaAdminPage({ searchParams }: { searchParams?: 
   return <div className="grid gap-8 xl:grid-cols-[1fr_440px]">
     <section>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Upload real Cliniq images, search them, tag them and replace them globally. The public site uses these images first and branded fallbacks only when needed.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.1em] text-[#f02688]">Photos</p><h1 className="mt-3 text-5xl font-black tracking-[-0.03em]">Media Library</h1><p className="mt-3 max-w-2xl text-black/60">Photos are managed in Google Drive. Add photos to the correct folder and refresh sync. The upload system below remains available only as a fallback/manual override.</p></div>
+      </div>
+      <div className="mt-6 rounded-[2rem] bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"><div><h2 className="text-2xl font-black">Google Drive sync</h2><p className="mt-2 text-sm text-black/60">Status: {photoSync.status === 'Not configured' ? 'Google sync is not configured.' : photoSync.status} · Albums: {photoSync.albumCount}</p></div><div className="flex flex-wrap gap-3"><a href="/api/photos/revalidate" className="rounded-full bg-[#f02688] px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Refresh photos</a>{driveUrl ? <a href={driveUrl} target="_blank" rel="noopener noreferrer" className="rounded-full border border-black/10 px-5 py-3 text-xs font-black uppercase tracking-widest text-black/70">Open Google Drive</a> : null}</div></div>
+        <div className="mt-4 grid gap-3 text-xs text-black/60 md:grid-cols-2">
+          <p>Homepage: {driveConfig.sections.homepage.folderId || 'Missing'} · {photoSync.folderCounts.homepage || 0} photos</p>
+          <p>Uitgaan: {driveConfig.sections.uitgaan.folderId || 'Missing'} · {photoSync.folderCounts.uitgaan || 0} photos</p>
+          <p>Workshop: {driveConfig.sections.workshop.folderId || 'Missing'} · {photoSync.folderCounts.workshop || 0} photos</p>
+          <p>Event space: {driveConfig.sections['event-space'].folderId || 'Missing'} · {photoSync.folderCounts['event-space'] || 0} photos</p>
+          <p>Contact: {driveConfig.sections.contact.folderId || 'Missing'} · {photoSync.folderCounts.contact || 0} photos</p>
+          <p>Album folders: {driveConfig.albumsRootFolderId || 'Missing'} · {photoSync.albumCount} albums</p>
+        </div>
       </div>
       <form className="mt-6 flex flex-col gap-3 sm:flex-row"><input name="q" defaultValue={query?.q || ''} placeholder="Search title, alt text or tag" className="flex-1 rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-bold"/><input type="hidden" name="tag" value={activeTag}/><button className="rounded-full bg-black px-5 py-3 text-xs font-black uppercase tracking-widest text-white">Search</button></form>
       <div className="mt-4 flex flex-wrap gap-2">{tags.map((tag) => <a key={tag} href={`/admin/media?tag=${encodeURIComponent(tag)}${query?.q ? `&q=${encodeURIComponent(query.q)}` : ''}`} className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-widest ${activeTag === tag ? 'bg-[#f02688] text-white' : 'bg-white text-black/65 hover:bg-black hover:text-white'}`}>{tag}</a>)}</div>

@@ -5,8 +5,8 @@ import { logoutAction } from '@/lib/admin/actions'
 const nav = [
   ['Dashboard', '/admin'],
   ['Events', '/admin/events'],
+  ['Sync', '/admin/sync'],
   ['Media Library', '/admin/media'],
-  ['Albums', '/admin/albums'],
   ['Pages', '/admin/pages'],
   ['FAQs', '/admin/faqs'],
   ['Forms / Leads', '/admin/leads'],
