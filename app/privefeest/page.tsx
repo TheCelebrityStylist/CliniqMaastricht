@@ -3,8 +3,19 @@ import LandingLayout from '@/components/landing/LandingLayout'
 import { PHOTOS } from '@/lib/content'
 
 export const metadata: Metadata = {
-  title: 'Privéfeest Maastricht | Cliniq — Verjaardag & Jubileum tot 400 personen',
-  description: 'Privéfeest huren in Maastricht bij Cliniq. Verjaardag, jubileum of privé clubavond voor je groep. Exclusief gebruik, eigen bar, professionele installatie.',
+  title: 'Privéfeest Maastricht | Cliniq — Verjaardag & Jubileum tot 400 pers.',
+  description: 'Privéfeest huren in Maastricht bij Cliniq. Volledig exclusief voor jou en je gasten. Verjaardag, jubileum of privé clubavond. Tot 400 personen. Platielstraat 9A.',
+  alternates: {
+    canonical: 'https://www.cliniqmaastricht.nl/privefeest',
+  },
+  openGraph: {
+    title: 'Privéfeest Maastricht | Cliniq',
+    description: 'Volledig exclusief voor jou en je gasten. Tot 400 personen. Platielstraat 9A, Maastricht.',
+    url: 'https://www.cliniqmaastricht.nl/privefeest',
+    siteName: 'Cliniq Maastricht',
+    locale: 'nl_NL',
+    type: 'website',
+  },
 }
 
 const whatsapp = 'https://wa.me/31612530987?text=Hoi%2C%20ik%20wil%20een%20privéfeest%20plannen'
@@ -15,7 +26,7 @@ export default function PrivefeestPage() {
     hero={{
       photo: PHOTOS.crowd,
       eyebrow: 'Privéfeest Maastricht',
-      h1: 'Jouw avond. Onze club.',
+      h1: 'Privéfeest in Maastricht',
       sub: 'Volledig exclusief voor jou en je gasten. Platielstraat 9A.',
       ctaLabel: 'Plan jouw feest',
       ctaHref: whatsapp,
@@ -41,5 +52,13 @@ export default function PrivefeestPage() {
     ctaPrimary={{ label: 'Plan via WhatsApp', href: whatsapp }}
     ctaSecondary={{ label: 'Mail ons', href: 'mailto:contact@cafecliniq.com?subject=Privéfeest' }}
     quote="Je eigen clubavond zonder omwegen: duidelijk geregeld, centrale locatie, goede energie."
+    seo={{
+      heading: 'Privéfeest huren in Maastricht',
+      paragraphs: [
+        <>Cliniq Maastricht is volledig exclusief te huren voor privéfeesten. Verjaardag, jubileum of gewoon een avond met vrienden — de club is helemaal van jou. Geen andere gasten, eigen programma, eigen DJ of de onze.</>,
+        <>Tot 400 personen, inclusief professioneel geluid, licht en dansvloer. Bar inbegrepen. Catering op aanvraag.</>,
+        <>Platielstraat 9A, midden in het centrum van Maastricht. Op loopafstand van hotels, restaurants en parkeergarages.</>,
+      ],
+    }}
   />
 }

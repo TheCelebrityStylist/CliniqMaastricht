@@ -25,8 +25,41 @@ export function organizationSchema() {
 }
 
 export function localBusinessSchema() {
-  return { '@context': 'https://schema.org', '@type': ['NightClub', 'EventVenue'], name: site.name, url: site.url, telephone: site.phone, email: site.email, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country }, sameAs: [site.instagram, site.tiktok], priceRange: '€€', openingHoursSpecification: site.hours.map((h) => ({ '@type': 'OpeningHoursSpecification', description: h })) }
+  return {
+    '@context': 'https://schema.org',
+    '@type': ['NightClub', 'EventVenue'],
+    name: 'Cliniq Maastricht',
+    url: 'https://www.cliniqmaastricht.nl',
+    telephone: '+31612530987',
+    email: 'contact@cafecliniq.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Platielstraat 9A',
+      addressLocality: 'Maastricht',
+      postalCode: '6211 GV',
+      addressCountry: 'NL',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 50.8489,
+      longitude: 5.7025,
+    },
+    openingHoursSpecification: [
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Thursday', opens: '22:00', closes: '02:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday', opens: '22:00', closes: '03:00' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '22:00', closes: '03:00' },
+    ],
+    sameAs: [
+      'https://www.instagram.com/cliniqmaastricht',
+      'https://www.tiktok.com/@cliniqmaastricht',
+      'https://www.facebook.com/cliniqmaastricht',
+    ],
+    priceRange: '€€',
+    currenciesAccepted: 'EUR',
+    paymentAccepted: 'Cash, Credit Card, Debit Card',
+  }
 }
+
 
 export function faqSchema(items: { question: string; answer: string }[]) {
   return { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) }

@@ -1,14 +1,35 @@
+import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { images, site } from '@/lib/site'
+import { images } from '@/lib/site'
 import { getAgendaEvents } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
-import { cmsMetadata } from '@/lib/pageMetadata'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
 
-export async function generateMetadata() { return cmsMetadata('home', 'nl') }
+export const metadata: Metadata = {
+  title: 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A',
+  description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.',
+  alternates: {
+    canonical: 'https://www.cliniqmaastricht.nl',
+  },
+  openGraph: {
+    title: 'CLINIQ Maastricht — Club, Events & Workshops',
+    description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.',
+    url: 'https://www.cliniqmaastricht.nl',
+    siteName: 'Cliniq Maastricht',
+    locale: 'nl_NL',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CLINIQ Maastricht — Club, Events & Workshops',
+    description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.',
+  },
+}
+
 
 export default async function Home() {
   const t = ui.nl
@@ -17,12 +38,12 @@ export default async function Home() {
 
   return <>
     <HeroFrame className="hero-clean">
-      <SafeImage src={images.hero} fallbackSrc={images.fallbackHero} alt="Dansvloer van CLINIQ Maastricht met warm licht en publiek" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]" />
+      <SafeImage src={images.hero} fallbackSrc={images.fallbackHero} alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
       <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
         <div className="max-w-4xl">
           <p className="eyebrow mb-4">Platielstraat 9A</p>
-          <h1 className="hero-clean-title">CLINIQ Maastricht</h1>
+          <h1 className="hero-clean-title">Maastricht After Dark.</h1>
           <p className="hero-clean-subline">Uitgaan, events en workshops aan de Platielstraat.</p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link data-track="cta_click" className="btn-primary" href="/uitgaan">{t.common.viewAgenda}</Link><Link data-track="cta_click" className="btn-secondary" href="/fotos">{t.home.heroCta2}</Link></div>
         </div>
@@ -43,8 +64,8 @@ export default async function Home() {
     </section>
 
     <section className="container-premium space-y-8 pb-24">
-      <ServiceRow href="/cocktail-workshop" image={images.workshopBar} eyebrow="Workshop" title="Cocktail workshop" text="Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten, bedrijfsuitjes, verjaardagen en vriendengroepen." cta="Cocktail workshop bekijken" />
-      <ServiceRow href="/event-space" image={images.redRoom} eyebrow="Events" title="Ruimte huren" text="CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events." cta="Mogelijkheden bekijken" reverse />
+      <ServiceRow href="/cocktail-workshop" image={images.workshopBar} eyebrow="Workshop" title="Cocktail workshop" text={<>Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten, bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de <Link href="/cocktail-workshop" className="text-gold hover:text-white">cocktail workshops</Link>.</>} cta="Cocktail workshop bekijken" />
+      <ServiceRow href="/event-space" image={images.redRoom} eyebrow="Events" title="Ruimte huren" text={<>CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events. Meer over <Link href="/event-space" className="text-gold hover:text-white">ruimte huren</Link>.</>} cta="Mogelijkheden bekijken" reverse />
     </section>
 
     <section className="container-premium pb-24">
@@ -62,7 +83,7 @@ function SectionIntro({ eyebrow, title, text, ctaHref, ctaLabel }: { eyebrow: st
   return <div className="reveal-up flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="eyebrow">{eyebrow}</p><h2 className="h2 mt-3">{title}</h2><p className="mt-4 max-w-3xl text-lg leading-[1.65] text-white/70 md:text-xl">{text}</p></div><Link href={ctaHref} className="btn-secondary hidden shrink-0 sm:inline-flex">{ctaLabel}</Link></div>
 }
 
-function ServiceRow({ href, image, eyebrow, title, text, cta, reverse = false }: { href: string; image: string; eyebrow: string; title: string; text: string; cta: string; reverse?: boolean }) {
+function ServiceRow({ href, image, eyebrow, title, text, cta, reverse = false }: { href: string; image: string; eyebrow: string; title: string; text: ReactNode; cta: string; reverse?: boolean }) {
   return <article className="grid overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.045] lg:grid-cols-[45fr_55fr]">
     <Link href={href} className={`image-frame group min-h-[360px] rounded-none border-0 ${reverse ? 'lg:order-2' : ''}`}><SafeImage src={image} fallbackSrc={images.fallbackWide} alt={title} fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105" /></Link>
     <div className="flex flex-col justify-center p-7 md:p-10"><p className="eyebrow">{eyebrow}</p><h2 className="mt-4 max-w-3xl text-[32px] font-black leading-tight tracking-[-0.025em] md:text-[42px]">{title}</h2><p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{text}</p><Link className="btn-primary mt-8 w-fit" href={href}>{cta}</Link></div>

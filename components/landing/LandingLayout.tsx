@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { PHOTOS, SITE } from '@/lib/content'
 
@@ -32,13 +33,14 @@ interface LandingLayoutProps {
   ctaPrimary: { label: string; href: string }
   ctaSecondary: { label: string; href: string }
   quote?: string
+  seo?: { heading: string; paragraphs: ReactNode[] }
 }
 
 function externalProps(href: string) {
   return href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 }
 
-export default function LandingLayout({ meta, hero, features, steps, practical, ctaPrimary, ctaSecondary, quote }: LandingLayoutProps) {
+export default function LandingLayout({ meta, hero, features, steps, practical, ctaPrimary, ctaSecondary, quote, seo }: LandingLayoutProps) {
   return (
     <div className="min-h-screen bg-ink text-white" aria-label={meta.title}>
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-ink/95 backdrop-blur-md">
@@ -133,6 +135,16 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
           </div>
         </div>
       </section>
+
+
+      {seo ? (
+        <section className="mx-auto max-w-screen-xl px-8 pb-24 md:px-16">
+          <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div><p className="eyebrow">SEO</p><h2 className="h2 mt-4">{seo.heading}</h2></div>
+            <div className="prose-premium">{seo.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="relative overflow-hidden py-28 text-center">
         <img src={PHOTOS.crowd} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" style={{ filter: 'brightness(0.2) saturate(0.75)' }} />

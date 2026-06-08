@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
@@ -6,26 +7,51 @@ import { EventCard } from '@/components/ui/EventCard'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import JsonLd from '@/components/ui/JsonLd'
 import { nightlifeFaqsNl as faqs } from '@/lib/faqs'
-import { cmsMetadata } from '@/lib/pageMetadata'
 import SafeImage from '@/components/ui/SafeImage'
-import { SEO_TEXT } from '@/lib/content'
 
-export async function generateMetadata() { return cmsMetadata('nightlife', 'nl') }
+export const metadata: Metadata = {
+  title: 'Uitgaan Maastricht | Club Cliniq — Donderdag, Vrijdag & Zaterdag',
+  description: 'Cliniq Maastricht is hét adres voor een avondje stappen. Donderdag 18+, vrijdag en zaterdag 21+, open vanaf 22:00 aan de Platielstraat 9A in het centrum van Maastricht.',
+  alternates: {
+    canonical: 'https://www.cliniqmaastricht.nl/uitgaan',
+  },
+  openGraph: {
+    title: 'Uitgaan Maastricht | Club Cliniq',
+    description: 'Donderdag 18+, vrijdag en zaterdag 21+, open vanaf 22:00. Platielstraat 9A, Maastricht.',
+    url: 'https://www.cliniqmaastricht.nl/uitgaan',
+    siteName: 'Cliniq Maastricht',
+    locale: 'nl_NL',
+    type: 'website',
+  },
+}
+
 
 export default async function NightlifePage() {
   const [events, albums] = await Promise.all([getAgendaEvents(), getPhotoAlbums()])
   const photos = [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar]
   const eventSchemas = events.map((event) => ({
+    '@context': 'https://schema.org',
     '@type': 'Event',
-    name: event.titleNl || event.title,
-    startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
-    endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
+    name: `${event.titleNl || event.title} bij Cliniq Maastricht`,
+    startDate: `${event.date}T22:00:00+01:00`,
+    location: {
+      '@type': 'Place',
+      name: 'Cliniq Maastricht',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Platielstraat 9A',
+        addressLocality: 'Maastricht',
+        postalCode: '6211 GV',
+        addressCountry: 'NL',
+      },
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'Cliniq Maastricht',
+      url: 'https://www.cliniqmaastricht.nl',
+    },
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-    image: event.imageUrl ? [event.imageUrl] : undefined,
-    description: event.fullDescriptionNl || event.shortDescriptionNl || event.shortDescription,
-    url: `${site.url}/uitgaan/${event.slug?.current || event._id}`,
-    location: { '@type': 'Place', name: site.name, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country } },
   }))
 
   return <>
@@ -43,11 +69,11 @@ export default async function NightlifePage() {
 
     <section className="container-premium pb-24"><p className="eyebrow">Praktisch</p><h2 className="h2 mt-4">Goed om te weten</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Practical title="Openingstijden" text="CLINIQ is normaal geopend op donderdag, vrijdag en zaterdag. Controleer per event de actuele tijden." /><Practical title="Minimumleeftijd" text="De leeftijd kan per avond verschillen. Neem altijd een geldig ID mee." /><Practical title="Deurbeleid" text="We letten op sfeer, veiligheid en respect. Kom op tijd en verzorgd." /><Practical title="Lockers" text="Lockers regel je via de officiële lockerlink op de website." /><Practical title="Locatie" text="Platielstraat 9A, op loopafstand van Vrijthof, Markt en uitgaansstraten." /></div></section>
 
-    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan in Maastricht</h2></div><div className="prose-premium">{SEO_TEXT.uitgaan.nl.split('\n\n').map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<p><Link href="/cocktail-workshop" className="text-gold hover:text-white">Cocktail workshop Maastricht</Link> · <Link href="/event-space" className="text-gold hover:text-white">ruimte huren Maastricht</Link> · <Link href="/fotos" className="text-gold hover:text-white">foto’s</Link> · <Link href="/contact" className="text-gold hover:text-white">contact</Link></p></div></div></section>
+    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Uitgaan in Maastricht</h2></div><div className="prose-premium"><p>Cliniq Maastricht is hét adres voor een avondje stappen in het centrum. Drie avonden per week open — donderdag, vrijdag en zaterdag — aan de Platielstraat 9A, op loopafstand van de Vrijthof en het Onze-Lieve-Vrouweplein.</p><p>Donderdag is voor iedereen vanaf 18 jaar. Vrijdag en zaterdag (21+) trekt Cliniq een gemengd publiek van studenten, locals en bezoekers uit de regio. Het muziekprogramma wisselt per avond — van house en tech-house tot urban en pop.</p><p>Dresscode geldt: kom er netjes bij. Tracksuits en sportschoenen zijn niet welkom. Neem altijd een geldig legitimatiebewijs mee.</p><p>Vrijgezellenavond of groepsuitje plannen? Cliniq is ook beschikbaar voor privéfeesten en exclusieve groepsboekingen. Vraag vrijblijvend via het contactformulier of WhatsApp.</p></div></div></section>
 
     <section className="container-premium pb-24"><div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Maastricht nightlife</p><h2 className="h2 mt-4">Voor groepen, vrienden en late plannen</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">CLINIQ zit precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.</p></div><div className="space-y-5 text-lg leading-[1.7] text-white/72"><p>Wie zoekt naar uitgaan in Maastricht, club Maastricht, nachtleven Maastricht of stappen met vrienden, zoekt meestal geen uitleg van drie alinea’s voordat de avond begint. Je wilt weten wanneer er iets gebeurt, hoe laat je moet komen, wat de sfeer is en of je met je groep goed zit. Daarom houdt CLINIQ de agenda duidelijk en praktisch.</p><p>De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of verzamelen en daarna willen doorpakken. Het Vrijthof, de Markt, hotels, parkeergarages en andere uitgaansplekken liggen dichtbij. Dat maakt CLINIQ geschikt voor spontane avonden uit, geplande verjaardagen, vrijgezellenavonden en groepen die in Maastricht willen starten zonder extra omweg.</p><p>Kom op tijd, neem een geldig ID mee en check per event de minimumleeftijd, openingstijden en eventuele ticketinformatie. Voor grotere groepen of een besloten invulling kun je ook contact opnemen over ruimte huren of een private event.</p></div></div></section>
 
-    <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Veelgestelde vragen</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></section>
+    <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Veelgestelde vragen</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer"><h3 className="inline font-black">{f.question}</h3></summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></section>
     <JsonLd data={faqSchema(faqs)} /><JsonLd data={{ '@context': 'https://schema.org', '@graph': eventSchemas }} />
   </>
 }
