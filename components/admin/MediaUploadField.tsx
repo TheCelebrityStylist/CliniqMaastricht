@@ -4,7 +4,13 @@ import { ChangeEvent, DragEvent, useRef, useState } from 'react'
 
 type Preview = { name: string; url: string }
 
-export default function MediaUploadField({ name = 'files' }: { name?: string }) {
+type MediaUploadFieldProps = {
+  name?: string
+  multiple?: boolean
+  label?: string
+}
+
+export default function MediaUploadField({ name = 'files', multiple = true, label }: MediaUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [previews, setPreviews] = useState<Preview[]>([])
 
@@ -21,8 +27,8 @@ export default function MediaUploadField({ name = 'files' }: { name?: string }) 
 
   return <div className="grid gap-3">
     <label onDragOver={(event) => event.preventDefault()} onDrop={onDrop} className="grid cursor-pointer gap-2 rounded-3xl border-2 border-dashed border-black/20 bg-[#f7f1e7] px-4 py-10 text-center text-sm font-bold transition hover:border-[#f02688] hover:bg-[#fff7ea]">
-      Drag & drop images here, or click to select multiple photos
-      <input ref={inputRef} name={name} type="file" accept="image/*" multiple className="sr-only" onChange={(event: ChangeEvent<HTMLInputElement>) => updatePreviews(event.currentTarget.files)} />
+      {label || (multiple ? 'Drag & drop images here, or click to select multiple photos' : 'Drag & drop an image here, or click to select one photo')}
+      <input ref={inputRef} name={name} type="file" accept="image/*" multiple={multiple} className="sr-only" onChange={(event: ChangeEvent<HTMLInputElement>) => updatePreviews(event.currentTarget.files)} />
     </label>
     {previews.length ? <div className="grid grid-cols-4 gap-2">{previews.map((preview) => <div key={preview.url} className="overflow-hidden rounded-xl bg-black/10"><img src={preview.url} alt={preview.name} className="aspect-square w-full object-cover" /><p className="truncate p-1 text-[10px] text-black/55">{preview.name}</p></div>)}</div> : null}
   </div>
