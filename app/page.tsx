@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { images } from '@/lib/site'
-import { getAgendaEvents, getSectionPhotoMedia } from '@/lib/admin/public'
+import { getAgendaEvents, getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
@@ -11,33 +11,42 @@ import ClosingCTA from '@/components/layout/ClosingCTA'
 
 export const revalidate = 600
 
-export const metadata: Metadata = {
-  title: 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A',
-  description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.',
-  alternates: {
-    canonical: 'https://www.cliniqmaastricht.nl',
-  },
-  openGraph: {
-    title: 'CLINIQ Maastricht — Club, Events & Workshops',
-    description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.',
-    url: 'https://www.cliniqmaastricht.nl',
-    siteName: 'Cliniq Maastricht',
-    locale: 'nl_NL',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'CLINIQ Maastricht — Club, Events & Workshops',
-    description: 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoSettings('home', 'nl')
+  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A'
+  const description = seo?.metaDescription || 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
+  const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
+  const ogDescription = seo?.ogDescription || 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.'
+  const images = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
+  return {
+    title,
+    description,
+    alternates: { canonical: 'https://www.cliniqmaastricht.nl' },
+    openGraph: {
+      title: ogTitle,
+      description: ogDescription,
+      url: 'https://www.cliniqmaastricht.nl',
+      siteName: 'Cliniq Maastricht',
+      locale: 'nl_NL',
+      type: 'website',
+      images,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description: ogDescription,
+      images: seo?.socialImageUrl ? [seo.socialImageUrl] : undefined,
+    },
+  }
 }
+
 
 
 export default async function Home() {
   const t = ui.nl
-  const [events, homepagePhotos] = await Promise.all([getAgendaEvents(), getSectionPhotoMedia('homepage', [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero])])
-  const photos = homepagePhotos.map((photo) => photo.url)
-  const heroPhoto = homepagePhotos[0]?.url || images.hero
+  const [events, pageContent, homepagePhotos] = await Promise.all([getAgendaEvents(), getPageContent('home'), getSectionPhotoMedia('homepage', [images.crowd, images.redCrowd, images.party, images.club, images.contactInterior, images.hero])])
+  const photos = (pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos).map((photo) => photo.url)
+  const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
 
   return <>
     <HeroFrame className="hero-clean">

@@ -55,6 +55,7 @@ export default async function EventsAdminPage({ searchParams }: { searchParams?:
       <form action={saveEventAction} className="mt-8 grid gap-6">
         {editing ? <input type="hidden" name="_id" value={editing._id} /> : null}
         {formEvent?.imageUrl ? <input type="hidden" name="imageUrl" value={formEvent.imageUrl} /> : null}
+        {formEvent?.imageId ? <input type="hidden" name="imageId" value={formEvent.imageId} /> : null}
         <datalist id="artists">{quickArtists.map((artist) => <option key={artist} value={artist} />)}</datalist>
         <div className="grid gap-4 lg:grid-cols-4">
           <label className="grid gap-2 text-sm font-bold lg:col-span-2">Event name / DJ

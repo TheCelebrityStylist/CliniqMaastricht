@@ -1,5 +1,6 @@
 import { readStore } from '@/lib/admin/store'
 import { saveSeoAction } from '@/lib/admin/actions'
+import MediaUploadField from '@/components/admin/MediaUploadField'
 
 const base = 'https://www.cliniqmaastricht.nl'
 type RecommendedSeo = { title: string; description: string; ogTitle: string; ogDescription: string; canonical: string }
@@ -51,6 +52,7 @@ export default async function SeoAdminPage({ searchParams }: { searchParams?: Pr
   const saved = store.seo.find((seo) => seo.pageKey === pageKey && seo.language === language)
   const defaults = recommendedFor(pageKey, language)
   const useRecommended = params?.recommended === '1'
+  const hasBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
   const values = {
     seoTitle: useRecommended ? defaults.title : saved?.seoTitle || defaults.title,
     metaDescription: useRecommended ? defaults.description : saved?.metaDescription || defaults.description,
@@ -99,6 +101,7 @@ export default async function SeoAdminPage({ searchParams }: { searchParams?: Pr
         <Area name="ogDescription" label="OG description" defaultValue={values.ogDescription}/>
         <Field name="canonicalUrl" label="Canonical URL" defaultValue={values.canonicalUrl}/>
         <Select name="socialImageId" label="Social image" value={values.socialImageId} options={[["","Default"],...store.media.map((m) => [m.id,m.title])]}/>
+        <MediaUploadField name="seoImageFiles" multiple={false} disabled={!hasBlob} label="Upload new OG image" />
         <button className="min-h-11 rounded-full bg-[#f02688] px-5 py-3 text-sm font-black uppercase tracking-[0.1em] text-white">Save SEO</button>
       </form>
     </aside>

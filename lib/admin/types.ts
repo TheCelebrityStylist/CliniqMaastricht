@@ -3,12 +3,17 @@ export type Lang = 'nl' | 'en'
 export type MediaAsset = {
   id: string
   url: string
+  pathname?: string
   title: string
   altNl?: string
   altEn?: string
+  tags?: string[]
   usage?: string[]
   focalPoint?: string
+  contentType?: string
+  size?: number
   createdAt: string
+  updatedAt?: string
   recommendedPageUsage?: string[]
   fallbackPriority?: number
 }
@@ -37,6 +42,7 @@ export type AgendaEvent = {
   eventType?: 'regular' | 'featured' | 'special' | 'private'
   showDetailCTA?: boolean
   published?: boolean
+  imageId?: string
   imageUrl?: string
   imageAlt?: string
   imagePosition?: string
@@ -46,9 +52,11 @@ export type AgendaEvent = {
 
 export type Faq = { id: string; pageKey: string; language: Lang; question: string; answer: string; published: boolean; order: number }
 export type PageContent = { slug: string; heroTitle?: string; heroSubtitle?: string; price?: string; minimumGroupSize?: number; capacity?: string; ctaLabel?: string; secondaryCtaLabel?: string; body?: string; faqs?: { question: string; answer: string }[]; images?: { url: string; alt?: string; focalPoint?: string }[] }
-export type EditablePage = { key: string; titleNl: string; titleEn: string; heroTitleNl?: string; heroTitleEn?: string; heroSubtitleNl?: string; heroSubtitleEn?: string; bodyNl?: string; bodyEn?: string; primaryCtaNl?: string; primaryCtaEn?: string; secondaryCtaNl?: string; secondaryCtaEn?: string; heroImageId?: string; galleryImageIds?: string[]; price?: string; minimumGroupSize?: number; capacity?: string }
-export type PhotoAlbum = { id: string; slug: string; titleNl: string; titleEn?: string; descriptionNl?: string; descriptionEn?: string; date: string; relatedEventId?: string; coverImageId?: string; imageIds: string[]; published: boolean; createdAt: string }
-export type DjImage = { id: string; name: string; slug: string; aliases: string[]; imageUrl: string | null; imageAltNl: string; imageAltEn: string; active: boolean; updatedAt: string }
+export type PageGalleryImage = { imageId: string; imageUrl: string; altNl?: string; altEn?: string; order: number }
+export type EditablePage = { key: string; titleNl: string; titleEn: string; heroTitleNl?: string; heroTitleEn?: string; heroSubtitleNl?: string; heroSubtitleEn?: string; bodyNl?: string; bodyEn?: string; primaryCtaNl?: string; primaryCtaEn?: string; secondaryCtaNl?: string; secondaryCtaEn?: string; heroImageId?: string; heroImageUrl?: string; galleryImageIds?: string[]; galleryImages?: PageGalleryImage[]; price?: string; minimumGroupSize?: number; capacity?: string }
+export type AlbumPhoto = { imageId: string; imageUrl: string; altNl?: string; altEn?: string; order: number }
+export type PhotoAlbum = { id: string; slug: string; titleNl: string; titleEn?: string; descriptionNl?: string; descriptionEn?: string; date: string; relatedEventId?: string; coverImageId?: string; coverImageUrl?: string; imageIds: string[]; photos?: AlbumPhoto[]; published: boolean; createdAt: string; updatedAt?: string }
+export type DjImage = { id: string; name: string; slug: string; aliases: string[]; imageId?: string; imageUrl: string | null; imageAltNl: string; imageAltEn: string; active: boolean; updatedAt: string }
 export type SeoSettings = { pageKey: string; language: Lang; seoTitle?: string; metaDescription?: string; ogTitle?: string; ogDescription?: string; socialImageId?: string; canonicalUrl?: string }
 export type Lead = { id: string; createdAt: string; formType: 'contact' | 'workshop' | 'event-space' | 'job'; status: 'new' | 'contacted' | 'handled' | 'archived' | 'in-progress'; sourcePage?: string; name: string; email: string; phone?: string; message: string; payload?: Record<string, unknown>; notes?: string }
 export type Job = { _id: string; title: string; type?: string; description?: string; requirements?: string[]; published?: boolean }

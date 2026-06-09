@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
-import { getAgendaEvents, getPhotoAlbums, getSectionPhotoMedia } from '@/lib/admin/public'
+import { getAgendaEvents, getPageContent, getPhotoAlbums, getSectionPhotoMedia } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import JsonLd from '@/components/ui/JsonLd'
@@ -29,8 +29,9 @@ export const metadata: Metadata = {
 
 
 export default async function NightlifePage() {
-  const [events, albums, sectionPhotos] = await Promise.all([getAgendaEvents(), getPhotoAlbums(), getSectionPhotoMedia('uitgaan', [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar])])
-  const photos = sectionPhotos.map((photo) => photo.url)
+  const [events, albums, pageContent, sectionPhotos] = await Promise.all([getAgendaEvents(), getPhotoAlbums(), getPageContent('nightlife'), getSectionPhotoMedia('uitgaan', [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar])])
+  const photos = (pageContent?.gallery?.length ? pageContent.gallery : sectionPhotos).map((photo) => photo.url)
+  const heroImage = pageContent?.imageUrl || images.redCrowd
   const eventSchemas = events.map((event) => ({
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -54,11 +55,12 @@ export default async function NightlifePage() {
     },
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    image: event.imageUrl ? [event.imageUrl] : undefined,
   }))
 
   return <>
     <section className="hero-section relative min-h-[82vh] overflow-hidden pt-36">
-      <SafeImage src={images.redCrowd} fallbackSrc={images.fallbackHero} alt="Uitgaan bij CLINIQ Maastricht met rood en blauw licht" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
+      <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="Uitgaan bij CLINIQ Maastricht met rood en blauw licht" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/60 to-black/25" />
       <div className="container-premium py-24"><p className="eyebrow mb-4">Cliniq — Platielstraat 9A</p><h1 className="h1 max-w-5xl">Uitgaan in<br/>Maastricht.</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00. Platielstraat 9A, midden in het centrum.</p></div>
     </section>

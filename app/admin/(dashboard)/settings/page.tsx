@@ -5,6 +5,9 @@ export default async function SettingsAdminPage() {
   const store = await readStore()
   const s = store.settings
   const uploadsActive = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+  const latestImage = store.media[0]
+  const customDjImages = store.djImages.filter((dj) => dj.imageUrl).length
+  const customPageHeroes = store.pages.filter((page) => page.heroImageId || page.heroImageUrl).length
 
   return <div className="grid max-w-4xl gap-6">
     <section className="rounded-[2rem] bg-white p-6 shadow-sm">
@@ -15,6 +18,21 @@ export default async function SettingsAdminPage() {
         {uploadsActive ? <p className="mt-2 text-sm font-bold">Vercel Blob uploads are active. DJ images, page images and albums can be uploaded from the admin.</p> : <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm font-bold"><li>Go to Vercel</li><li>Open project</li><li>Settings</li><li>Environment Variables</li><li>Add BLOB_READ_WRITE_TOKEN</li><li>Redeploy</li></ol>}
       </div>
       <details className="mt-5 rounded-3xl border border-black/10 p-5"><summary className="cursor-pointer font-black">Advanced · Optional import tools</summary><div className="mt-4 grid gap-3"><p className="text-sm text-black/60">Optional one-time import from Google Drive. This is not sync and not daily content management.</p><input disabled placeholder="https://drive.google.com/drive/folders/1dNwH8AbAKTq0TfACVbnbE8n7Tu5Pbgnl" className="rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-sm" /><p className="text-xs text-black/45">Could not import this folder. Make the folder public or upload the images directly.</p></div></details>
+    </section>
+
+
+    <section className="rounded-[2rem] bg-white p-6 shadow-sm">
+      <h2 className="text-2xl font-black">Image Upload Debug</h2>
+      <div className="mt-5 grid gap-3 text-sm font-bold sm:grid-cols-2">
+        <p>Blob token configured: {uploadsActive ? 'yes' : 'no'}</p>
+        <p>Last upload status: {latestImage ? 'saved' : 'no uploads yet'}</p>
+        <p>Last saved image URL: {latestImage?.url || '—'}</p>
+        <p>Storage provider: Vercel Blob + admin store</p>
+        <p>Image records: {store.media.length}</p>
+        <p>DJ images with custom images: {customDjImages}</p>
+        <p>Pages with custom hero images: {customPageHeroes}</p>
+        <p>Albums: {store.albums.length}</p>
+      </div>
     </section>
 
     <section className="rounded-[2rem] bg-white p-6 shadow-sm">

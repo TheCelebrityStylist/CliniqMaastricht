@@ -4,7 +4,7 @@ import type { AgendaEvent } from '@/lib/admin/types'
 import { images } from '@/lib/site'
 import SafeImage from './SafeImage'
 
-type EventWithAlbum = AgendaEvent & { relatedAlbumSlug?: string }
+type EventWithAlbum = AgendaEvent & { relatedAlbumSlug?: string; source?: string; imageSource?: string }
 
 export function EventCard({ event, lang = 'nl', priority = false }: { event: EventWithAlbum; lang?: 'nl' | 'en'; priority?: boolean }) {
   const parsedDate = new Date(`${event.date}T00:00:00`)
@@ -31,7 +31,7 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     </div>
   </div>
 
-  return <article className={`event-card group ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
+  return <article data-image-source={event.source || event.imageSource || 'unknown'} className={`event-card group ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
     {shouldLinkDetail ? <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link> : media}
     {hasDetail ? <div className="event-card-detail">
       {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}

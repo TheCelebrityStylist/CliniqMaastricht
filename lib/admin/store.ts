@@ -205,6 +205,7 @@ export async function upsertEvent(input: Partial<AgendaEvent> & { title: string;
     eventType: input.eventType || (input.featured ? 'featured' : 'regular'),
     showDetailCTA: Boolean(input.showDetailCTA),
     published: input.published !== false,
+    imageId: input.imageId,
     imageUrl: input.imageUrl,
     imageAlt: input.imageAlt,
     imagePosition: input.imagePosition || 'center',
@@ -220,7 +221,8 @@ export async function upsertEvent(input: Partial<AgendaEvent> & { title: string;
 
 export async function createMedia(input: Pick<MediaAsset, 'url' | 'title' | 'altNl' | 'altEn'> & { usage?: string[]; focalPoint?: string }) {
   const store = await readStore()
-  const media: MediaAsset = { id: slugify(`${input.title}-${Date.now()}`), url: input.url, title: input.title, altNl: input.altNl, altEn: input.altEn, usage: input.usage || [], focalPoint: input.focalPoint || 'center', createdAt: new Date().toISOString() }
+  const now = new Date().toISOString()
+  const media: MediaAsset = { id: slugify(`${input.title}-${Date.now()}`), url: input.url, title: input.title, altNl: input.altNl, altEn: input.altEn, tags: input.usage || [], usage: input.usage || [], focalPoint: input.focalPoint || 'center', createdAt: now, updatedAt: now }
   store.media.unshift(media)
   await writeStore(store)
   return media
@@ -240,9 +242,12 @@ export async function upsertAlbum(input: Partial<PhotoAlbum> & { titleNl: string
     date: input.date,
     relatedEventId: input.relatedEventId,
     coverImageId: input.coverImageId || input.imageIds?.[0],
+    coverImageUrl: input.coverImageUrl,
     imageIds: input.imageIds || [],
+    photos: input.photos || (input.imageIds || []).map((imageId, index) => ({ imageId, imageUrl: '', order: index })),
     published: input.published !== false,
     createdAt: input.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   }
   const index = store.albums.findIndex((item) => item.id === id)
   if (index >= 0) store.albums[index] = album

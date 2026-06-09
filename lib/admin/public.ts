@@ -72,8 +72,11 @@ export async function getAgendaEventBySlug(slug: string) {
 
 export async function getSectionPhotoMedia(section: PhotoSection, fallbackUrls: string[] = []) {
   const store = await readStore()
+  const pageKey = section === 'homepage' ? 'home' : section === 'workshop' ? 'cocktail-workshop' : section === 'uitgaan' ? 'nightlife' : section
+  const page = store.pages.find((item) => item.key === pageKey)
+  const pageMedia = (page?.galleryImageIds || []).map((id) => store.media.find((item) => item.id === id)).filter(Boolean) as MediaAsset[]
   const media = store.media.filter((item) => matchesSection(item, section))
-  return media.length ? media : fallbackMedia(section, fallbackUrls)
+  return pageMedia.length ? pageMedia : media.length ? media : fallbackMedia(section, fallbackUrls)
 }
 
 export async function getPhotoAlbums(includeDrafts = false) {
@@ -82,8 +85,10 @@ export async function getPhotoAlbums(includeDrafts = false) {
     .filter((album) => includeDrafts || album.published)
     .sort((a, b) => b.date.localeCompare(a.date))
     .map((album) => {
-      const cover = store.media.find((media) => media.id === album.coverImageId) || store.media.find((media) => album.imageIds.includes(media.id))
-      const photos = album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[]
+      const cover = store.media.find((media) => media.id === album.coverImageId) || store.media.find((media) => album.imageIds.includes(media.id)) || (album.coverImageUrl ? { id: `${album.id}-cover`, url: album.coverImageUrl, title: album.titleNl, altNl: album.titleNl, altEn: album.titleEn, usage: ['album'], createdAt: album.createdAt } as MediaAsset : undefined)
+      const mediaPhotos = album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[]
+      const inlinePhotos = (album.photos || []).filter((photo) => photo.imageUrl).map((photo) => ({ id: photo.imageId, url: photo.imageUrl, title: album.titleNl, altNl: photo.altNl || album.titleNl, altEn: photo.altEn || album.titleEn || album.titleNl, usage: ['album'], createdAt: album.createdAt })) as MediaAsset[]
+      const photos = mediaPhotos.length ? mediaPhotos : inlinePhotos
       return { ...album, cover, photos }
     })
 }
@@ -108,7 +113,8 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
     .map(({ question, answer }) => ({ question, answer }))
   const image = store.media.find((item) => item.id === page.heroImageId)
   const gallery = (page.galleryImageIds || []).map((id) => store.media.find((item) => item.id === id)).filter(Boolean) as MediaAsset[]
-  return { ...page, faqs: pageFaqs, imageUrl: image?.url, gallery }
+  const inlineGallery = (page.galleryImages || []).filter((item) => item.imageUrl).map((item) => ({ id: item.imageId, url: item.imageUrl, title: page.titleNl, altNl: item.altNl || page.titleNl, altEn: item.altEn || page.titleEn, usage: [page.key, 'gallery'], createdAt: new Date().toISOString() })) as MediaAsset[]
+  return { ...page, faqs: pageFaqs, imageUrl: image?.url || page.heroImageUrl, gallery: gallery.length ? gallery : inlineGallery }
 }
 
 export async function getFaqs(pageKey: string, language: Lang = 'nl') {

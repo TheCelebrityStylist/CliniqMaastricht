@@ -62,9 +62,11 @@ const facilities = [
 export default async function EventSpacePage(){
   const [content, driveGallery] = await Promise.all([getPageContent('event-space'), getSectionPhotoMedia('event-space', imageSets.eventSpace)])
   const pageFaqs = content?.faqs?.length ? content.faqs : faqs
-  const gallery = driveGallery.map((photo) => ({ url: photo.url, alt: photo.altNl || 'Feestlocatie CLINIQ Maastricht' }))
+  const gallerySource = content?.gallery?.length ? content.gallery : driveGallery
+  const gallery = gallerySource.map((photo) => ({ url: photo.url, alt: photo.altNl || 'Feestlocatie CLINIQ Maastricht' }))
+  const heroImage = content?.imageUrl || images.redRoom
   return <>
-    <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={images.redRoom} fallbackSrc={images.fallbackWide} alt="Feestzaal huren Maastricht — Cliniq evenementenlocatie tot 400 personen" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10"/><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Feestzaal & Eventlocatie Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Exclusief te huren voor feesten, bedrijfsevents en private parties. Tot 400 personen.</p><a href="#aanvraag" className="btn-primary mt-8">Vrijblijvende aanvraag</a></div></section>
+    <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={heroImage} fallbackSrc={images.fallbackWide} alt="Feestzaal huren Maastricht — Cliniq evenementenlocatie tot 400 personen" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10"/><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Feestzaal & Eventlocatie Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Exclusief te huren voor feesten, bedrijfsevents en private parties. Tot 400 personen.</p><a href="#aanvraag" className="btn-primary mt-8">Vrijblijvende aanvraag</a></div></section>
 
     <section className="container-premium py-24"><p className="eyebrow">Event types</p><h2 className="h2 mt-4">Waarvoor kun je CLINIQ huren?</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{eventTypes.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
 

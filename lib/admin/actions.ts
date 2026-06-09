@@ -2,8 +2,8 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { put } from '@vercel/blob'
-import { createLead, createMedia, readStore, slugify, upsertAlbum, upsertEvent, writeStore } from './store'
+import { uploadImage, type UploadedImage } from '@/lib/uploads/uploadImage'
+import { createLead, readStore, slugify, upsertEvent, writeStore } from './store'
 import { clearAdminCookie, hasAdminCredentials, setAdminCookie, signAdminSession, validateAdminCredentials } from './auth'
 import type { AgendaEvent, MediaAsset } from './types'
 
@@ -14,47 +14,38 @@ function formFiles(formData: FormData, key = 'files') {
   return files
 }
 
-async function uploadFiles(files: File[]): Promise<Array<{ url: string; name: string }>> {
+async function uploadFiles(files: File[], pathPrefix = 'cliniq'): Promise<Array<UploadedImage & { name: string }>> {
   if (!files.length) return []
   try {
     return await Promise.all(files.map(async (file) => {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
-      const blob = await put(`cliniq/${Date.now()}-${safeName}`, file, { access: 'public' })
-      return { url: blob.url, name: file.name }
+      const uploaded = await uploadImage(file, pathPrefix)
+      console.info('[image-upload] blob URL returned', { url: uploaded.url, pathname: uploaded.pathname })
+      return { ...uploaded, name: file.name }
     }))
   } catch (error) {
-    console.error('Vercel Blob upload failed.', error)
-    redirect('/admin/media?error=blob-token')
-    return []
+    console.error('[image-upload] upload failed', error)
+    throw error
   }
 }
 
-function assertImageFile(file: File) {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
-  const allowedNames = /\.(jpe?g|png|webp)$/i
-  if (!allowedTypes.includes(file.type) && !allowedNames.test(file.name)) throw new Error('Only JPG, PNG and WebP images are allowed.')
-  if (file.size > 10 * 1024 * 1024) throw new Error('Image must be 10MB or smaller.')
-}
-
-async function uploadFileToPath(file: File, pathPrefix: string) {
-  assertImageFile(file)
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase()
-  const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '')
-  const blob = await put(`${pathPrefix}/${stamp}-${Date.now()}-${safeName}`, file, { access: 'public' })
-  return blob.url
-}
-
-function mediaFromUpload(input: { url: string; name?: string; title: string; altNl?: string; altEn?: string; usage?: string[]; focalPoint?: string }): MediaAsset {
+function mediaFromUpload(input: (Partial<UploadedImage> & { url: string; name?: string; title: string; altNl?: string; altEn?: string; usage?: string[]; focalPoint?: string })): MediaAsset {
   const title = input.title || input.name || 'Cliniq photo'
+  const now = new Date().toISOString()
+  const usage = input.usage || []
   return {
     id: slugify(`${title}-${Date.now()}-${Math.random().toString(16).slice(2)}`),
     url: input.url,
+    pathname: input.pathname,
     title,
     altNl: input.altNl || `${title} bij Cliniq Maastricht`,
     altEn: input.altEn || `${title} at Cliniq Maastricht`,
-    usage: input.usage || [],
+    tags: usage,
+    usage,
     focalPoint: input.focalPoint || 'center',
-    createdAt: new Date().toISOString(),
+    contentType: input.contentType,
+    size: input.size,
+    createdAt: input.uploadedAt || now,
+    updatedAt: now,
   }
 }
 
@@ -129,10 +120,11 @@ function parseBulkEventRows(rows: string) {
 export async function saveEventAction(formData: FormData) {
   const store = await readStore()
   const files = formFiles(formData, 'eventImageFiles')
-  const uploaded = await uploadFiles(files)
+  let uploaded: Array<UploadedImage & { name: string }> = []
+  try { uploaded = await uploadFiles(files, `event-images/${slugify(String(formData.get('title') || 'event'))}`) }
+  catch { redirect('/admin/events?error=upload') }
   const uploadedMedia = uploaded.map((item, index) => mediaFromUpload({
-    url: item.url,
-    name: item.name,
+    ...item,
     title: `${String(formData.get('title') || 'Event image')} ${index + 1}`,
     usage: ['event', 'uitgaan'],
     focalPoint: String(formData.get('imagePosition') || 'center'),
@@ -164,6 +156,7 @@ export async function saveEventAction(formData: FormData) {
     fullDescriptionEn: eventType === 'regular' ? '' : String(formData.get('fullDescriptionEn') || ''),
     ticketUrl: eventType === 'regular' ? '' : String(formData.get('ticketUrl') || ''),
     relatedAlbumId: String(formData.get('relatedAlbumId') || ''),
+    imageId: uploadedMedia[0]?.id || String(formData.get('imageId') || ''),
     imageUrl: uploadedMedia[0]?.url || String(formData.get('manualImageUrl') || formData.get('imageUrl') || ''),
     imagePosition: String(formData.get('imagePosition') || 'center'),
     featured: checked(formData, 'featured'),
@@ -234,12 +227,16 @@ export async function saveDjImageAction(formData: FormData) {
     return
   }
   try {
-    const imageUrl = await uploadFileToPath(file, `dj-images/${dj.slug}`)
-    dj.imageUrl = imageUrl
-    dj.imageAltNl = `DJ ${dj.name} bij CLINIQ Maastricht`
-    dj.imageAltEn = `DJ ${dj.name} at CLINIQ Maastricht`
+    const uploaded = await uploadImage(file, `dj-images/${dj.slug}`)
+    const media = mediaFromUpload({ ...uploaded, name: file.name, title: `${dj.name} DJ image`, altNl: `DJ ${dj.name} bij CLINIQ Maastricht`, altEn: `DJ ${dj.name} at CLINIQ Maastricht`, usage: ['dj', 'event', dj.slug] })
+    store.media.unshift(media)
+    dj.imageId = media.id
+    dj.imageUrl = media.url
+    dj.imageAltNl = media.altNl || `DJ ${dj.name} bij CLINIQ Maastricht`
+    dj.imageAltEn = media.altEn || `DJ ${dj.name} at CLINIQ Maastricht`
     dj.updatedAt = new Date().toISOString()
     await writeStore(store)
+    console.info('[image-upload] database save succeeded', { type: 'dj-image', dj: dj.name, url: media.url })
     revalidatePublic()
   } catch (error) {
     console.error('DJ image upload failed.', error)
@@ -254,6 +251,7 @@ export async function removeDjImageAction(formData: FormData) {
   const dj = store.djImages.find((item) => item.id === id)
   if (dj) {
     dj.imageUrl = null
+    dj.imageId = undefined
     dj.updatedAt = new Date().toISOString()
     await writeStore(store)
   }
@@ -265,7 +263,7 @@ export async function useDjImageAction(formData: FormData) {
   const store = await readStore()
   const id = String(formData.get('id') || '')
   const event = store.events.find((item) => item._id === id)
-  if (event) event.imageUrl = ''
+  if (event) { event.imageUrl = ''; event.imageId = '' }
   await writeStore(store)
   revalidatePublic()
   redirect('/admin/events?saved=1')
@@ -273,17 +271,21 @@ export async function useDjImageAction(formData: FormData) {
 
 export async function saveMediaAction(formData: FormData) {
   const files = formFiles(formData)
-  const uploaded = await uploadFiles(files)
-  const urls = [
-    ...String(formData.get('url') || '').split('\n').map((item) => item.trim()).filter(Boolean).map((url) => ({ url, name: '' })),
-    ...uploaded,
-  ]
+  let uploaded: Array<UploadedImage & { name: string }> = []
+  try { uploaded = await uploadFiles(files, 'media-library') }
+  catch { redirect('/admin/media?error=blob-token') }
+  const pastedUrls = String(formData.get('url') || '').split('\n').map((item) => item.trim()).filter(Boolean).map((url) => ({ url, name: '', uploadedAt: new Date().toISOString() }))
+  const urls = [...pastedUrls, ...uploaded]
 
   if (!urls.length) redirect('/admin/media?error=image-required')
   const usage = String(formData.get('usage') || '').split(',').map((item) => item.trim()).filter(Boolean)
   const focalPoint = String(formData.get('focalPoint') || 'center')
   const title = String(formData.get('title') || '')
-  await Promise.all(urls.map((item, index) => createMedia({ url: item.url, title: title || item.name || `Cliniq image ${index + 1}`, altNl: String(formData.get('altNl') || ''), altEn: String(formData.get('altEn') || ''), usage, focalPoint })))
+  const store = await readStore()
+  const records = urls.map((item, index) => mediaFromUpload({ ...item, title: title || item.name || `Cliniq image ${index + 1}`, altNl: String(formData.get('altNl') || ''), altEn: String(formData.get('altEn') || ''), usage, focalPoint }))
+  store.media.unshift(...records)
+  await writeStore(store)
+  console.info('[image-upload] database save succeeded', { type: 'media-library', count: records.length })
   revalidatePath('/admin/media')
   revalidatePublic()
   redirect('/admin/media?saved=1')
@@ -292,27 +294,48 @@ export async function saveMediaAction(formData: FormData) {
 export async function saveAlbumAction(formData: FormData) {
   const existingIds = formData.getAll('imageIds').map(String).filter(Boolean)
   const files = formFiles(formData)
-  const uploaded = await uploadFiles(files)
+  let uploaded: Array<UploadedImage & { name: string }> = []
+  try { uploaded = await uploadFiles(files, `album-photos/${slugify(String(formData.get('titleNl') || 'album'))}`) }
+  catch { redirect('/admin/albums?error=upload') }
   const usage = ['album', 'nightlife', 'gallery']
-  const uploadedMedia = uploaded.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${String(formData.get('titleNl') || 'Album photo')} ${index + 1}`, usage, focalPoint: String(formData.get('focalPoint') || 'center') }))
+  const uploadedMedia = uploaded.map((item, index) => mediaFromUpload({ ...item, title: `${String(formData.get('titleNl') || 'Album photo')} ${index + 1}`, usage, focalPoint: String(formData.get('focalPoint') || 'center') }))
 
   const store = await readStore()
   store.media.unshift(...uploadedMedia)
-  await writeStore(store)
-
   const imageIds = [...existingIds, ...uploadedMedia.map((media) => media.id)]
-  await upsertAlbum({
-    id: String(formData.get('id') || '') || undefined,
-    titleNl: String(formData.get('titleNl') || ''),
-    titleEn: String(formData.get('titleEn') || ''),
+  const titleNl = String(formData.get('titleNl') || '')
+  const date = String(formData.get('date') || '')
+  const id = String(formData.get('id') || '') || slugify(`${titleNl}-${date}`)
+  const existing = store.albums.find((album) => album.id === id)
+  const coverImageId = String(formData.get('coverImageId') || '') || imageIds[0]
+  const mediaById = new Map(store.media.map((media) => [media.id, media]))
+  const photos = imageIds.map((imageId, order) => {
+    const media = mediaById.get(imageId)
+    return { imageId, imageUrl: media?.url || '', altNl: media?.altNl, altEn: media?.altEn, order }
+  })
+  const cover = mediaById.get(coverImageId)
+  const album = {
+    id,
+    slug: existing?.slug || slugify(`${titleNl}-${date}`),
+    titleNl,
+    titleEn: String(formData.get('titleEn') || '') || titleNl,
     descriptionNl: String(formData.get('descriptionNl') || ''),
     descriptionEn: String(formData.get('descriptionEn') || ''),
-    date: String(formData.get('date') || ''),
+    date,
     relatedEventId: String(formData.get('relatedEventId') || ''),
-    coverImageId: String(formData.get('coverImageId') || '') || imageIds[0],
+    coverImageId,
+    coverImageUrl: cover?.url,
     imageIds,
+    photos,
     published: checked(formData, 'published', true),
-  })
+    createdAt: existing?.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+  const index = store.albums.findIndex((item) => item.id === id)
+  if (index >= 0) store.albums[index] = album
+  else store.albums.unshift(album)
+  await writeStore(store)
+  console.info('[image-upload] database save succeeded', { type: 'album', id, photoCount: photos.length })
   revalidatePublic()
   redirect('/admin/albums?saved=1')
 }
@@ -333,9 +356,15 @@ export async function savePageAction(formData: FormData) {
   if (page) {
     const heroFiles = formFiles(formData, 'heroImageFiles')
     const galleryFiles = formFiles(formData, 'pageImageFiles')
-    const [uploadedHero, uploadedGallery] = await Promise.all([uploadFiles(heroFiles), uploadFiles(galleryFiles)])
-    const heroMedia = uploadedHero.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${page.titleNl} hero ${index + 1}`, usage: [page.key, 'hero'], focalPoint: 'center' }))
-    const uploadedMedia = uploadedGallery.map((item, index) => mediaFromUpload({ url: item.url, name: item.name, title: `${page.titleNl} gallery ${index + 1}`, usage: [page.key, 'gallery'], focalPoint: 'center' }))
+    let uploadedHero: Array<UploadedImage & { name: string }> = []
+    let uploadedGallery: Array<UploadedImage & { name: string }> = []
+    try {
+      ;[uploadedHero, uploadedGallery] = await Promise.all([uploadFiles(heroFiles, `page-images/${page.key}/hero`), uploadFiles(galleryFiles, `page-images/${page.key}/gallery`)])
+    } catch {
+      redirect(`/admin/pages?key=${page.key}&error=upload`)
+    }
+    const heroMedia = uploadedHero.map((item, index) => mediaFromUpload({ ...item, title: `${page.titleNl} hero ${index + 1}`, usage: [page.key, 'hero'], focalPoint: 'center' }))
+    const uploadedMedia = uploadedGallery.map((item, index) => mediaFromUpload({ ...item, title: `${page.titleNl} gallery ${index + 1}`, usage: [page.key, 'gallery'], focalPoint: 'center' }))
     store.media.unshift(...heroMedia, ...uploadedMedia)
 
     page.heroTitleNl = String(formData.get('heroTitleNl') || '')
@@ -349,11 +378,19 @@ export async function savePageAction(formData: FormData) {
     page.bodyNl = String(formData.get('bodyNl') || '')
     page.bodyEn = String(formData.get('bodyEn') || '')
     page.heroImageId = heroMedia[0]?.id || String(formData.get('heroImageId') || '') || page.heroImageId || uploadedMedia[0]?.id || ''
+    const heroRecord = store.media.find((media) => media.id === page.heroImageId)
+    page.heroImageUrl = heroRecord?.url || page.heroImageUrl || ''
     page.galleryImageIds = [...formData.getAll('galleryImageIds').map(String).filter(Boolean), ...uploadedMedia.map((media) => media.id)]
+    const mediaById = new Map(store.media.map((media) => [media.id, media]))
+    page.galleryImages = page.galleryImageIds.map((imageId, order) => {
+      const media = mediaById.get(imageId)
+      return { imageId, imageUrl: media?.url || '', altNl: media?.altNl, altEn: media?.altEn, order }
+    })
   }
   await writeStore(store)
+  console.info('[image-upload] database save succeeded', { type: 'page', key, heroImageId: page?.heroImageId, galleryCount: page?.galleryImageIds?.length || 0 })
   revalidatePublic()
-  redirect('/admin/pages?saved=1')
+  redirect(`/admin/pages?key=${key}&saved=1`)
 }
 
 export async function saveFaqAction(formData: FormData) {
@@ -454,11 +491,24 @@ export async function saveSeoAction(formData: FormData) {
   const store = await readStore()
   const pageKey = String(formData.get('pageKey'))
   const language = String(formData.get('language')) as 'nl' | 'en'
+  const files = formFiles(formData, 'seoImageFiles')
+  let socialImageId = String(formData.get('socialImageId') || '')
+  if (files.length) {
+    try {
+      const uploaded = await uploadFiles(files, `seo-images/${pageKey}`)
+      const media = uploaded.map((item, index) => mediaFromUpload({ ...item, title: `${pageKey} OG image ${index + 1}`, usage: ['seo', pageKey], focalPoint: 'center' }))
+      store.media.unshift(...media)
+      socialImageId = media[0]?.id || socialImageId
+    } catch {
+      redirect(`/admin/seo?pageKey=${pageKey}&language=${language}&error=upload`)
+    }
+  }
   const index = store.seo.findIndex((item) => item.pageKey === pageKey && item.language === language)
-  const item = { pageKey, language, seoTitle: String(formData.get('seoTitle') || ''), metaDescription: String(formData.get('metaDescription') || ''), ogTitle: String(formData.get('ogTitle') || ''), ogDescription: String(formData.get('ogDescription') || ''), canonicalUrl: String(formData.get('canonicalUrl') || ''), socialImageId: String(formData.get('socialImageId') || '') }
+  const item = { pageKey, language, seoTitle: String(formData.get('seoTitle') || ''), metaDescription: String(formData.get('metaDescription') || ''), ogTitle: String(formData.get('ogTitle') || ''), ogDescription: String(formData.get('ogDescription') || ''), canonicalUrl: String(formData.get('canonicalUrl') || ''), socialImageId }
   if (index >= 0) store.seo[index] = item
   else store.seo.push(item)
   await writeStore(store)
+  console.info('[image-upload] database save succeeded', { type: 'seo', pageKey, socialImageId })
   revalidatePublic()
   redirect('/admin/seo?saved=1')
 }

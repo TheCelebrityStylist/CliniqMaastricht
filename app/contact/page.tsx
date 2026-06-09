@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { images, site } from '@/lib/site'
-import { getSectionPhotoMedia, getSiteSettings } from '@/lib/admin/public'
+import { getPageContent, getSectionPhotoMedia, getSiteSettings } from '@/lib/admin/public'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
 import { faqSchema } from '@/lib/seo'
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
 }
 
 export default async function ContactPage(){
-  const [settings, contactPhotos] = await Promise.all([getSiteSettings(), getSectionPhotoMedia('contact', [images.contactInterior])])
-  const contactImage = contactPhotos[0]?.url || images.contactInterior
+  const [settings, content, contactPhotos] = await Promise.all([getSiteSettings(), getPageContent('contact'), getSectionPhotoMedia('contact', [images.contactInterior])])
+  const contactImage = content?.imageUrl || contactPhotos[0]?.url || images.contactInterior
   return <>
     <section className="hero-section relative min-h-[70vh] overflow-hidden pt-36"><SafeImage src={contactImage} fallbackSrc={images.fallbackWide} alt="Interieur van CLINIQ Maastricht aan de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/58 to-black/20"/><div className="container-premium py-20"><p className="eyebrow mb-4">Platielstraat 9A</p><h1 className="h1">Contact Cliniq Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Vragen over de agenda, een cocktail workshop of het huren van CLINIQ? Neem contact met ons op of kom langs aan de Platielstraat 9A.</p><div className="mt-8 flex flex-wrap gap-3"><Link className="btn-primary" href={`mailto:${settings.email || site.email}`}>Neem contact op</Link><Link className="btn-secondary" href="/cocktail-workshop">Workshop aanvragen</Link></div></div></section>
     <section className="container-premium grid gap-8 py-24 lg:grid-cols-2"><div className="space-y-6"><div className="card rounded-[2rem] p-8"><h2 className="h3">CLINIQ Maastricht</h2><p className="mt-4 text-white/70">{settings.address || `${site.address.street}, ${site.address.postalCode} ${site.address.city}`}</p><p className="mt-4"><a href={`tel:${settings.phone || site.phone}`}>{settings.phone || site.phone}</a><br/><a href={`mailto:${settings.email || site.email}`}>{settings.email || site.email}</a></p><div className="mt-6 space-y-2 text-white/64">{(settings.openingHours || site.hours).map((hour)=><p key={hour}>{hour}</p>)}</div><div className="mt-7 flex flex-wrap gap-3"><Link className="btn-secondary" href="/uitgaan">Agenda</Link><Link className="btn-secondary" href="/cocktail-workshop">Workshop</Link><Link className="btn-secondary" href="/event-space">Ruimte huren</Link></div></div><div className="card overflow-hidden rounded-[2rem]"><iframe title="Route naar CLINIQ Maastricht" src={site.maps} className="h-80 w-full border-0" loading="lazy"/></div></div><InquiryForm type="contact" fields={[{name:'name',label:'Naam',required:true},{name:'email',label:'E-mail',type:'email',required:true},{name:'phone',label:'Telefoon'},{name:'message',label:'Bericht',required:true}]} /></section>
