@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { uploadImage, type UploadedImage } from '@/lib/uploads/uploadImage'
-import { createLead, readStore, slugify, upsertEvent, writeStore } from './store'
+import { createLead, readStore, slugify, testDatabaseSave, upsertEvent, writeStore } from './store'
 import { clearAdminCookie, hasAdminCredentials, setAdminCookie, signAdminSession, validateAdminCredentials } from './auth'
 import type { AgendaEvent, MediaAsset } from './types'
 
@@ -47,6 +47,12 @@ function mediaFromUpload(input: (Partial<UploadedImage> & { url: string; name?: 
     createdAt: input.uploadedAt || now,
     updatedAt: now,
   }
+}
+
+function revalidateAlbumSlug(slug?: string) {
+  if (!slug) return
+  revalidatePath(`/fotos/${slug}`)
+  revalidatePath(`/en/photos/${slug}`)
 }
 
 function revalidatePublic() {
@@ -337,6 +343,7 @@ export async function saveAlbumAction(formData: FormData) {
   await writeStore(store)
   console.info('[image-upload] database save succeeded', { type: 'album', id, photoCount: photos.length })
   revalidatePublic()
+  revalidateAlbumSlug(album.slug)
   redirect('/admin/albums?saved=1')
 }
 
@@ -346,6 +353,7 @@ export async function toggleAlbumPublishedAction(formData: FormData) {
   if (album) album.published = !album.published
   await writeStore(store)
   revalidatePublic()
+  revalidateAlbumSlug(album?.slug)
   redirect('/admin/albums?saved=1')
 }
 
@@ -523,4 +531,17 @@ export async function saveSettingsAction(formData: FormData) {
 
 export async function createLeadAction(input: Parameters<typeof createLead>[0]) {
   return createLead(input)
+}
+
+
+export async function testDatabaseAction() {
+  let destination = '/admin/settings?dbTest=success'
+  try {
+    const result = await testDatabaseSave()
+    destination = `/admin/settings?dbTest=success&marker=${encodeURIComponent(result.marker)}`
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Database test failed'
+    destination = `/admin/settings?dbTest=fail&dbMessage=${encodeURIComponent(message)}`
+  }
+  redirect(destination)
 }

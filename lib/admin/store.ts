@@ -4,12 +4,81 @@ import { sql } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } from './types'
 
-const isVercel = Boolean(process.env.VERCEL)
-const dataDir = isVercel ? path.join('/tmp', 'cliniq-admin') : path.join(process.cwd(), '.data')
+const dataDir = path.join(process.cwd(), '.data')
 const dataFile = path.join(dataDir, 'cliniq-admin.json')
+const isProduction = process.env.NODE_ENV === 'production'
+let loggedDatabaseSource: string | null = null
 
 function cloneDefaultStore(): AdminStore {
   return JSON.parse(JSON.stringify(defaultStore)) as AdminStore
+}
+
+
+export function getDatabaseUrl() {
+  const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : null
+  const url = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+  if (url && !process.env.POSTGRES_URL) process.env.POSTGRES_URL = url
+  if (source && loggedDatabaseSource !== source) {
+    console.info(`[admin-store] using ${source} for Postgres persistence`)
+    loggedDatabaseSource = source
+  }
+  if (!url && isProduction) throw new Error('Missing Postgres connection string. Set POSTGRES_URL or DATABASE_URL.')
+  return url || null
+}
+
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    return `{${Object.keys(record).sort().map((key) => `${JSON.stringify(key)}:${stableStringify(record[key])}`).join(',')}}`
+  }
+  return JSON.stringify(value)
+}
+
+
+function normalizeLead(input: Partial<Lead> & { formType?: string; type?: string; createdAt?: string; submittedAt?: string; status?: string }): Lead {
+  const submittedAt = input.submittedAt || input.createdAt || new Date().toISOString()
+  const status = input.status === 'contacted' || input.status === 'handled' ? input.status : 'new'
+  const type = input.type === 'event_space' || input.formType === 'event-space' || input.formType === 'event_space'
+    ? 'event_space'
+    : input.type === 'workshop' || input.formType === 'workshop'
+      ? 'workshop'
+      : input.type === 'job' || input.formType === 'job'
+        ? 'job'
+        : 'contact'
+  return {
+    id: input.id || slugify(`${type}-${input.name || 'lead'}-${submittedAt}`),
+    type,
+    formType: type,
+    status,
+    sourcePage: input.sourcePage || '',
+    name: input.name || 'Unknown',
+    email: input.email || '',
+    phone: input.phone,
+    message: input.message,
+    submittedAt,
+    createdAt: submittedAt,
+    payload: input.payload || {},
+    notes: input.notes,
+  }
+}
+
+function normalizeStore(parsed: Partial<AdminStore>): AdminStore {
+  return {
+    ...cloneDefaultStore(),
+    ...parsed,
+    media: parsed.media?.length ? parsed.media : cloneDefaultStore().media,
+    events: parsed.events || cloneDefaultStore().events,
+    pages: parsed.pages?.length ? parsed.pages : cloneDefaultStore().pages,
+    faqs: parsed.faqs && parsed.faqs.length >= 12 ? parsed.faqs : mergeDefaultFaqs(parsed.faqs || []),
+    albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,
+    leads: (parsed.leads || []).map((lead) => normalizeLead(lead)),
+    seo: parsed.seo || [],
+    djImages: mergeDefaultDjImages(parsed.djImages || [], (parsed as { djPresets?: Array<{ name?: string; aliases?: string[]; active?: boolean; defaultImageId?: string }> }).djPresets || [], parsed.media || []),
+    jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
+    analytics: parsed.analytics || [],
+    settings: parsed.settings || cloneDefaultStore().settings,
+  }
 }
 
 
@@ -98,7 +167,8 @@ function mergeDefaultDjImages(currentImages: DjImage[] = [], legacyPresets: Arra
 }
 
 async function ensureStore() {
-  if (process.env.POSTGRES_URL) return
+  if (getDatabaseUrl()) return
+  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL or DATABASE_URL.')
   await fs.mkdir(dataDir, { recursive: true })
   try {
     await fs.access(dataFile)
@@ -108,70 +178,99 @@ async function ensureStore() {
 }
 
 async function ensureDatabaseStore() {
-  if (!process.env.POSTGRES_URL) return
+  if (!getDatabaseUrl()) return false
   await sql`CREATE TABLE IF NOT EXISTS cliniq_admin_store (id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`
+  return true
 }
 
 async function readDatabaseStore() {
-  if (!process.env.POSTGRES_URL) return null
+  if (!getDatabaseUrl()) return null
   await ensureDatabaseStore()
   const result = await sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
   return result.rows[0]?.data ? JSON.stringify(result.rows[0].data) : null
 }
 
 export async function readStore(): Promise<AdminStore> {
+  const databaseUrl = getDatabaseUrl()
+  if (databaseUrl) {
+    try {
+      const raw = await readDatabaseStore()
+      return normalizeStore(raw ? JSON.parse(raw) as Partial<AdminStore> : cloneDefaultStore())
+    } catch (error) {
+      console.error('[admin-store] Postgres read failed; no production fallback will be used.', error)
+      throw new Error('Database read failed. Admin data was not loaded.')
+    }
+  }
+
   await ensureStore()
   try {
-    let databaseRaw: string | null = null
-    try {
-      databaseRaw = await readDatabaseStore()
-    } catch (error) {
-      console.error('Postgres admin store read failed; using file/default fallback.', error)
-    }
-    let raw = databaseRaw
-    if (!raw) {
-      try {
-        raw = await fs.readFile(dataFile, 'utf8')
-      } catch {
-        raw = JSON.stringify(cloneDefaultStore())
-      }
-    }
-    if (!raw) raw = JSON.stringify(cloneDefaultStore())
-    const parsed = JSON.parse(raw) as Partial<AdminStore>
-    return {
-      ...cloneDefaultStore(),
-      ...parsed,
-      media: parsed.media?.length ? parsed.media : cloneDefaultStore().media,
-      events: parsed.events || cloneDefaultStore().events,
-      pages: parsed.pages?.length ? parsed.pages : cloneDefaultStore().pages,
-      faqs: parsed.faqs && parsed.faqs.length >= 12 ? parsed.faqs : mergeDefaultFaqs(parsed.faqs || []),
-      albums: parsed.albums?.length ? parsed.albums : cloneDefaultStore().albums,
-      leads: parsed.leads || [],
-      seo: parsed.seo || [],
-      djImages: mergeDefaultDjImages(parsed.djImages || [], (parsed as { djPresets?: Array<{ name?: string; aliases?: string[]; active?: boolean; defaultImageId?: string }> }).djPresets || [], parsed.media || []),
-      jobs: parsed.jobs?.length ? parsed.jobs : cloneDefaultStore().jobs,
-      analytics: parsed.analytics || [],
-      settings: parsed.settings || cloneDefaultStore().settings,
-    }
-  } catch {
+    const raw = await fs.readFile(dataFile, 'utf8')
+    return normalizeStore(JSON.parse(raw) as Partial<AdminStore>)
+  } catch (error) {
+    if (isProduction) throw new Error('Database read failed. Admin data was not loaded.')
+    console.error('[admin-store] Local development file read failed; using defaults.', error)
     return cloneDefaultStore()
   }
 }
 
 export async function writeStore(store: AdminStore) {
-  const payload = JSON.stringify(store, null, 2)
-  if (process.env.POSTGRES_URL) {
+  const normalizedPayload = JSON.parse(JSON.stringify(store)) as AdminStore
+  const payload = JSON.stringify(normalizedPayload, null, 2)
+  const databaseUrl = getDatabaseUrl()
+
+  if (databaseUrl) {
     try {
       await ensureDatabaseStore()
       await sql`INSERT INTO cliniq_admin_store (id, data, updated_at) VALUES ('main', ${payload}::jsonb, NOW()) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`
+      const result = await sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
+      const saved = result.rows[0]?.data
+      if (!saved || stableStringify(saved) !== stableStringify(normalizedPayload)) throw new Error('Save failed. Data was not persisted.')
+      console.info('[admin-store] Postgres write/read verification succeeded')
       return
     } catch (error) {
-      console.error('Postgres admin store write failed; using temporary file fallback.', error)
+      console.error('[admin-store] Postgres write/verification failed; no production fallback will be used.', error)
+      throw new Error('Save failed. Data was not persisted.')
     }
   }
 
+  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL or DATABASE_URL.')
   await fs.mkdir(dataDir, { recursive: true })
   await fs.writeFile(dataFile, payload)
+  const saved = JSON.parse(await fs.readFile(dataFile, 'utf8')) as AdminStore
+  if (stableStringify(saved) !== stableStringify(normalizedPayload)) throw new Error('Save failed. Data was not persisted.')
+  console.info('[admin-store] Local development file write/read verification succeeded')
+}
+
+export async function getDatabaseStatus() {
+  try {
+    const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : 'Missing env var'
+    const databaseUrl = getDatabaseUrl()
+    if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL/DATABASE_URL is not set.' }
+    await ensureDatabaseStore()
+    await sql`SELECT 1 AS ok`
+    return { status: 'Connected' as const, provider: source, message: 'Postgres read connection succeeded.' }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown database error'
+    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL')) {
+      return { status: 'Missing env var' as const, provider: 'Missing env var', message }
+    }
+    return { status: message.includes('read') ? 'Read failed' as const : 'Write failed' as const, provider: 'Postgres', message }
+  }
+}
+
+export async function testDatabaseSave() {
+  const store = await readStore()
+  const marker = `db-test-${Date.now()}`
+  const previous = store.settings.address
+  store.settings = { ...store.settings, address: marker }
+  await writeStore(store)
+  const afterWrite = await readStore()
+  if (afterWrite.settings.address !== marker) throw new Error('Save failed. Data was not persisted.')
+  afterWrite.settings = { ...afterWrite.settings, address: previous }
+  await writeStore(afterWrite)
+  const restored = await readStore()
+  if (restored.settings.address !== previous) throw new Error('Database cleanup verification failed.')
+  return { ok: true, marker }
 }
 
 export function slugify(input: string) {
@@ -256,10 +355,36 @@ export async function upsertAlbum(input: Partial<PhotoAlbum> & { titleNl: string
   return album
 }
 
-export async function createLead(input: Omit<Lead, 'id' | 'createdAt' | 'status'> & { status?: Lead['status'] }) {
+function normalizeLeadType(input?: string): Lead['type'] {
+  if (input === 'event-space' || input === 'event_space') return 'event_space'
+  if (input === 'workshop' || input === 'job' || input === 'contact') return input
+  return 'contact'
+}
+
+type CreateLeadInput = Omit<Partial<Lead>, 'id' | 'createdAt' | 'submittedAt' | 'status' | 'type' | 'formType'> & { type?: string; formType?: string; status?: Lead['status']; name: string; email: string; message?: string }
+
+export async function createLead(input: CreateLeadInput) {
   const store = await readStore()
-  const lead: Lead = { ...input, id: slugify(`${input.formType}-${input.name}-${Date.now()}`), createdAt: new Date().toISOString(), status: input.status || 'new' }
+  const now = new Date().toISOString()
+  const type = normalizeLeadType(input.type || input.formType)
+  const lead: Lead = {
+    id: slugify(`${type}-${input.name}-${Date.now()}`),
+    type,
+    formType: type,
+    status: input.status || 'new',
+    name: input.name,
+    email: input.email,
+    phone: input.phone,
+    message: input.message,
+    sourcePage: input.sourcePage || '',
+    submittedAt: now,
+    createdAt: now,
+    payload: input.payload || {},
+    notes: input.notes,
+  }
   store.leads.unshift(lead)
   await writeStore(store)
-  return lead
+  const saved = (await readStore()).leads.find((item) => item.id === lead.id)
+  if (!saved || saved.email !== lead.email || saved.submittedAt !== lead.submittedAt) throw new Error('Save failed. Data was not persisted.')
+  return saved
 }

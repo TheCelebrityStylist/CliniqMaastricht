@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { createLead } from '@/lib/admin/store'
 
 const schema = z.object({
-  type: z.enum(['contact', 'workshop', 'event-space', 'job']),
+  type: z.enum(['contact', 'workshop', 'event-space', 'event_space', 'job']),
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().optional(),
@@ -19,7 +19,14 @@ export async function POST(request: Request) {
   if (!parsed.success || parsed.data.website) return NextResponse.json({ error: 'Invalid submission' }, { status: 400 })
   const data = parsed.data
 
-  await createLead({ formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage, payload: data })
+  let lead
+  try {
+    lead = await createLead({ type: data.type, formType: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: data })
+    console.info('[lead-save] database save succeeded', { id: lead.id, type: lead.type, sourcePage: lead.sourcePage })
+  } catch (error) {
+    console.error('[lead-save] database save failed', error)
+    return NextResponse.json({ error: 'Could not save submission. Please try again.' }, { status: 500 })
+  }
 
   if (process.env.RESEND_API_KEY) {
     try {
