@@ -5,9 +5,9 @@ export default defineType({
   title: 'Event',
   type: 'document',
   fields: [
-    defineField({ name: 'title', title: 'Event/DJ name', type: 'string', validation: (Rule) => Rule.required() }),
-    defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: (doc) => `${doc.date || ''}-${doc.title || ''}` }, validation: (Rule) => Rule.required() }),
-    defineField({ name: 'date', title: 'Date', type: 'date', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'title', title: 'Event/DJ name', type: 'string', validation: (Rule: any) => Rule.required() }),
+    defineField({ name: 'slug', title: 'Slug', type: 'slug', options: { source: (doc: any) => `${doc.date || ''}-${doc.title || ''}` }, validation: (Rule: any) => Rule.required() }),
+    defineField({ name: 'date', title: 'Date', type: 'date', validation: (Rule: any) => Rule.required() }),
     defineField({ name: 'dj', title: 'DJ', type: 'reference', to: [{ type: 'dj' }] }),
     defineField({ name: 'customTitleNl', title: 'Custom title NL', type: 'string' }),
     defineField({ name: 'customTitleEn', title: 'Custom title EN', type: 'string' }),

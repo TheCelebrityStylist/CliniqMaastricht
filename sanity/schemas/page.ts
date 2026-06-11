@@ -16,9 +16,9 @@ export default defineType({
   title: 'Website Page',
   type: 'document',
   fields: [
-    defineField({ name: 'title', title: 'Internal page name', type: 'string', validation: (Rule) => Rule.required() }),
+    defineField({ name: 'title', title: 'Internal page name', type: 'string', validation: (Rule: any) => Rule.required() }),
     defineField({ name: 'slug', title: 'URL slug', type: 'slug', options: { source: 'title' } }),
-    defineField({ name: 'pageKey', title: 'Page', type: 'string', options: { list: pageKeys, layout: 'dropdown' }, validation: (Rule) => Rule.required() }),
+    defineField({ name: 'pageKey', title: 'Page', type: 'string', options: { list: pageKeys, layout: 'dropdown' }, validation: (Rule: any) => Rule.required() }),
     defineField({ name: 'headlineNl', title: 'Headline NL', type: 'string' }),
     defineField({ name: 'headlineEn', title: 'Headline EN', type: 'string' }),
     defineField({ name: 'introNl', title: 'Intro NL', type: 'text', rows: 3 }),
