@@ -42,7 +42,7 @@ const groupTypes = ['Vrijgezellenfeest', 'Bedrijfsuitje', 'Verjaardag', 'Vriende
 
 export default async function WorkshopPage(){
   const [content, driveGallery] = await Promise.all([getPageContent('cocktail-workshop'), getSectionPhotoMedia('workshop', imageSets.workshop)])
-  const pageFaqs = content?.faqs?.length ? content.faqs : faqs
+  const pageFaqs = faqs
   const gallerySource = content?.gallery?.length ? content.gallery : driveGallery
   const gallery = gallerySource.map((photo) => ({ url: photo.url, alt: photo.altNl || 'Cocktail workshop bij CLINIQ Maastricht' }))
   const heroImage = content?.imageUrl || images.workshopBar
