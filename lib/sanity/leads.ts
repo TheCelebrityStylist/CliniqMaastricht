@@ -1,6 +1,5 @@
-import { sanityWriteClient, hasSanityConfig } from './client'
-
-export type SanityLeadType = 'contact' | 'workshop' | 'eventSpace' | 'job'
+import { hasSanityConfig, sanityWriteClient } from './client'
+import type { SanityLeadDocument, SanityLeadInput, SanityLeadType } from './types'
 
 export function normalizeLeadType(input: string): SanityLeadType {
   if (input === 'event-space' || input === 'event_space' || input === 'eventSpace') return 'eventSpace'
@@ -8,11 +7,11 @@ export function normalizeLeadType(input: string): SanityLeadType {
   return 'contact'
 }
 
-export async function createSanityLead(input: { type: string; name: string; email: string; phone?: string; message?: string; sourcePage?: string; payload: Record<string, unknown> }) {
-  if (!hasSanityConfig()) throw new Error('Sanity is not configured. Set NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET.')
-  if (!process.env.SANITY_API_WRITE_TOKEN) throw new Error('SANITY_API_WRITE_TOKEN is not configured.')
+export async function createSanityLead(input: SanityLeadInput) {
+  if (!hasSanityConfig() || !process.env.SANITY_API_WRITE_TOKEN) throw new Error('Form backend not configured')
+
   const submittedAt = new Date().toISOString()
-  const doc = {
+  const doc: SanityLeadDocument = {
     _type: 'lead',
     type: normalizeLeadType(input.type),
     status: 'new',
@@ -22,7 +21,9 @@ export async function createSanityLead(input: { type: string; name: string; emai
     message: input.message || '',
     sourcePage: input.sourcePage || '',
     submittedAt,
-    payload: JSON.stringify(input.payload || {}, null, 2),
+    payload: input.payload || {},
+    internalNotes: '',
   }
+
   return sanityWriteClient.create(doc)
 }

@@ -11,7 +11,6 @@ export default defineConfig({
   title: 'CLINIQ CMS',
   projectId,
   dataset,
-  basePath: '/studio',
   plugins: [structureTool({ structure })],
   schema: { types: schemaTypes },
 })

@@ -1,20 +1,18 @@
-# CLINIQ CMS — Sanity workflow
+# CLINIQ CMS — hosted Sanity workflow
 
-Sanity Studio is now the source of truth for day-to-day website content. Open `/studio` to manage the site.
+Sanity is the target source of truth for day-to-day website content, but the Studio is hosted separately in Sanity. The Next.js frontend does not embed `/studio`.
 
 ## Owner workflows
 
 ### Change a DJ image
-1. Open `/studio`.
+1. Open the hosted Sanity Studio URL from Sanity Manage.
 2. Go to **Agenda → DJs**.
 3. Select the DJ.
 4. Upload or replace the image.
 5. Publish.
 
-Regular events automatically use the DJ image unless the event has its own custom image.
-
 ### Change a page hero or gallery
-1. Open `/studio`.
+1. Open the hosted Sanity Studio URL.
 2. Go to **Website Pages**.
 3. Select the page.
 4. Replace the hero image or add gallery images.
