@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createSanityLead } from '@/lib/sanity/leads'
+import { createLead } from '@/lib/admin/store'
 
 const schema = z.object({
   type: z.enum(['contact', 'workshop', 'event-space', 'event_space', 'eventSpace', 'job']),
@@ -19,10 +19,10 @@ export async function POST(request: Request) {
   const data = parsed.data
 
   try {
-    const lead = await createSanityLead({ type: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: data })
-    return NextResponse.json({ ok: true, id: lead._id })
+    const lead = await createLead({ type: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: data })
+    return NextResponse.json({ ok: true, id: lead.id })
   } catch (error) {
-    console.error('[sanity-lead] save failed', error)
+    console.error('[admin-lead] save failed', error)
     return NextResponse.json({ error: 'Could not save submission. Please try again.' }, { status: 500 })
   }
 }

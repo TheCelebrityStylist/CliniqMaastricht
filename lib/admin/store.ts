@@ -15,15 +15,31 @@ function cloneDefaultStore(): AdminStore {
 }
 
 
+const pooledPostgresUrlError = 'POSTGRES_URL must be the pooled Vercel Postgres URL. Do not use DATABASE_URL or POSTGRES_URL_NON_POOLING with @vercel/postgres sql.'
+
+function isLikelyPooledVercelPostgresUrl(url: string) {
+  try {
+    return new URL(url).hostname.toLowerCase().includes('pooler')
+  } catch {
+    return false
+  }
+}
+
 export function getDatabaseUrl() {
-  const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : null
-  const url = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
-  if (url && !process.env.POSTGRES_URL) process.env.POSTGRES_URL = url
+  const postgresUrl = process.env.POSTGRES_URL || ''
+  const localDatabaseUrl = !isProduction ? process.env.DATABASE_URL || '' : ''
+  const source = postgresUrl ? 'POSTGRES_URL' : localDatabaseUrl ? 'DATABASE_URL' : null
+  const url = postgresUrl || localDatabaseUrl
+
+  if (postgresUrl && !isLikelyPooledVercelPostgresUrl(postgresUrl)) throw new Error(pooledPostgresUrlError)
+
   if (source && loggedDatabaseSource !== source) {
-    console.info(`[admin-store] using ${source} for Postgres persistence`)
+    const localNote = source === 'DATABASE_URL' ? ' for local development only' : ''
+    console.info(`[admin-store] using ${source}${localNote} for Postgres persistence`)
     loggedDatabaseSource = source
   }
-  if (!url && isProduction && !isProductionBuild) throw new Error('Missing Postgres connection string. Set POSTGRES_URL or DATABASE_URL.')
+
+  if (!postgresUrl && isProduction && !isProductionBuild) throw new Error('Missing pooled Postgres connection string. Set POSTGRES_URL to the Vercel pooled connection URL.')
   return url || null
 }
 
@@ -169,7 +185,7 @@ function mergeDefaultDjImages(currentImages: DjImage[] = [], legacyPresets: Arra
 
 async function ensureStore() {
   if (getDatabaseUrl()) return
-  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL or DATABASE_URL.')
+  if (isProduction) throw new Error('Production admin persistence requires the pooled POSTGRES_URL connection string.')
   await fs.mkdir(dataDir, { recursive: true })
   try {
     await fs.access(dataFile)
@@ -192,7 +208,18 @@ async function readDatabaseStore() {
 }
 
 export async function readStore(): Promise<AdminStore> {
-  const databaseUrl = getDatabaseUrl()
+  let databaseUrl: string | null
+  try {
+    databaseUrl = getDatabaseUrl()
+  } catch (error) {
+    if (isProductionBuild) {
+      console.error('[admin-store] Postgres configuration failed during production build; rendering build-time defaults without writing fallback data.', error)
+      return normalizeStore(cloneDefaultStore())
+    }
+    console.error('[admin-store] Postgres configuration failed; no production fallback will be used.', error)
+    throw error
+  }
+
   if (databaseUrl) {
     try {
       const raw = await readDatabaseStore()
@@ -240,7 +267,7 @@ export async function writeStore(store: AdminStore) {
     }
   }
 
-  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL or DATABASE_URL.')
+  if (isProduction) throw new Error('Production admin persistence requires the pooled POSTGRES_URL connection string.')
   await fs.mkdir(dataDir, { recursive: true })
   await fs.writeFile(dataFile, payload)
   const saved = JSON.parse(await fs.readFile(dataFile, 'utf8')) as AdminStore
@@ -252,13 +279,13 @@ export async function getDatabaseStatus() {
   try {
     const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : 'Missing env var'
     const databaseUrl = getDatabaseUrl()
-    if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL/DATABASE_URL is not set.' }
+    if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL is not set.' }
     await ensureDatabaseStore()
     await sql`SELECT 1 AS ok`
     return { status: 'Connected' as const, provider: source, message: 'Postgres read connection succeeded.' }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown database error'
-    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL')) {
+    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL') || message.includes('pooled Postgres')) {
       return { status: 'Missing env var' as const, provider: 'Missing env var', message }
     }
     return { status: message.includes('read') ? 'Read failed' as const : 'Write failed' as const, provider: 'Postgres', message }

@@ -1,4 +1,5 @@
 import { defaultStore } from './defaults'
+import { readStore } from './store'
 import type { AgendaEvent, Lang, MediaAsset } from './types'
 import { images, site } from '@/lib/site'
 import { sanityFetch } from '@/lib/sanity/client'
@@ -93,6 +94,15 @@ function fallbackStore(): StoreLike {
   return defaultStore
 }
 
+async function safeAdminStore(context: string): Promise<StoreLike> {
+  try {
+    return await readStore()
+  } catch (error) {
+    console.error(`[admin-public] ${context} failed; using fallback content`, error)
+    return fallbackStore()
+  }
+}
+
 function normalizeName(value?: string) {
   return (value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 }
@@ -184,7 +194,8 @@ export async function getAgendaEvents(includePast = false) {
   const query = `*[_type == "event" && published != false && ($includePast || date >= $today)] | order(date asc, openingTime asc) { _id, title, slug, date, customTitleNl, customTitleEn, eventType, openingTime, closingTime, minimumAge, published, featured, showDetailPage, descriptionNl, descriptionEn, ticketUrl, "eventImageUrl": eventImage.asset->url, dj->{name, aliases, "imageUrl": image.asset->url}, album->{slug} }`
   const sanityEvents = await sanityFetch<SanityEvent[]>(query, { today, includePast }, [])
   if (sanityEvents.length) return sanityEvents.map(mapSanityEvent)
-  return fallbackStore().events
+  const store = await safeAdminStore('getAgendaEvents')
+  return store.events
     .filter((event) => event.published !== false)
     .filter((event) => includePast || event.date >= today)
     .sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
@@ -201,10 +212,12 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
   const page = await sanityFetch<SanityPage | null>(query, { pageKey: sanityKey }, null)
   const mapped = mapSanityPage(page, slug)
   if (mapped) return mapped
-  const fallback = fallbackPage(slug)
+  const store = await safeAdminStore(`getPageContent:${slug}`)
+  const currentKey = toCurrentKey(pageKeyMap[slug] || slug)
+  const fallback = store.pages.find((item) => item.key === currentKey) || fallbackPage(slug)
   if (!fallback) return null
-  const image = fallbackStore().media.find((item) => item.id === fallback.heroImageId)
-  const gallery = (fallback.galleryImageIds || []).map((id) => fallbackStore().media.find((item) => item.id === id)).filter(Boolean) as MediaAsset[]
+  const image = store.media.find((item) => item.id === fallback.heroImageId)
+  const gallery = (fallback.galleryImageIds || []).map((id) => store.media.find((item) => item.id === id)).filter(Boolean) as MediaAsset[]
   return { ...fallback, faqs: await getFaqs(slug, lang), imageUrl: image?.url || fallback.heroImageUrl, gallery }
 }
 
@@ -223,9 +236,10 @@ export async function getPhotoAlbums(includeDrafts = false) {
     const cover = mediaFromUrl(`${album._id}-cover`, album.coverImageUrl || photos[0]?.url, album.titleNl, album.titleNl, album.titleEn || album.titleNl) || undefined
     return { id: album._id, slug: album.slug?.current || album._id, titleNl: album.titleNl, titleEn: album.titleEn || album.titleNl, descriptionNl: album.seoDescriptionNl, descriptionEn: album.seoDescriptionEn, date: album.date, published: album.published !== false, cover, photos }
   })
-  return fallbackStore().albums.filter((album) => includeDrafts || album.published).sort((a, b) => b.date.localeCompare(a.date)).map((album) => {
-    const cover = fallbackStore().media.find((media) => media.id === album.coverImageId) || fallbackStore().media.find((media) => album.imageIds.includes(media.id))
-    const photos = album.imageIds.map((id) => fallbackStore().media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[]
+  const store = await safeAdminStore('getPhotoAlbums')
+  return store.albums.filter((album) => includeDrafts || album.published).sort((a, b) => b.date.localeCompare(a.date)).map((album) => {
+    const cover = store.media.find((media) => media.id === album.coverImageId) || store.media.find((media) => album.imageIds.includes(media.id)) || mediaFromUrl(`${album.id}-cover`, album.coverImageUrl, album.titleNl, album.titleNl, album.titleEn)
+    const photos = album.photos?.length ? album.photos.map((photo, index) => mediaFromUrl(photo.imageId || `${album.id}-${index}`, photo.imageUrl, album.titleNl, photo.altNl || album.titleNl, photo.altEn || album.titleEn)).filter(Boolean) as MediaAsset[] : album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[]
     return { ...album, cover, photos }
   })
 }
@@ -236,7 +250,8 @@ export async function getPhotoAlbumBySlug(slug: string) {
 }
 
 export async function getJobs() {
-  return fallbackStore().jobs.filter((job) => job.published !== false)
+  const store = await safeAdminStore('getJobs')
+  return store.jobs.filter((job) => job.published !== false)
 }
 
 export async function getFaqs(pageKey: string, language: Lang = 'nl') {
@@ -244,7 +259,8 @@ export async function getFaqs(pageKey: string, language: Lang = 'nl') {
   const query = `*[_type == "faq" && pageKey == $pageKey && published != false] | order(order asc) { _id, pageKey, questionNl, questionEn, answerNl, answerEn, order, published }`
   const faqs = await sanityFetch<SanityFaq[]>(query, { pageKey: sanityKey }, [])
   if (faqs.length) return faqs.map((faq) => ({ id: faq._id, pageKey, language, question: language === 'en' ? faq.questionEn || faq.questionNl || '' : faq.questionNl || faq.questionEn || '', answer: language === 'en' ? faq.answerEn || faq.answerNl || '' : faq.answerNl || faq.answerEn || '', published: faq.published !== false, order: faq.order || 0 }))
-  return fallbackStore().faqs.filter((faq) => faq.pageKey === pageKey && faq.language === language && faq.published).sort((a, b) => a.order - b.order)
+  const store = await safeAdminStore(`getFaqs:${pageKey}`)
+  return store.faqs.filter((faq) => faq.pageKey === pageKey && faq.language === language && faq.published).sort((a, b) => a.order - b.order)
 }
 
 export async function getSeo(pageKey: string, language: Lang) {
@@ -252,15 +268,17 @@ export async function getSeo(pageKey: string, language: Lang) {
   const query = `*[_type == "page" && pageKey == $pageKey][0] { seoTitleNl, seoTitleEn, seoDescriptionNl, seoDescriptionEn, ogTitleNl, ogTitleEn, ogDescriptionNl, ogDescriptionEn, "ogImageUrl": ogImage.asset->url }`
   const page = await sanityFetch<SanityPage | null>(query, { pageKey: sanityKey }, null)
   if (page) return { pageKey, language, seoTitle: language === 'en' ? page.seoTitleEn : page.seoTitleNl, metaDescription: language === 'en' ? page.seoDescriptionEn : page.seoDescriptionNl, ogTitle: language === 'en' ? page.ogTitleEn : page.ogTitleNl, ogDescription: language === 'en' ? page.ogDescriptionEn : page.ogDescriptionNl, canonicalUrl: undefined, socialImageUrl: page.ogImageUrl }
-  const fallbackSeo = fallbackStore().seo.find((item) => item.pageKey === pageKey && item.language === language)
+  const store = await safeAdminStore(`getSeo:${pageKey}`)
+  const fallbackSeo = store.seo.find((item) => item.pageKey === pageKey && item.language === language)
   return fallbackSeo ? { ...fallbackSeo, socialImageUrl: undefined } : null
 }
 
 export async function getSiteSettings() {
   const query = `*[_type == "siteSettings"][0] { title, address, phone, email, instagramUrl, tiktokUrl, lockerUrl, defaultSeoTitleNl, defaultSeoTitleEn, defaultSeoDescriptionNl, defaultSeoDescriptionEn, "defaultOgImageUrl": defaultOgImage.asset->url }`
   const settings = await sanityFetch<SanitySettings | null>(query, {}, null)
-  if (!settings) return fallbackStore().settings
-  return { phone: settings.phone || site.phone, email: settings.email || site.email, whatsapp: site.whatsapp, address: settings.address || site.address.street, openingHours: fallbackStore().settings.openingHours, instagram: settings.instagramUrl || site.instagram, tiktok: settings.tiktokUrl || site.tiktok }
+  const store = await safeAdminStore('getSiteSettings')
+  if (!settings) return store.settings
+  return { phone: settings.phone || site.phone, email: settings.email || site.email, whatsapp: site.whatsapp, address: settings.address || site.address.street, openingHours: store.settings.openingHours, instagram: settings.instagramUrl || site.instagram, tiktok: settings.tiktokUrl || site.tiktok }
 }
 
 export const getSeoSettings = getSeo

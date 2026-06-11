@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { z } from 'zod'
-import { createSanityLead, normalizeLeadType } from '@/lib/sanity/leads'
+import { createLead } from '@/lib/admin/store'
 
 const schema = z.object({
   name: z.string().min(2),
@@ -17,10 +17,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ typ
   const parsed = schema.safeParse(body)
   if (!parsed.success || parsed.data.website) return NextResponse.json({ error: 'Invalid submission' }, { status: 400 })
   const data = parsed.data
-  const leadType = normalizeLeadType(type)
+  const leadType = type === 'event-space' || type === 'event_space' || type === 'eventSpace' ? 'event_space' : type === 'workshop' || type === 'job' ? type : 'contact'
 
   try {
-    const lead = await createSanityLead({ type: leadType, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: { type: leadType, ...data } })
+    const lead = await createLead({ type: leadType, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: { type: leadType, ...data } })
     if (process.env.RESEND_API_KEY) {
       try {
         const resend = new Resend(process.env.RESEND_API_KEY)
@@ -32,12 +32,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ typ
           text: Object.entries({ type: leadType, ...data }).map(([key, value]) => `${key}: ${String(value)}`).join('\n'),
         })
       } catch (error) {
-        console.error('Lead was saved in Sanity, but email notification failed.', error)
+        console.error('Lead was saved in Postgres, but email notification failed.', error)
       }
     }
-    return NextResponse.json({ ok: true, id: lead._id })
+    return NextResponse.json({ ok: true, id: lead.id })
   } catch (error) {
-    console.error('[sanity-lead] save failed', error)
+    console.error('[admin-lead] save failed', error)
     return NextResponse.json({ error: 'Could not save submission. Please try again.' }, { status: 500 })
   }
 }
