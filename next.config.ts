@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.squarespace-cdn.com' },
       { protocol: 'https', hostname: '**.public.blob.vercel-storage.com' },
+      { protocol: 'https', hostname: 'cdn.sanity.io' },
     ],
   },
   async redirects() {
@@ -15,11 +16,11 @@ const nextConfig: NextConfig = {
       { source: '/albums/:slug', destination: '/fotos/:slug', permanent: true },
       { source: '/en/albums', destination: '/en/photos', permanent: true },
       { source: '/en/albums/:slug', destination: '/en/photos/:slug', permanent: true },
-      { source: '/cms', destination: '/admin', permanent: false },
-      { source: '/backend', destination: '/admin', permanent: false },
-      { source: '/studio', destination: '/admin', permanent: false },
-      { source: '/login', destination: '/admin', permanent: false },
-      { source: '/admin-login', destination: '/admin', permanent: false },
+      { source: '/admin/:path*', destination: '/studio', permanent: false },
+      { source: '/cms', destination: '/studio', permanent: false },
+      { source: '/backend', destination: '/studio', permanent: false },
+      { source: '/login', destination: '/studio', permanent: false },
+      { source: '/admin-login', destination: '/studio', permanent: false },
       // Critical: live event-space URL has Google ranking
       { source: '/business-event-space-maastricht', destination: '/event-space', permanent: true },
       { source: '/business-event-space-maastricht/:path*', destination: '/event-space', permanent: true },

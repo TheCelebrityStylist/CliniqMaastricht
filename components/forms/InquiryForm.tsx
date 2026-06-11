@@ -16,7 +16,7 @@ export default function InquiryForm({ type, fields, sourcePage, lang: langProp }
     const formData = new FormData(event.currentTarget)
     const payload = Object.fromEntries(formData.entries())
     if (!payload.sourcePage && typeof window !== 'undefined') payload.sourcePage = window.location.pathname
-    const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, ...payload }) })
+    const res = await fetch(`/api/forms/${type}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     setStatus(res.ok ? 'success' : 'error')
     if (res.ok) event.currentTarget.reset()
   }

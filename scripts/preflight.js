@@ -18,7 +18,6 @@ const filesToScan = ['package.json', 'next.config.ts', 'app', 'components', 'lib
 const forbidden = [
   { pattern: /date-fns\/locale/g, label: 'date-fns/locale invalid package/import path' },
   { pattern: /images\.unsplash\.com|unsplash\.com/g, label: 'Unsplash/stock imagery URL' },
-  { pattern: /next-sanity|@sanity\/client|@sanity\/image-url/g, label: 'Sanity dependency/import' },
 ]
 
 function scanPath(target) {
@@ -37,4 +36,4 @@ function scanPath(target) {
 }
 
 filesToScan.forEach(scanPath)
-console.log('Preflight passed: dependencies, CMS removal, redirects, and image policy look safe')
+console.log('Preflight passed: dependencies, CMS setup, redirects, and image policy look safe')
