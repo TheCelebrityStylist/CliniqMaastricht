@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { sql } from '@vercel/postgres'
+import { createClient } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } from './types'
 
@@ -15,32 +15,39 @@ function cloneDefaultStore(): AdminStore {
 }
 
 
-const pooledPostgresUrlError = 'POSTGRES_URL must be the pooled Vercel Postgres URL. Do not use DATABASE_URL or POSTGRES_URL_NON_POOLING with @vercel/postgres sql.'
-
-function isLikelyPooledVercelPostgresUrl(url: string) {
-  try {
-    return new URL(url).hostname.toLowerCase().includes('pooler')
-  } catch {
-    return false
-  }
-}
-
 export function getDatabaseUrl() {
-  const postgresUrl = process.env.POSTGRES_URL || ''
-  const localDatabaseUrl = !isProduction ? process.env.DATABASE_URL || '' : ''
-  const source = postgresUrl ? 'POSTGRES_URL' : localDatabaseUrl ? 'DATABASE_URL' : null
-  const url = postgresUrl || localDatabaseUrl
-
-  if (postgresUrl && !isLikelyPooledVercelPostgresUrl(postgresUrl)) throw new Error(pooledPostgresUrlError)
+  const source = process.env.POSTGRES_URL
+    ? 'POSTGRES_URL'
+    : process.env.DATABASE_URL
+      ? 'DATABASE_URL'
+      : process.env.PRISMA_DATABASE_URL
+        ? 'PRISMA_DATABASE_URL'
+        : null
+  const url = process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL || ''
 
   if (source && loggedDatabaseSource !== source) {
-    const localNote = source === 'DATABASE_URL' ? ' for local development only' : ''
-    console.info(`[admin-store] using ${source}${localNote} for Postgres persistence`)
+    console.info(`[admin-store] using ${source} for Postgres persistence`)
     loggedDatabaseSource = source
   }
 
-  if (!postgresUrl && isProduction && !isProductionBuild) throw new Error('Missing pooled Postgres connection string. Set POSTGRES_URL to the Vercel pooled connection URL.')
-  return url || null
+  return url
+}
+
+async function withDb<T>(callback: (client: ReturnType<typeof createClient>) => Promise<T>) {
+  const connectionString = getDatabaseUrl()
+
+  if (!connectionString) {
+    throw new Error('No Postgres connection string found. Set POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL.')
+  }
+
+  const client = createClient({ connectionString })
+
+  try {
+    await client.connect()
+    return await callback(client)
+  } finally {
+    await client.end()
+  }
 }
 
 function stableStringify(value: unknown): string {
@@ -185,7 +192,7 @@ function mergeDefaultDjImages(currentImages: DjImage[] = [], legacyPresets: Arra
 
 async function ensureStore() {
   if (getDatabaseUrl()) return
-  if (isProduction) throw new Error('Production admin persistence requires the pooled POSTGRES_URL connection string.')
+  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL.')
   await fs.mkdir(dataDir, { recursive: true })
   try {
     await fs.access(dataFile)
@@ -196,14 +203,18 @@ async function ensureStore() {
 
 async function ensureDatabaseStore() {
   if (!getDatabaseUrl()) return false
-  await sql`CREATE TABLE IF NOT EXISTS cliniq_admin_store (id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`
+  await withDb(async (client) => {
+    await client.sql`CREATE TABLE IF NOT EXISTS cliniq_admin_store (id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`
+  })
   return true
 }
 
 async function readDatabaseStore() {
   if (!getDatabaseUrl()) return null
   await ensureDatabaseStore()
-  const result = await sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
+  const result = await withDb(async (client) => {
+    return client.sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
+  })
   return result.rows[0]?.data ? JSON.stringify(result.rows[0].data) : null
 }
 
@@ -255,8 +266,12 @@ export async function writeStore(store: AdminStore) {
   if (databaseUrl) {
     try {
       await ensureDatabaseStore()
-      await sql`INSERT INTO cliniq_admin_store (id, data, updated_at) VALUES ('main', ${payload}::jsonb, NOW()) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`
-      const result = await sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
+      await withDb(async (client) => {
+        await client.sql`INSERT INTO cliniq_admin_store (id, data, updated_at) VALUES ('main', ${payload}::jsonb, NOW()) ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`
+      })
+      const result = await withDb(async (client) => {
+        return client.sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
+      })
       const saved = result.rows[0]?.data
       if (!saved || stableStringify(saved) !== stableStringify(normalizedPayload)) throw new Error('Save failed. Data was not persisted.')
       console.info('[admin-store] Postgres write/read verification succeeded')
@@ -267,7 +282,7 @@ export async function writeStore(store: AdminStore) {
     }
   }
 
-  if (isProduction) throw new Error('Production admin persistence requires the pooled POSTGRES_URL connection string.')
+  if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL.')
   await fs.mkdir(dataDir, { recursive: true })
   await fs.writeFile(dataFile, payload)
   const saved = JSON.parse(await fs.readFile(dataFile, 'utf8')) as AdminStore
@@ -277,15 +292,17 @@ export async function writeStore(store: AdminStore) {
 
 export async function getDatabaseStatus() {
   try {
-    const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : 'Missing env var'
+    const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : process.env.PRISMA_DATABASE_URL ? 'PRISMA_DATABASE_URL' : 'Missing env var'
     const databaseUrl = getDatabaseUrl()
-    if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL is not set.' }
+    if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL is not set.' }
     await ensureDatabaseStore()
-    await sql`SELECT 1 AS ok`
+    await withDb(async (client) => {
+      await client.sql`SELECT 1 AS ok`
+    })
     return { status: 'Connected' as const, provider: source, message: 'Postgres read connection succeeded.' }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown database error'
-    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL') || message.includes('pooled Postgres')) {
+    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL') || message.includes('No Postgres connection string')) {
       return { status: 'Missing env var' as const, provider: 'Missing env var', message }
     }
     return { status: message.includes('read') ? 'Read failed' as const : 'Write failed' as const, provider: 'Postgres', message }
