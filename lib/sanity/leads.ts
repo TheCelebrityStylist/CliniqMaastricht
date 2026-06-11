@@ -1,4 +1,4 @@
-import { hasSanityConfig, sanityWriteClient } from './client'
+import { createSanityDocument } from './client'
 import type { SanityLeadDocument, SanityLeadInput, SanityLeadType } from './types'
 
 export function normalizeLeadType(input: string): SanityLeadType {
@@ -8,22 +8,18 @@ export function normalizeLeadType(input: string): SanityLeadType {
 }
 
 export async function createSanityLead(input: SanityLeadInput) {
-  if (!hasSanityConfig() || !process.env.SANITY_API_WRITE_TOKEN) throw new Error('Form backend not configured')
-
-  const submittedAt = new Date().toISOString()
   const doc: SanityLeadDocument = {
     _type: 'lead',
     type: normalizeLeadType(input.type),
     status: 'new',
     name: input.name,
     email: input.email,
-    phone: input.phone || '',
-    message: input.message || '',
-    sourcePage: input.sourcePage || '',
-    submittedAt,
-    payload: input.payload || {},
-    internalNotes: '',
+    phone: input.phone || undefined,
+    message: input.message || undefined,
+    sourcePage: input.sourcePage,
+    submittedAt: new Date().toISOString(),
+    payload: input.payload,
   }
 
-  return sanityWriteClient.create(doc)
+  return createSanityDocument(doc)
 }

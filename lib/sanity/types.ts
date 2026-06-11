@@ -7,29 +7,19 @@ export type SanityLeadInput = {
   email: string
   phone?: string
   message?: string
-  sourcePage?: string
-  payload?: Record<string, unknown>
+  sourcePage: string
+  payload: Record<string, unknown>
 }
 
 export type SanityLeadDocument = {
   _type: 'lead'
-  type: SanityLeadType
+  type: string
   status: SanityLeadStatus
   name: string
   email: string
   phone?: string
   message?: string
-  sourcePage?: string
+  sourcePage: string
   submittedAt: string
-  payload?: Record<string, unknown>
-  internalNotes?: string
+  payload: Record<string, unknown>
 }
-
-export type SanityImageRef = {
-  _type: 'image'
-  asset?: { _ref?: string; _type?: 'reference' }
-  altNl?: string
-  altEn?: string
-}
-
-export type SanityPageKey = 'homepage' | 'uitgaan' | 'cocktailWorkshop' | 'eventSpace' | 'contact' | 'vacatures' | 'houseRules' | 'fotos'
