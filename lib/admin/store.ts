@@ -7,6 +7,7 @@ import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } f
 const dataDir = path.join(process.cwd(), '.data')
 const dataFile = path.join(dataDir, 'cliniq-admin.json')
 const isProduction = process.env.NODE_ENV === 'production'
+const isProductionBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.env.npm_lifecycle_event === 'build'
 let loggedDatabaseSource: string | null = null
 
 function cloneDefaultStore(): AdminStore {
@@ -22,7 +23,7 @@ export function getDatabaseUrl() {
     console.info(`[admin-store] using ${source} for Postgres persistence`)
     loggedDatabaseSource = source
   }
-  if (!url && isProduction) throw new Error('Missing Postgres connection string. Set POSTGRES_URL or DATABASE_URL.')
+  if (!url && isProduction && !isProductionBuild) throw new Error('Missing Postgres connection string. Set POSTGRES_URL or DATABASE_URL.')
   return url || null
 }
 
@@ -197,10 +198,16 @@ export async function readStore(): Promise<AdminStore> {
       const raw = await readDatabaseStore()
       return normalizeStore(raw ? JSON.parse(raw) as Partial<AdminStore> : cloneDefaultStore())
     } catch (error) {
+      if (isProductionBuild) {
+        console.error('[admin-store] Postgres read failed during production build; rendering build-time defaults without writing fallback data.', error)
+        return normalizeStore(cloneDefaultStore())
+      }
       console.error('[admin-store] Postgres read failed; no production fallback will be used.', error)
       throw new Error('Database read failed. Admin data was not loaded.')
     }
   }
+
+  if (isProductionBuild) return normalizeStore(cloneDefaultStore())
 
   await ensureStore()
   try {
