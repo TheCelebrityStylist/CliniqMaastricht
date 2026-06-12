@@ -13,7 +13,7 @@ export type SanityLeadInput = {
 
 export type SanityLeadDocument = {
   _type: 'lead'
-  type: string
+  type: SanityLeadType
   status: SanityLeadStatus
   name: string
   email: string
