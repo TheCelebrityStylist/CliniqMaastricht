@@ -4,7 +4,7 @@ import { images } from '@/lib/site'
 import { localizedPaths, ui } from '@/lib/i18n'
 import type { MediaAsset } from '@/lib/admin/types'
 
-type AlbumCard = { slug: string; titleNl: string; titleEn?: string; descriptionNl?: string; descriptionEn?: string; date: string; cover?: MediaAsset; photos?: MediaAsset[] }
+type AlbumCard = { slug: string; titleNl: string; titleEn?: string; descriptionNl?: string; descriptionEn?: string; date: string; cover?: MediaAsset | null; photos?: MediaAsset[] }
 
 export function AlbumGrid({ albums, lang = 'nl' }: { albums: AlbumCard[]; lang?: 'nl' | 'en' }) {
   const base = localizedPaths.albums[lang]
