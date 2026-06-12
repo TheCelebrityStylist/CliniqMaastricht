@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { createClient, createPool } from '@vercel/postgres'
+import { createClient } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } from './types'
 
@@ -13,7 +13,6 @@ let loggedDatabaseSource: string | null = null
 function cloneDefaultStore(): AdminStore {
   return JSON.parse(JSON.stringify(defaultStore)) as AdminStore
 }
-
 
 function getConfiguredDatabaseUrl() {
   return process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL || ''
@@ -29,16 +28,6 @@ function getDatabaseSource() {
         : null
 }
 
-function isPooledConnectionString(connectionString: string) {
-  try {
-    const url = new URL(connectionString)
-    const host = url.hostname.toLowerCase()
-    return host.includes('pooler') || host.includes('-pooler.')
-  } catch {
-    return connectionString.toLowerCase().includes('pooler')
-  }
-}
-
 export function getConnectionString() {
   const value = getConfiguredDatabaseUrl()
   const source = getDatabaseSource()
@@ -48,8 +37,7 @@ export function getConnectionString() {
   }
 
   if (source && loggedDatabaseSource !== source) {
-    const mode = isPooledConnectionString(value) ? 'pooled' : 'direct'
-    console.info(`[admin-store] using ${source} (${mode}) for Postgres persistence`)
+    console.info(`[admin-store] using ${source} with createClient for Postgres persistence`)
     loggedDatabaseSource = source
   }
 
@@ -64,18 +52,8 @@ type DbRunner = {
 
 async function withDb<T>(fn: (client: DbRunner) => Promise<T>) {
   const connectionString = getConnectionString()
-  const pooled = isPooledConnectionString(connectionString)
-
-  if (pooled) {
-    const pool = createPool({ connectionString }) as unknown as DbRunner
-    try {
-      return await fn(pool)
-    } finally {
-      await pool.end?.()
-    }
-  }
-
   const client = createClient({ connectionString }) as unknown as DbRunner
+
   try {
     await client.connect?.()
     return await fn(client)
@@ -92,7 +70,6 @@ function stableStringify(value: unknown): string {
   }
   return JSON.stringify(value)
 }
-
 
 function normalizeLead(input: Partial<Lead> & { formType?: string; type?: string; createdAt?: string; submittedAt?: string; status?: string }): Lead {
   const submittedAt = input.submittedAt || input.createdAt || new Date().toISOString()
@@ -139,7 +116,6 @@ function normalizeStore(parsed: Partial<AdminStore>): AdminStore {
   }
 }
 
-
 function normalizeEventTitle(value?: string) {
   return (value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 }
@@ -184,7 +160,6 @@ function mergeDefaultEvents(currentEvents: AdminStore['events']) {
   return merged.sort((a, b) => `${a.date} ${a.startTime || ''}`.localeCompare(`${b.date} ${b.startTime || ''}`))
 }
 
-
 function mergeDefaultFaqs(currentFaqs: AdminStore['faqs']) {
   const defaultFaqs = cloneDefaultStore().faqs
   const seen = new Set(currentFaqs.map((faq) => `${faq.pageKey}:${faq.language}:${faq.question}`))
@@ -193,7 +168,6 @@ function mergeDefaultFaqs(currentFaqs: AdminStore['faqs']) {
     ...defaultFaqs.filter((faq) => !seen.has(`${faq.pageKey}:${faq.language}:${faq.question}`)),
   ]
 }
-
 
 function legacyPresetToDjImage(input: Partial<DjImage> & { name?: string; defaultImageId?: string; imageUrl?: string | null; aliases?: string[]; active?: boolean; slug?: string; id?: string }) {
   const name = input.name || 'DJ'
@@ -253,16 +227,13 @@ async function readDatabaseStore() {
 }
 
 export async function readStore(): Promise<AdminStore> {
-  let databaseUrl: string | null
+  let databaseUrl = ''
+
   try {
     databaseUrl = getConfiguredDatabaseUrl()
   } catch (error) {
-    if (isProductionBuild) {
-      console.error('[admin-store] Postgres configuration failed during production build; rendering build-time defaults without writing fallback data.', error)
-      return normalizeStore(cloneDefaultStore())
-    }
-    console.error('[admin-store] Postgres configuration failed; no production fallback will be used.', error)
-    throw error
+    console.error('[admin-store] Postgres configuration failed; using safe default store.', error)
+    return normalizeStore(cloneDefaultStore())
   }
 
   if (databaseUrl) {
@@ -270,12 +241,8 @@ export async function readStore(): Promise<AdminStore> {
       const raw = await readDatabaseStore()
       return normalizeStore(raw ? JSON.parse(raw) as Partial<AdminStore> : cloneDefaultStore())
     } catch (error) {
-      if (isProductionBuild) {
-        console.error('[admin-store] Postgres read failed during production build; rendering build-time defaults without writing fallback data.', error)
-        return normalizeStore(cloneDefaultStore())
-      }
-      console.error('[admin-store] Postgres read failed; no production fallback will be used.', error)
-      throw new Error('Database read failed. Admin data was not loaded.')
+      console.error('[admin-store] Postgres read failed; using safe default store so public pages do not crash.', error)
+      return normalizeStore(cloneDefaultStore())
     }
   }
 
@@ -286,7 +253,6 @@ export async function readStore(): Promise<AdminStore> {
     const raw = await fs.readFile(dataFile, 'utf8')
     return normalizeStore(JSON.parse(raw) as Partial<AdminStore>)
   } catch (error) {
-    if (isProduction) throw new Error('Database read failed. Admin data was not loaded.')
     console.error('[admin-store] Local development file read failed; using defaults.', error)
     return cloneDefaultStore()
   }
@@ -411,7 +377,6 @@ export async function createMedia(input: Pick<MediaAsset, 'url' | 'title' | 'alt
   await writeStore(store)
   return media
 }
-
 
 export async function upsertAlbum(input: Partial<PhotoAlbum> & { titleNl: string; date: string; imageIds?: string[] }) {
   const store = await readStore()
