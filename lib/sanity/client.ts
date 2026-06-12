@@ -1,32 +1,34 @@
-import { createClient } from '@sanity/client'
+export const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || ''
+export const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
+export const sanityApiVersion = '2026-06-11'
 
-export const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'placeholder',
-  dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET   || 'production',
-  apiVersion: '2024-01-01',
-  useCdn:    true,
-  stega:     { enabled: false },
-})
-
-export async function getAgendaEvents() {
-  try {
-    return await sanityClient.fetch<AgendaEvent[]>(
-      `*[_type == "agendaEvent" && is_visible == true] | order(date asc) { _id, dj, date, day, time, age, description, special }`,
-      {},
-      { next: { revalidate: 1800 } }
-    )
-  } catch {
-    return []
-  }
+export function hasSanityWriteConfig() {
+  return Boolean(sanityProjectId && sanityDataset && process.env.SANITY_API_WRITE_TOKEN)
 }
 
-export interface AgendaEvent {
-  _id:         string
-  dj:          string
-  date:        string   // DD-MM-YYYY
-  day:         string
-  time:        string
-  age:         string
-  description?: string
-  special?:    string
+function sanityMutateUrl() {
+  if (!sanityProjectId) throw new Error('Form backend not configured')
+  return `https://${sanityProjectId}.api.sanity.io/v${sanityApiVersion}/data/mutate/${sanityDataset}`
+}
+
+export async function createSanityDocument<T>(document: T): Promise<T> {
+  const token = process.env.SANITY_API_WRITE_TOKEN
+  if (!hasSanityWriteConfig() || !token) throw new Error('Form backend not configured')
+
+  const response = await fetch(sanityMutateUrl(), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ mutations: [{ create: document }] }),
+  })
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '')
+    console.error('[sanity] lead create failed', response.status, detail)
+    throw new Error('Could not save form submission')
+  }
+
+  return document
 }

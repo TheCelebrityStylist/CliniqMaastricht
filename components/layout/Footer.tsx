@@ -1,74 +1,102 @@
 'use client'
 
 import Link from 'next/link'
-import { Instagram } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { useLang } from '@/lib/lang'
 import { COPY, SITE, HOURS } from '@/lib/content'
 
-const TikTokIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.2 8.2 0 004.79 1.53V6.77a4.85 4.85 0 01-1.02-.08z"/>
+
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <path d="M17.5 6.5h.01" />
   </svg>
 )
 
-const FOOTER_LINKS_NL = [
-  { href: '/uitgaan',           label: 'Uitgaan' },
-  { href: '/cocktail-workshop', label: 'Cocktail Workshop' },
-  { href: '/event-space',       label: 'Ruimte Huren' },
-  { href: '/artiesten',         label: 'Artiesten' },
-  { href: '/vacatures',         label: 'Vacatures' },
-  { href: '/house-rules',       label: 'Huisregels' },
+const TikTokIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.2 8.2 0 004.79 1.53V6.77a4.85 4.85 0 01-1.02-.08z" />
+  </svg>
+)
+
+const NAV_NL = [
+  { href: '/uitgaan', label: 'Uitgaan' },
+  { href: '/cocktail-workshop', label: 'Cocktail workshop' },
+  { href: '/event-space', label: 'Ruimte huren' },
+  { href: '/fotos', label: "Foto's" },
+  { href: '/contact', label: 'Contact' },
+  { href: '/vacatures', label: 'Vacatures' },
+  { href: '/house-rules', label: 'Huisregels' },
 ]
-const FOOTER_LINKS_EN = [
-  { href: '/uitgaan',           label: 'Nightlife' },
-  { href: '/cocktail-workshop', label: 'Cocktail Workshop' },
-  { href: '/event-space',       label: 'Hire Venue' },
-  { href: '/artiesten',         label: 'Artists' },
-  { href: '/vacatures',         label: 'Jobs' },
-  { href: '/house-rules',       label: 'House Rules' },
+const NAV_EN = [
+  { href: '/uitgaan', label: 'Nightlife' },
+  { href: '/cocktail-workshop', label: 'Cocktail workshop' },
+  { href: '/event-space', label: 'Hire venue' },
+  { href: '/fotos', label: 'Photos' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/vacatures', label: 'Jobs' },
+  { href: '/house-rules', label: 'House rules' },
 ]
+
+const GROEPEN_NL = [
+  { href: '/vrijgezellenavond', label: 'Vrijgezellenavond' },
+  { href: '/bedrijfsfeest', label: 'Bedrijfsfeest' },
+  { href: '/privefeest', label: 'Privéfeest' },
+  { href: '/cocktail-workshop', label: 'Cocktail workshop' },
+  { href: '/event-space', label: 'Feestzaal Maastricht' },
+]
+const GROEPEN_EN = [
+  { href: '/vrijgezellenavond', label: 'Hen party' },
+  { href: '/bedrijfsfeest', label: 'Corporate event' },
+  { href: '/privefeest', label: 'Private party' },
+  { href: '/cocktail-workshop', label: 'Cocktail workshop' },
+  { href: '/event-space', label: 'Event venue Maastricht' },
+]
+
+const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest']
 
 export default function Footer() {
+  const pathname = usePathname()
   const { lang } = useLang()
+  if (HIDDEN_PATHS.some((path) => pathname?.startsWith(path))) return null
+
   const t = COPY[lang]
-  const footerLinks = lang === 'nl' ? FOOTER_LINKS_NL : FOOTER_LINKS_EN
-  const dayLabels = [t.footer.thursday, t.footer.friday, t.footer.saturday]
+  const navLinks = lang === 'nl' ? NAV_NL : NAV_EN
+  const groepenLinks = lang === 'nl' ? GROEPEN_NL : GROEPEN_EN
+  const dayLabels = lang === 'nl'
+    ? ['Donderdag', 'Vrijdag', 'Zaterdag']
+    : ['Thursday', 'Friday', 'Saturday']
 
   return (
-    <footer className="bg-ink border-t border-white/6 pt-20 pb-10 px-8 md:px-16">
-      <div className="max-w-screen-xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
-
-          {/* Brand */}
-          <div className="md:col-span-4">
-            <Link href="/" className="font-display font-black text-xl tracking-[0.45em] text-white hover:text-magenta transition-colors">
+    <footer className="border-t border-white/[0.06] bg-ink">
+      <div className="mx-auto max-w-screen-xl px-8 pb-10 pt-20 md:px-16">
+        <div className="mb-16 grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
+          <div className="col-span-2 md:col-span-1">
+            <Link href="/" className="text-[15px] font-black tracking-[0.45em] text-white transition-colors duration-300 hover:text-magenta">
               CLINIQ
             </Link>
-            <p className="text-white/40 text-sm leading-relaxed max-w-xs mt-5 font-body">
+            <p className="mb-6 mt-4 max-w-[220px] text-sm leading-relaxed text-white/35">
               {t.footer.tagline}
             </p>
-            <div className="flex items-center gap-4 mt-7 text-white/20">
-              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer"
-                 className="hover:text-magenta transition-colors" aria-label="Instagram">
-                <Instagram className="w-4 h-4" />
+            <div className="flex items-center gap-4 text-white/20">
+              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="Instagram">
+                <InstagramIcon />
               </a>
-              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer"
-                 className="hover:text-magenta transition-colors" aria-label="TikTok">
+              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="TikTok">
                 <TikTokIcon />
               </a>
             </div>
           </div>
 
-          {/* Links */}
-          <div className="md:col-span-3">
-            <h4 className="eyebrow mb-6">{t.footer.links.toUpperCase()}</h4>
-            <ul className="space-y-3">
-              {footerLinks.map(link => (
+          <div>
+            <h4 className="eyebrow mb-5">
+              {lang === 'nl' ? 'Navigatie' : 'Navigation'}
+            </h4>
+            <ul className="space-y-2.5">
+              {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-white/45 text-sm hover:text-white transition-colors font-body"
-                  >
+                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -76,42 +104,52 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Hours */}
-          <div className="md:col-span-2">
-            <h4 className="eyebrow mb-6">{t.footer.hours.toUpperCase()}</h4>
-            <div className="space-y-3">
+          <div>
+            <h4 className="eyebrow mb-5">
+              {lang === 'nl' ? 'Openingstijden' : 'Opening hours'}
+            </h4>
+            <div className="mb-7 space-y-2">
               {HOURS.map((h, i) => (
-                <div key={h.abbr.nl} className="flex justify-between gap-4 text-sm">
-                  <span className="text-white/45 font-body">{dayLabels[i]}</span>
-                  <span className="text-white/25 font-body tabular-nums">{h.time}</span>
+                <div key={h.abbr.nl} className="flex items-baseline justify-between gap-3">
+                  <span className="text-sm text-white/[0.38]">{dayLabels[i]}</span>
+                  <span className="tabular-nums text-white/20" style={{ fontSize: 11 }}>{h.time}</span>
                 </div>
               ))}
             </div>
+            <div className="space-y-1.5 text-sm text-white/30">
+              <p>{SITE.address.street}</p>
+              <p>{SITE.address.postal} {SITE.address.city}</p>
+              <a href={`mailto:${SITE.email}`} className="mt-3 block transition-colors duration-200 hover:text-magenta">
+                {SITE.email}
+              </a>
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="block transition-colors duration-200 hover:text-magenta">
+                WhatsApp
+              </a>
+            </div>
           </div>
 
-          {/* Contact */}
-          <div className="md:col-span-3">
-            <h4 className="eyebrow mb-6">{t.footer.contact.toUpperCase()}</h4>
-            <div className="space-y-3 text-white/45 text-sm font-body">
-              <p>
-                {SITE.address.street}<br />
-                {SITE.address.postal} {SITE.address.city}
-              </p>
-              <a href={`mailto:${SITE.email}`}
-                 className="block hover:text-magenta transition-colors">{SITE.email}</a>
-              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer"
-                 className="block hover:text-magenta transition-colors">WhatsApp</a>
-            </div>
+          <div>
+            <h4 className="eyebrow mb-5">
+              {lang === 'nl' ? 'Voor groepen' : 'For groups'}
+            </h4>
+            <ul className="space-y-2.5">
+              {groepenLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-magenta">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-white/15 text-[10px] tracking-widest font-display font-black">
-            © {new Date().getFullYear()} CLINIQ MAASTRICHT
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/[0.05] pt-6 md:flex-row">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/[0.12]">
+            © {new Date().getFullYear()} Cliniq Maastricht
           </p>
-          <p className="text-white/15 text-[10px] tracking-widest font-display font-black">
-            {SITE.address.street.toUpperCase()} · {SITE.address.postal} {SITE.address.city.toUpperCase()}
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/[0.12]">
+            Platielstraat 9A · 6211 GV Maastricht
           </p>
         </div>
       </div>
