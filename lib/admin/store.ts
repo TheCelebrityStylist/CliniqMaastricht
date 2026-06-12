@@ -15,36 +15,44 @@ function cloneDefaultStore(): AdminStore {
 }
 
 
-export function getDatabaseUrl() {
-  const source = process.env.POSTGRES_URL
+function getConfiguredDatabaseUrl() {
+  return process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL || ''
+}
+
+function getDatabaseSource() {
+  return process.env.POSTGRES_URL
     ? 'POSTGRES_URL'
     : process.env.DATABASE_URL
       ? 'DATABASE_URL'
       : process.env.PRISMA_DATABASE_URL
         ? 'PRISMA_DATABASE_URL'
         : null
-  const url = process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.PRISMA_DATABASE_URL || ''
+}
+
+export function getConnectionString() {
+  const value = getConfiguredDatabaseUrl()
+  const source = getDatabaseSource()
+
+  if (!value) {
+    throw new Error('Missing Postgres connection string')
+  }
 
   if (source && loggedDatabaseSource !== source) {
     console.info(`[admin-store] using ${source} for Postgres persistence`)
     loggedDatabaseSource = source
   }
 
-  return url
+  return value
 }
 
-async function withDb<T>(callback: (client: ReturnType<typeof createClient>) => Promise<T>) {
-  const connectionString = getDatabaseUrl()
-
-  if (!connectionString) {
-    throw new Error('No Postgres connection string found. Set POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL.')
-  }
-
-  const client = createClient({ connectionString })
+async function withDb<T>(fn: (client: ReturnType<typeof createClient>) => Promise<T>) {
+  const client = createClient({
+    connectionString: getConnectionString(),
+  })
 
   try {
     await client.connect()
-    return await callback(client)
+    return await fn(client)
   } finally {
     await client.end()
   }
@@ -191,7 +199,7 @@ function mergeDefaultDjImages(currentImages: DjImage[] = [], legacyPresets: Arra
 }
 
 async function ensureStore() {
-  if (getDatabaseUrl()) return
+  if (getConfiguredDatabaseUrl()) return
   if (isProduction) throw new Error('Production admin persistence requires POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL.')
   await fs.mkdir(dataDir, { recursive: true })
   try {
@@ -202,7 +210,7 @@ async function ensureStore() {
 }
 
 async function ensureDatabaseStore() {
-  if (!getDatabaseUrl()) return false
+  if (!getConfiguredDatabaseUrl()) return false
   await withDb(async (client) => {
     await client.sql`CREATE TABLE IF NOT EXISTS cliniq_admin_store (id TEXT PRIMARY KEY, data JSONB NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())`
   })
@@ -210,7 +218,7 @@ async function ensureDatabaseStore() {
 }
 
 async function readDatabaseStore() {
-  if (!getDatabaseUrl()) return null
+  if (!getConfiguredDatabaseUrl()) return null
   await ensureDatabaseStore()
   const result = await withDb(async (client) => {
     return client.sql<{ data: AdminStore }>`SELECT data FROM cliniq_admin_store WHERE id = 'main' LIMIT 1`
@@ -221,7 +229,7 @@ async function readDatabaseStore() {
 export async function readStore(): Promise<AdminStore> {
   let databaseUrl: string | null
   try {
-    databaseUrl = getDatabaseUrl()
+    databaseUrl = getConfiguredDatabaseUrl()
   } catch (error) {
     if (isProductionBuild) {
       console.error('[admin-store] Postgres configuration failed during production build; rendering build-time defaults without writing fallback data.', error)
@@ -261,7 +269,7 @@ export async function readStore(): Promise<AdminStore> {
 export async function writeStore(store: AdminStore) {
   const normalizedPayload = JSON.parse(JSON.stringify(store)) as AdminStore
   const payload = JSON.stringify(normalizedPayload, null, 2)
-  const databaseUrl = getDatabaseUrl()
+  const databaseUrl = getConfiguredDatabaseUrl()
 
   if (databaseUrl) {
     try {
@@ -292,8 +300,8 @@ export async function writeStore(store: AdminStore) {
 
 export async function getDatabaseStatus() {
   try {
-    const source = process.env.POSTGRES_URL ? 'POSTGRES_URL' : process.env.DATABASE_URL ? 'DATABASE_URL' : process.env.PRISMA_DATABASE_URL ? 'PRISMA_DATABASE_URL' : 'Missing env var'
-    const databaseUrl = getDatabaseUrl()
+    const source = getDatabaseSource() || 'Missing env var'
+    const databaseUrl = getConfiguredDatabaseUrl()
     if (!databaseUrl) return { status: 'Missing env var' as const, provider: 'Local development file store', message: 'POSTGRES_URL, DATABASE_URL or PRISMA_DATABASE_URL is not set.' }
     await ensureDatabaseStore()
     await withDb(async (client) => {
@@ -302,7 +310,7 @@ export async function getDatabaseStatus() {
     return { status: 'Connected' as const, provider: source, message: 'Postgres read connection succeeded.' }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown database error'
-    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL') || message.includes('No Postgres connection string')) {
+    if (message.includes('Missing Postgres') || message.includes('POSTGRES_URL or DATABASE_URL') || message.includes('No Postgres connection string') || message.includes('Missing Postgres connection string')) {
       return { status: 'Missing env var' as const, provider: 'Missing env var', message }
     }
     return { status: message.includes('read') ? 'Read failed' as const : 'Write failed' as const, provider: 'Postgres', message }
