@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter_Tight } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Script from 'next/script'
@@ -9,8 +8,6 @@ import Footer from '@/components/layout/Footer'
 import AnalyticsTracker from '@/components/analytics/AnalyticsTracker'
 import { site } from '@/lib/site'
 import { localBusinessSchema, organizationSchema } from '@/lib/seo'
-
-const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tight', display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -22,7 +19,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#080607' }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="nl" className={interTight.variable}>
+  return <html lang="nl">
     <body>
       <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
       <Header />
