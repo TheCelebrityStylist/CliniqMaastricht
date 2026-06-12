@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { createClient } from '@vercel/postgres'
+import { createClient, createPool } from '@vercel/postgres'
 import { defaultAgendaEvents, defaultStore } from './defaults'
 import type { AdminStore, AgendaEvent, DjImage, Lead, MediaAsset, PhotoAlbum } from './types'
 
@@ -29,6 +29,16 @@ function getDatabaseSource() {
         : null
 }
 
+function isPooledConnectionString(connectionString: string) {
+  try {
+    const url = new URL(connectionString)
+    const host = url.hostname.toLowerCase()
+    return host.includes('pooler') || host.includes('-pooler.')
+  } catch {
+    return connectionString.toLowerCase().includes('pooler')
+  }
+}
+
 export function getConnectionString() {
   const value = getConfiguredDatabaseUrl()
   const source = getDatabaseSource()
@@ -38,23 +48,39 @@ export function getConnectionString() {
   }
 
   if (source && loggedDatabaseSource !== source) {
-    console.info(`[admin-store] using ${source} for Postgres persistence`)
+    const mode = isPooledConnectionString(value) ? 'pooled' : 'direct'
+    console.info(`[admin-store] using ${source} (${mode}) for Postgres persistence`)
     loggedDatabaseSource = source
   }
 
   return value
 }
 
-async function withDb<T>(fn: (client: ReturnType<typeof createClient>) => Promise<T>) {
-  const client = createClient({
-    connectionString: getConnectionString(),
-  })
+type DbRunner = {
+  sql: <T = unknown>(strings: TemplateStringsArray, ...values: unknown[]) => Promise<{ rows: T[] }>
+  end?: () => Promise<void>
+  connect?: () => Promise<void>
+}
 
+async function withDb<T>(fn: (client: DbRunner) => Promise<T>) {
+  const connectionString = getConnectionString()
+  const pooled = isPooledConnectionString(connectionString)
+
+  if (pooled) {
+    const pool = createPool({ connectionString }) as unknown as DbRunner
+    try {
+      return await fn(pool)
+    } finally {
+      await pool.end?.()
+    }
+  }
+
+  const client = createClient({ connectionString }) as unknown as DbRunner
   try {
-    await client.connect()
+    await client.connect?.()
     return await fn(client)
   } finally {
-    await client.end()
+    await client.end?.()
   }
 }
 
