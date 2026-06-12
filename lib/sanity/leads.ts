@@ -19,7 +19,7 @@ export async function createSanityLead(input: SanityLeadInput) {
     message: input.message || undefined,
     sourcePage: input.sourcePage || '',
     submittedAt: new Date().toISOString(),
-    payload: input.payload || {},
+    payload: JSON.stringify(input.payload || {}, null, 2),
   }
 
   return createSanityDocument(doc)
