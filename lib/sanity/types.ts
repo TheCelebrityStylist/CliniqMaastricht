@@ -21,5 +21,5 @@ export type SanityLeadDocument = {
   message?: string
   sourcePage: string
   submittedAt: string
-  payload: Record<string, unknown>
+  payload: string
 }
