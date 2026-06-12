@@ -1,29 +1,35 @@
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
-import { createSanityLead } from '@/lib/sanity/leads'
+import { createLead } from '@/lib/admin/store'
 
-const schema = z.object({
-  type: z.enum(['contact', 'workshop', 'event-space', 'event_space', 'eventSpace', 'job']),
-  name: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  message: z.string().min(5).max(3000),
-  website: z.string().optional(),
-  sourcePage: z.string().optional(),
-}).passthrough()
+function normalizeType(type: string) {
+  if (type === 'event-space' || type === 'event_space' || type === 'eventSpace') return 'event-space'
+  if (type === 'workshop') return 'workshop'
+  if (type === 'job') return 'job'
+  return 'contact'
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}))
-  const parsed = schema.safeParse(body)
-  if (!parsed.success || parsed.data.website) return NextResponse.json({ error: 'Invalid submission' }, { status: 400 })
-  const data = parsed.data
+
+  if (body.website) return NextResponse.json({ ok: false }, { status: 400 })
+  if (!body.name || !body.email) {
+    return NextResponse.json({ ok: false, error: 'Name and email are required.' }, { status: 400 })
+  }
 
   try {
-    const lead = await createSanityLead({ type: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: data })
-    return NextResponse.json({ ok: true, id: 'sanity-lead' })
+    const lead = await createLead({
+      type: normalizeType(String(body.type || 'contact')),
+      name: String(body.name),
+      email: String(body.email),
+      phone: body.phone ? String(body.phone) : undefined,
+      message: body.message ? String(body.message) : '',
+      sourcePage: body.sourcePage ? String(body.sourcePage) : '',
+      payload: body,
+    })
+
+    return NextResponse.json({ ok: true, id: lead.id })
   } catch (error) {
-    console.error('[sanity-lead] save failed', error)
-    const message = error instanceof Error && error.message === 'Form backend not configured' ? error.message : 'Could not save submission. Please try again.'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[inquiry] save failed', error)
+    return NextResponse.json({ ok: false, error: 'Could not save inquiry.' }, { status: 500 })
   }
 }
