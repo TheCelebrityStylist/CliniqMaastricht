@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
   try {
     const lead = await createSanityLead({ type: data.type, name: data.name, email: data.email, phone: data.phone, message: data.message, sourcePage: data.sourcePage || '', payload: data })
-    return NextResponse.json({ ok: true, id: lead._id })
+    return NextResponse.json({ ok: true, id: 'sanity-lead' })
   } catch (error) {
     console.error('[sanity-lead] save failed', error)
     const message = error instanceof Error && error.message === 'Form backend not configured' ? error.message : 'Could not save submission. Please try again.'
