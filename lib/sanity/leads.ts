@@ -3,7 +3,8 @@ import type { SanityLeadDocument, SanityLeadInput, SanityLeadType } from './type
 
 export function normalizeLeadType(input: string): SanityLeadType {
   if (input === 'event-space' || input === 'event_space' || input === 'eventSpace') return 'eventSpace'
-  if (input === 'workshop' || input === 'job') return input
+  if (input === 'workshop') return 'workshop'
+  if (input === 'job') return 'job'
   return 'contact'
 }
 
@@ -16,9 +17,9 @@ export async function createSanityLead(input: SanityLeadInput) {
     email: input.email,
     phone: input.phone || undefined,
     message: input.message || undefined,
-    sourcePage: input.sourcePage,
+    sourcePage: input.sourcePage || '',
     submittedAt: new Date().toISOString(),
-    payload: input.payload,
+    payload: input.payload || {},
   }
 
   return createSanityDocument(doc)
