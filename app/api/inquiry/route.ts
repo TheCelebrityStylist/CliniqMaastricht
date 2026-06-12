@@ -1,35 +1,41 @@
 import { NextResponse } from 'next/server'
-import { createLead } from '@/lib/admin/store'
+import { z } from 'zod'
+import { createSanityLead } from '@/lib/sanity/leads'
 
-function normalizeType(type: string) {
-  if (type === 'event-space' || type === 'event_space' || type === 'eventSpace') return 'event-space'
-  if (type === 'workshop') return 'workshop'
-  if (type === 'job') return 'job'
-  return 'contact'
-}
+const schema = z.object({
+  type: z.string().optional(),
+  name: z.string().trim().min(1),
+  email: z.string().trim().email(),
+  phone: z.string().optional(),
+  message: z.string().optional(),
+  website: z.string().optional(),
+  sourcePage: z.string().optional(),
+}).passthrough()
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}))
+  const parsed = schema.safeParse(body)
 
-  if (body.website) return NextResponse.json({ ok: false }, { status: 400 })
-  if (!body.name || !body.email) {
-    return NextResponse.json({ ok: false, error: 'Name and email are required.' }, { status: 400 })
+  if (!parsed.success || parsed.data.website) {
+    return NextResponse.json({ ok: false, error: 'Invalid submission' }, { status: 400 })
   }
 
+  const data = parsed.data
+
   try {
-    const lead = await createLead({
-      type: normalizeType(String(body.type || 'contact')),
-      name: String(body.name),
-      email: String(body.email),
-      phone: body.phone ? String(body.phone) : undefined,
-      message: body.message ? String(body.message) : '',
-      sourcePage: body.sourcePage ? String(body.sourcePage) : '',
+    await createSanityLead({
+      type: data.type || 'contact',
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      message: data.message || '',
+      sourcePage: data.sourcePage || '',
       payload: body,
     })
 
-    return NextResponse.json({ ok: true, id: lead.id })
+    return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('[inquiry] save failed', error)
-    return NextResponse.json({ ok: false, error: 'Could not save inquiry.' }, { status: 500 })
+    console.error('[sanity-inquiry] save failed', error)
+    return NextResponse.json({ ok: false, error: 'Could not save inquiry' }, { status: 500 })
   }
 }
