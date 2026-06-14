@@ -65,3 +65,5 @@ export async function buildPageMetadata(
     },
   }
 }
+
+export const cmsMetadata = buildPageMetadata
