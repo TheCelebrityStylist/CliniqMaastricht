@@ -336,7 +336,10 @@ async function getSanityAlbums(includeDrafts = false) {
   })
 }
 
-export function resolveEventImage(event: { title?: string; titleNl?: string; eventType?: string; imageUrl?: string }) {
+export function resolveEventImage(
+  event: { title?: string; titleNl?: string; eventType?: string; imageUrl?: string },
+  _store?: unknown,
+) {
   if (event.imageUrl) {
     return {
       imageUrl: event.imageUrl,
