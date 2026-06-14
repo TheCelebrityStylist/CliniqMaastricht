@@ -1,18 +1,67 @@
-import { pageMeta, localizedPaths, type Lang } from './i18n'
-import { metadata } from './seo'
-import { getSeoSettings } from './admin/public'
+import type { Metadata } from 'next'
+import type { Lang } from '@/lib/admin/types'
+import { getSeoSettings } from '@/lib/admin/public'
 
-type PageKey = keyof typeof pageMeta
+type FallbackMetadata = {
+  title: string
+  description: string
+  path: string
+}
 
-export async function cmsMetadata(pageKey: PageKey, lang: Lang) {
-  const fallback = pageMeta[pageKey][lang]
-  const settings = await getSeoSettings(pageKey === 'eventSpace' ? 'event-space' : pageKey === 'houseRules' ? 'house-rules' : pageKey === 'workshop' ? 'cocktail-workshop' : pageKey, lang)
-  const path = localizedPaths[pageKey]?.[lang] || '/'
-  return metadata(
-    settings?.seoTitle || fallback.title,
-    settings?.metaDescription || fallback.description,
-    settings?.canonicalUrl ? new URL(settings.canonicalUrl).pathname : path,
-    lang,
-    settings?.socialImageUrl,
-  )
+type SeoSettings = {
+  pageKey?: string
+  language?: Lang
+  seoTitle?: string
+  metaDescription?: string
+  canonicalUrl?: string
+  socialImageUrl?: string
+  ogTitle?: string
+  ogDescription?: string
+}
+
+const siteUrl = 'https://www.cliniqmaastricht.nl'
+
+export async function buildPageMetadata(
+  pageKey: string,
+  lang: Lang,
+  fallback: FallbackMetadata,
+): Promise<Metadata> {
+  const settings = (await getSeoSettings(pageKey, lang)) as SeoSettings | null
+
+  const canonicalPath = settings?.canonicalUrl
+    ? new URL(settings.canonicalUrl, siteUrl).pathname
+    : fallback.path
+
+  const canonicalUrl = `${siteUrl}${canonicalPath}`
+  const title = settings?.seoTitle || fallback.title
+  const description = settings?.metaDescription || fallback.description
+  const ogTitle = settings?.ogTitle || title
+  const ogDescription = settings?.ogDescription || description
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        nl: `${siteUrl}${canonicalPath}`,
+        en: `${siteUrl}/en${canonicalPath === '/' ? '' : canonicalPath}`,
+      },
+    },
+    openGraph: {
+      title: ogTitle,
+      description: ogDescription,
+      url: canonicalUrl,
+      siteName: 'CLINIQ Maastricht',
+      images: settings?.socialImageUrl ? [{ url: settings.socialImageUrl }] : undefined,
+      locale: lang === 'nl' ? 'nl_NL' : 'en_GB',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: ogTitle,
+      description: ogDescription,
+      images: settings?.socialImageUrl ? [settings.socialImageUrl] : undefined,
+    },
+  }
 }
