@@ -12,27 +12,25 @@ import ClosingCTA from '@/components/layout/ClosingCTA'
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeoSettings('home', 'nl')
-  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A'
+  const seo = await getSeoSettings('home', 'en')
+  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
   const description =
     seo?.metaDescription ||
-    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
-  const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
-  const ogDescription =
-    seo?.ogDescription ||
-    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.'
+    'Going out in Maastricht? CLINIQ is open every Thursday, Friday and Saturday at Platielstraat 9A. Club nights, private events and cocktail workshops in the city centre.'
+  const ogTitle = seo?.ogTitle || title
+  const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
 
   return {
     title,
     description,
-    alternates: { canonical: 'https://www.cliniqmaastricht.nl' },
+    alternates: { canonical: 'https://www.cliniqmaastricht.nl/en' },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
-      url: 'https://www.cliniqmaastricht.nl',
-      siteName: 'Cliniq Maastricht',
-      locale: 'nl_NL',
+      url: 'https://www.cliniqmaastricht.nl/en',
+      siteName: 'CLINIQ Maastricht',
+      locale: 'en_GB',
       type: 'website',
       images: socialImages,
     },
@@ -45,12 +43,12 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Home() {
-  const t = ui.nl
+export default async function HomeEn() {
+  const t = ui.en
 
   const [events, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
-    getPageContent('home'),
+    getPageContent('home', 'en'),
     getSectionPhotoMedia('homepage', [
       images.crowd,
       images.redCrowd,
@@ -66,11 +64,14 @@ export default async function Home() {
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
 
-  const heroTitle = pageContent?.heroTitleNl || 'Maastricht After Dark.'
-  const heroSubtitle = pageContent?.heroSubtitleNl || 'Uitgaan, events en workshops aan de Platielstraat.'
-  const primaryCta = pageContent?.primaryCtaNl || t.common.viewAgenda
-  const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
-  const seoBodyNl = pageContent?.bodyNl
+  const heroTitle = pageContent?.heroTitleEn || pageContent?.heroTitleNl || 'Maastricht After Dark.'
+  const heroSubtitle =
+    pageContent?.heroSubtitleEn ||
+    pageContent?.heroSubtitleNl ||
+    'Nightlife, events and workshops on Platielstraat.'
+  const primaryCta = pageContent?.primaryCtaEn || t.common.viewAgenda
+  const secondaryCta = pageContent?.secondaryCtaEn || t.home.heroCta2
+  const seoBody = pageContent?.bodyEn || pageContent?.bodyNl
 
   return (
     <>
@@ -78,7 +79,7 @@ export default async function Home() {
         <SafeImage
           src={heroPhoto}
           fallbackSrc={images.fallbackHero}
-          alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat"
+          alt="CLINIQ Maastricht nightclub on Platielstraat"
           fill
           priority
           sizes="100vw"
@@ -94,11 +95,11 @@ export default async function Home() {
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link data-track="cta_click" className="btn-primary" href="/uitgaan">
+              <Link data-track="cta_click" className="btn-primary" href="/en/nightlife">
                 {primaryCta}
               </Link>
 
-              <Link data-track="cta_click" className="btn-secondary" href="/fotos">
+              <Link data-track="cta_click" className="btn-secondary" href="/en/photos">
                 {secondaryCta}
               </Link>
             </div>
@@ -111,8 +112,8 @@ export default async function Home() {
           <SectionIntro
             eyebrow="Agenda"
             title={t.home.eventsTitle}
-            text="De eerstvolgende avonden bij CLINIQ."
-            ctaHref="/uitgaan"
+            text="The next nights at CLINIQ."
+            ctaHref="/en/nightlife"
             ctaLabel={t.common.allEvents}
           />
 
@@ -127,13 +128,13 @@ export default async function Home() {
               <SafeImage
                 src={images.club}
                 fallbackSrc={images.fallbackWide}
-                alt="Clubavond bij CLINIQ aan de Platielstraat"
+                alt="Club night at CLINIQ Maastricht"
                 fill
                 sizes="100vw"
                 className="-z-10 object-cover brightness-[1.08]"
               />
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
-              <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
+              <h3 className="h2 absolute bottom-8 left-8 right-8">New events coming soon.</h3>
             </div>
           )}
         </div>
@@ -141,7 +142,7 @@ export default async function Home() {
 
       <section className="overflow-hidden pb-24">
         <div className="container-premium">
-          <SectionIntro eyebrow="Foto’s" title="Foto’s" text="Recente avonden bij CLINIQ." />
+          <SectionIntro eyebrow="Photos" title="Photos" text="Recent nights at CLINIQ." />
         </div>
 
         <div className="relative mt-10 overflow-hidden">
@@ -149,13 +150,13 @@ export default async function Home() {
             {carouselPhotos.map((src, index) => (
               <Link
                 key={`${src}-${index}`}
-                href="/fotos"
+                href="/en/photos"
                 className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]"
               >
                 <SafeImage
                   src={src}
                   fallbackSrc={images.fallbackWide}
-                  alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+                  alt={`CLINIQ Maastricht atmosphere photo ${index + 1}`}
                   fill
                   sizes="(min-width:1024px) 500px, 80vw"
                   className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
@@ -169,7 +170,7 @@ export default async function Home() {
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
-          <Link href="/fotos" className="btn-primary">
+          <Link href="/en/photos" className="btn-primary">
             {t.common.allPhotos}
           </Link>
         </div>
@@ -188,39 +189,39 @@ export default async function Home() {
 
       <section className="container-premium space-y-8 pb-24">
         <ServiceRow
-          href="/cocktail-workshop"
+          href="/en/cocktail-workshop"
           image={images.workshopBar}
           eyebrow="Workshop"
           title="Cocktail workshop"
           text={
             <>
-              Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
-              bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
-              <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+              Make cocktails with your group, guided by our bartenders. Perfect for bachelorette parties, company
+              outings, birthdays and groups of friends. Discover our{' '}
+              <Link href="/en/cocktail-workshop" className="text-gold hover:text-white">
                 cocktail workshops
               </Link>
               .
             </>
           }
-          cta="Cocktail workshop bekijken"
+          cta="View cocktail workshop"
         />
 
         <ServiceRow
-          href="/event-space"
+          href="/en/event-space"
           image={images.redRoom}
           eyebrow="Events"
-          title="Ruimte huren"
+          title="Private event space"
           text={
             <>
-              CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
-              Meer over{' '}
-              <Link href="/event-space" className="text-gold hover:text-white">
-                ruimte huren
+              CLINIQ is available for drinks, company parties, birthdays, bachelorette nights and private events. Learn
+              more about{' '}
+              <Link href="/en/event-space" className="text-gold hover:text-white">
+                hiring the venue
               </Link>
               .
             </>
           }
-          cta="Mogelijkheden bekijken"
+          cta="View possibilities"
           reverse
         />
       </section>
@@ -229,24 +230,21 @@ export default async function Home() {
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <p className="eyebrow">Maastricht</p>
-            <h2 className="h2 mt-4">Uitgaan en events in Maastricht</h2>
+            <h2 className="h2 mt-4">Nightlife and events in Maastricht</h2>
           </div>
 
           <div className="prose-premium">
-            {seoBodyNl ? (
-              <p>{seoBodyNl}</p>
+            {seoBody ? (
+              <p>{seoBody}</p>
             ) : (
               <>
                 <p>
-                  CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je vindt hier clubavonden,
-                  groepsactiviteiten, cocktail workshops en mogelijkheden om de ruimte te huren voor een besloten avond.
-                  De agenda wisselt per week en via de fotopagina zie je een indruk van recente avonden.
+                  CLINIQ is located on Platielstraat, right in the centre of Maastricht. You will find club nights, group
+                  activities, cocktail workshops and options to hire the venue for a private night.
                 </p>
                 <p>
-                  Voor wie zoekt naar uitgaan in Maastricht, op stap gaan met vrienden, een vrijgezellenavond, een
-                  cocktail workshop of een ruimte voor een borrel of bedrijfsfeest, is CLINIQ een centrale plek in de
-                  stad. Controleer altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele details per
-                  avond.
+                  For anyone looking for nightlife in Maastricht, a night out with friends, a bachelorette party, a
+                  cocktail workshop or a private event venue, CLINIQ is a central spot in the city.
                 </p>
               </>
             )}
