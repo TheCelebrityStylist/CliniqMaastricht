@@ -138,52 +138,52 @@ export default async function Home() {
       </section>
 
       <section className="container-premium pb-24">
-        <SectionIntro
-          eyebrow="Foto’s"
-          title="Foto’s"
-          text="Recente avonden bij CLINIQ."
-          ctaHref="/fotos"
-          ctaLabel={t.common.allPhotos}
+  <SectionIntro
+    eyebrow="Foto’s"
+    title="Foto’s"
+    text="Recente avonden bij CLINIQ."
+    ctaHref="/fotos"
+    ctaLabel={t.common.allPhotos}
+  />
+
+  <div className="mt-10 grid auto-rows-[220px] gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:auto-rows-[210px]">
+    {photos.map((src, index) => (
+      <Link
+        key={`${src}-${index}`}
+        href="/fotos"
+        className={`image-frame group rounded-[1.75rem] border border-white/10 ${
+          index === 0
+            ? 'sm:col-span-2 lg:col-span-3 lg:row-span-2'
+            : index === 1
+              ? 'lg:col-span-3'
+              : index === 2
+                ? 'lg:col-span-2'
+                : index === 3
+                  ? 'lg:col-span-2'
+                  : index === 4
+                    ? 'lg:col-span-2'
+                    : 'lg:col-span-3'
+        }`}
+      >
+        <SafeImage
+          src={src}
+          fallbackSrc={images.fallbackWide}
+          alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+          fill
+          sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+          className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
         />
 
-        <div className="mt-10 grid auto-rows-[220px] gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:auto-rows-[210px]">
-          {photos.map((src, index) => (
-            <Link
-              key={`${src}-${index}`}
-              href="/fotos"
-              className={`image-frame group rounded-[1.75rem] border border-white/10 ${
-                index === 0
-                  ? 'sm:col-span-2 lg:col-span-3 lg:row-span-2'
-                  : index === 1
-                    ? 'lg:col-span-3'
-                    : index === 2
-                      ? 'lg:col-span-2'
-                      : index === 3
-                        ? 'lg:col-span-2'
-                        : index === 4
-                          ? 'lg:col-span-2'
-                          : 'lg:col-span-3'
-              }`}
-            >
-              <SafeImage
-                src={src}
-                fallbackSrc={images.fallbackWide}
-                alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
-                fill
-                sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-                className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
-              />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-transparent opacity-70" />
+      </Link>
+    ))}
+  </div>
 
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-transparent opacity-70" />
-            </Link>
-          ))}
-        </div>
-
-        <Link href="/fotos" className="btn-primary mt-8 sm:hidden">
-          {t.common.allPhotos}
-        </Link>
-      </section>
-
+  <Link href="/fotos" className="btn-primary mt-8 sm:hidden">
+    {t.common.allPhotos}
+  </Link>
+</section> 
+      
       <section className="container-premium space-y-8 pb-24">
         <ServiceRow
           href="/cocktail-workshop"
