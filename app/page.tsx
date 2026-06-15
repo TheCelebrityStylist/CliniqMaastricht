@@ -14,9 +14,13 @@ export const revalidate = 60
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'nl')
   const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A'
-  const description = seo?.metaDescription || 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
+  const description =
+    seo?.metaDescription ||
+    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
   const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
-  const ogDescription = seo?.ogDescription || 'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.'
+  const ogDescription =
+    seo?.ogDescription ||
+    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.'
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
 
   return {
@@ -58,14 +62,13 @@ export default async function Home() {
   ])
 
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
-  const photos = gallerySources.map((photo) => photo.url).filter(Boolean).slice(0, 6)
+  const photos = gallerySources.map((photo) => photo.url).filter(Boolean).slice(0, 3)
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
 
   const heroTitle = pageContent?.heroTitleNl || 'Maastricht After Dark.'
   const heroSubtitle = pageContent?.heroSubtitleNl || 'Uitgaan, events en workshops aan de Platielstraat.'
   const primaryCta = pageContent?.primaryCtaNl || t.common.viewAgenda
   const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
-
   const seoBodyNl = pageContent?.bodyNl
 
   return (
@@ -86,9 +89,7 @@ export default async function Home() {
         <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
           <div className="max-w-4xl">
             <p className="eyebrow mb-4">Platielstraat 9A</p>
-
             <h1 className="hero-clean-title">{heroTitle}</h1>
-
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -138,52 +139,49 @@ export default async function Home() {
       </section>
 
       <section className="container-premium pb-24">
-  <section className="container-premium pb-24">
-  <SectionIntro
-    eyebrow="Foto’s"
-    title="Foto’s"
-    text="Recente avonden bij CLINIQ."
-    ctaHref="/fotos"
-    ctaLabel={t.common.allPhotos}
-  />
-
-  <div className="mt-10 grid gap-5 lg:grid-cols-3">
-    {photos.slice(0, 3).map((src, index) => (
-      <Link
-        key={`${src}-${index}`}
-        href="/fotos"
-        className="image-frame group relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]"
-      >
-        <SafeImage
-          src={src}
-          fallbackSrc={images.fallbackWide}
-          alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
-          fill
-          sizes="(min-width:1024px) 33vw, 100vw"
-          className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
+        <SectionIntro
+          eyebrow="Foto’s"
+          title="Foto’s"
+          text="Recente avonden bij CLINIQ."
+          ctaHref="/fotos"
+          ctaLabel={t.common.allPhotos}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-80" />
+        <div className="mt-10 grid gap-5 lg:grid-cols-3">
+          {photos.map((src, index) => (
+            <Link
+              key={`${src}-${index}`}
+              href="/fotos"
+              className="image-frame group relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]"
+            >
+              <SafeImage
+                src={src}
+                fallbackSrc={images.fallbackWide}
+                alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+                fill
+                sizes="(min-width:1024px) 33vw, 100vw"
+                className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
+              />
 
-        <div className="absolute bottom-5 left-5 right-5">
-          <p className="font-display text-[10px] font-black uppercase tracking-[0.18em] text-gold">
-            CLINIQ Maastricht
-          </p>
-          <p className="mt-2 text-sm font-semibold text-white/80">
-            Bekijk recente sfeerfoto’s
-          </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-80" />
+
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="font-display text-[10px] font-black uppercase tracking-[0.18em] text-gold">
+                  CLINIQ Maastricht
+                </p>
+                <p className="mt-2 text-sm font-semibold text-white/80">Bekijk recente sfeerfoto’s</p>
+              </div>
+            </Link>
+          ))}
         </div>
-      </Link>
-    ))}
-  </div>
 
-  <div className="mt-8 flex justify-center">
-    <Link href="/fotos" className="btn-primary">
-      {t.common.allPhotos}
-    </Link>
-  </div>
-</section>
-      
+        <div className="mt-8 flex justify-center">
+          <Link href="/fotos" className="btn-primary">
+            {t.common.allPhotos}
+          </Link>
+        </div>
+      </section>
+
       <section className="container-premium space-y-8 pb-24">
         <ServiceRow
           href="/cocktail-workshop"
