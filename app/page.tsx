@@ -62,7 +62,8 @@ export default async function Home() {
   ])
 
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
-  const photos = gallerySources.map((photo) => photo.url).filter(Boolean).slice(0, 3)
+  const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
+  const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
 
   const heroTitle = pageContent?.heroTitleNl || 'Maastricht After Dark.'
@@ -138,48 +139,57 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
-        <SectionIntro
-          eyebrow="Foto’s"
-          title="Foto’s"
-          text="Recente avonden bij CLINIQ."
-          ctaHref="/fotos"
-          ctaLabel={t.common.allPhotos}
-        />
-
-        <div className="mt-10 grid gap-5 lg:grid-cols-3">
-          {photos.map((src, index) => (
-            <Link
-              key={`${src}-${index}`}
-              href="/fotos"
-              className="image-frame group relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]"
-            >
-              <SafeImage
-                src={src}
-                fallbackSrc={images.fallbackWide}
-                alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
-                fill
-                sizes="(min-width:1024px) 33vw, 100vw"
-                className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-80" />
-
-              <div className="absolute bottom-5 left-5 right-5">
-                <p className="font-display text-[10px] font-black uppercase tracking-[0.18em] text-gold">
-                  CLINIQ Maastricht
-                </p>
-                <p className="mt-2 text-sm font-semibold text-white/80">Bekijk recente sfeerfoto’s</p>
-              </div>
-            </Link>
-          ))}
+      <section className="overflow-hidden pb-24">
+        <div className="container-premium">
+          <SectionIntro
+            eyebrow="Foto’s"
+            title="Foto’s"
+            text="Recente avonden bij CLINIQ."
+            ctaHref="/fotos"
+            ctaLabel={t.common.allPhotos}
+          />
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="relative mt-10 overflow-hidden">
+          <div className="flex w-max animate-[photoMarquee_42s_linear_infinite] gap-5 px-6 hover:[animation-play-state:paused]">
+            {carouselPhotos.map((src, index) => (
+              <Link
+                key={`${src}-${index}`}
+                href="/fotos"
+                className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]"
+              >
+                <SafeImage
+                  src={src}
+                  fallbackSrc={images.fallbackWide}
+                  alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+                  fill
+                  sizes="(min-width:1024px) 500px, 80vw"
+                  className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
+                />
+              </Link>
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+        </div>
+
+        <div className="container-premium mt-8 flex justify-center">
           <Link href="/fotos" className="btn-primary">
             {t.common.allPhotos}
           </Link>
         </div>
+
+        <style>{`
+          @keyframes photoMarquee {
+            from {
+              transform: translateX(0);
+            }
+            to {
+              transform: translateX(-50%);
+            }
+          }
+        `}</style>
       </section>
 
       <section className="container-premium space-y-8 pb-24">
