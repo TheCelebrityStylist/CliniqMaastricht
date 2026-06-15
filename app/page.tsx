@@ -141,13 +141,7 @@ export default async function Home() {
 
       <section className="overflow-hidden pb-24">
         <div className="container-premium">
-          <SectionIntro
-            eyebrow="Foto’s"
-            title="Foto’s"
-            text="Recente avonden bij CLINIQ."
-            ctaHref="/fotos"
-            ctaLabel={t.common.allPhotos}
-          />
+          <SectionIntro eyebrow="Foto’s" title="Foto’s" text="Recente avonden bij CLINIQ." />
         </div>
 
         <div className="relative mt-10 overflow-hidden">
@@ -275,8 +269,8 @@ function SectionIntro({
   eyebrow: string
   title: string
   text: string
-  ctaHref: string
-  ctaLabel: string
+  ctaHref?: string
+  ctaLabel?: string
 }) {
   return (
     <div className="reveal-up flex flex-col justify-between gap-5 md:flex-row md:items-end">
@@ -286,9 +280,11 @@ function SectionIntro({
         <p className="mt-4 max-w-3xl text-lg leading-[1.65] text-white/70 md:text-xl">{text}</p>
       </div>
 
-      <Link href={ctaHref} className="btn-secondary hidden shrink-0 sm:inline-flex">
-        {ctaLabel}
-      </Link>
+      {ctaHref && ctaLabel ? (
+        <Link href={ctaHref} className="btn-secondary hidden shrink-0 sm:inline-flex">
+          {ctaLabel}
+        </Link>
+      ) : null}
     </div>
   )
 }
