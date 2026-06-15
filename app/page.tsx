@@ -138,6 +138,7 @@ export default async function Home() {
       </section>
 
       <section className="container-premium pb-24">
+  <section className="container-premium pb-24">
   <SectionIntro
     eyebrow="Foto’s"
     title="Foto’s"
@@ -146,43 +147,42 @@ export default async function Home() {
     ctaLabel={t.common.allPhotos}
   />
 
-  <div className="mt-10 grid auto-rows-[220px] gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:auto-rows-[210px]">
-    {photos.map((src, index) => (
+  <div className="mt-10 grid gap-5 lg:grid-cols-3">
+    {photos.slice(0, 3).map((src, index) => (
       <Link
         key={`${src}-${index}`}
         href="/fotos"
-        className={`image-frame group rounded-[1.75rem] border border-white/10 ${
-          index === 0
-            ? 'sm:col-span-2 lg:col-span-3 lg:row-span-2'
-            : index === 1
-              ? 'lg:col-span-3'
-              : index === 2
-                ? 'lg:col-span-2'
-                : index === 3
-                  ? 'lg:col-span-2'
-                  : index === 4
-                    ? 'lg:col-span-2'
-                    : 'lg:col-span-3'
-        }`}
+        className="image-frame group relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]"
       >
         <SafeImage
           src={src}
           fallbackSrc={images.fallbackWide}
           alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
           fill
-          sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+          sizes="(min-width:1024px) 33vw, 100vw"
           className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-transparent opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-80" />
+
+        <div className="absolute bottom-5 left-5 right-5">
+          <p className="font-display text-[10px] font-black uppercase tracking-[0.18em] text-gold">
+            CLINIQ Maastricht
+          </p>
+          <p className="mt-2 text-sm font-semibold text-white/80">
+            Bekijk recente sfeerfoto’s
+          </p>
+        </div>
       </Link>
     ))}
   </div>
 
-  <Link href="/fotos" className="btn-primary mt-8 sm:hidden">
-    {t.common.allPhotos}
-  </Link>
-</section> 
+  <div className="mt-8 flex justify-center">
+    <Link href="/fotos" className="btn-primary">
+      {t.common.allPhotos}
+    </Link>
+  </div>
+</section>
       
       <section className="container-premium space-y-8 pb-24">
         <ServiceRow
