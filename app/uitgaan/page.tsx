@@ -49,7 +49,10 @@ type PracticalCard = {
 }
 
 type ExtendedPageContent = Awaited<ReturnType<typeof getPageContent>> & {
+  bodyEyebrowNl?: string
+  bodyTitleNl?: string
   practicalCards?: PracticalCard[]
+  extraEyebrowNl?: string
   extraTitleNl?: string
   extraIntroNl?: string
   extraBodyNl?: string
@@ -110,10 +113,14 @@ export default async function NightlifePage() {
   const primaryCta = pageContent?.primaryCtaNl || 'Bekijk agenda'
   const secondaryCta = pageContent?.secondaryCtaNl || 'Bekijk foto’s'
 
+  const bodyEyebrow = pageContent?.bodyEyebrowNl || 'Maastricht'
+  const bodyTitle = pageContent?.bodyTitleNl || 'Uitgaan in Maastricht'
+  const seoBody = pageContent?.bodyNl
+
   const practicalCards =
     pageContent?.practicalCards?.length ? pageContent.practicalCards : fallbackPracticalCards
 
-  const seoBody = pageContent?.bodyNl
+  const extraEyebrow = pageContent?.extraEyebrowNl || 'Maastricht nightlife'
   const extraTitle = pageContent?.extraTitleNl || 'Voor groepen, vrienden en late plannen'
   const extraIntro =
     pageContent?.extraIntroNl ||
@@ -274,13 +281,13 @@ export default async function NightlifePage() {
       <section className="container-premium pb-24">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div>
-            <p className="eyebrow">Maastricht</p>
-            <h2 className="h2 mt-4">Uitgaan in Maastricht</h2>
+            <p className="eyebrow">{bodyEyebrow}</p>
+            <h2 className="h2 mt-4">{bodyTitle}</h2>
           </div>
 
           <div className="prose-premium">
             {seoBody ? (
-              <p>{seoBody}</p>
+              <TextBlock text={seoBody} />
             ) : (
               <>
                 <p>
@@ -300,14 +307,14 @@ export default async function NightlifePage() {
       <section className="container-premium pb-24">
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div>
-            <p className="eyebrow">Maastricht nightlife</p>
+            <p className="eyebrow">{extraEyebrow}</p>
             <h2 className="h2 mt-4">{extraTitle}</h2>
             <p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p>
           </div>
 
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
             {extraBody ? (
-              <p>{extraBody}</p>
+              <TextBlock text={extraBody} />
             ) : (
               <>
                 <p>
@@ -317,10 +324,6 @@ export default async function NightlifePage() {
                 <p>
                   De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of
                   verzamelen en daarna willen doorpakken.
-                </p>
-                <p>
-                  Voor grotere groepen of een besloten invulling kun je ook contact opnemen over ruimte huren of een
-                  private event.
                 </p>
               </>
             )}
@@ -366,5 +369,19 @@ function Practical({ title, text }: { title: string; text: string }) {
       <h3 className="text-xl font-black tracking-[-0.03em]">{title}</h3>
       <p className="mt-3 text-white/66">{text}</p>
     </article>
+  )
+}
+
+function TextBlock({ text }: { text: string }) {
+  return (
+    <>
+      {text
+        .split(/\n\s*\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+        .map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+    </>
   )
 }
