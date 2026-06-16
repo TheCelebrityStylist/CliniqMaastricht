@@ -38,14 +38,37 @@ type SanityPage = {
   headlineEn?: string
   introNl?: string
   introEn?: string
+
+  bodyEyebrowNl?: string
+  bodyEyebrowEn?: string
+  bodyTitleNl?: string
+  bodyTitleEn?: string
   bodyNl?: string
   bodyEn?: string
+
+  extraEyebrowNl?: string
+  extraEyebrowEn?: string
+  extraTitleNl?: string
+  extraTitleEn?: string
+  extraIntroNl?: string
+  extraIntroEn?: string
+  extraBodyNl?: string
+  extraBodyEn?: string
+
+  practicalCards?: {
+    titleNl?: string
+    titleEn?: string
+    textNl?: string
+    textEn?: string
+  }[]
+
   primaryButtonNl?: string
   primaryButtonEn?: string
   secondaryButtonNl?: string
   secondaryButtonEn?: string
   heroImageUrl?: string
   galleryImages?: { url?: string }[]
+
   seoTitleNl?: string
   seoTitleEn?: string
   seoDescriptionNl?: string
@@ -159,14 +182,33 @@ async function getSanityPage(slug: string) {
       headlineEn,
       introNl,
       introEn,
+
+      bodyEyebrowNl,
+      bodyEyebrowEn,
+      bodyTitleNl,
+      bodyTitleEn,
       bodyNl,
       bodyEn,
+
+      extraEyebrowNl,
+      extraEyebrowEn,
+      extraTitleNl,
+      extraTitleEn,
+      extraIntroNl,
+      extraIntroEn,
+      extraBodyNl,
+      extraBodyEn,
+
+      practicalCards,
+
       primaryButtonNl,
       primaryButtonEn,
       secondaryButtonNl,
       secondaryButtonEn,
+
       "heroImageUrl": heroImage.asset->url,
       "galleryImages": galleryImages[]{"url": asset->url},
+
       seoTitleNl,
       seoTitleEn,
       seoDescriptionNl,
@@ -251,7 +293,7 @@ async function getSanityFaqs(pageKey: string, language: Lang = 'nl') {
   const sanityPageKey = pageKeyMap[pageKey] || pageKey
 
   const faqs = await fetchSanity<SanityFaq[]>(
-    `*[_type == "faq" && pageKey == $pageKey && published != false] | order(order asc){
+    `*[_type == "faq" && pageKey in [$pageKey, $originalPageKey] && published != false] | order(order asc){
       _id,
       pageKey,
       questionNl,
@@ -261,7 +303,7 @@ async function getSanityFaqs(pageKey: string, language: Lang = 'nl') {
       order,
       published
     }`,
-    { pageKey: sanityPageKey },
+    { pageKey: sanityPageKey, originalPageKey: pageKey },
   )
 
   if (!faqs?.length) return []
@@ -313,9 +355,15 @@ async function getSanityAlbums(includeDrafts = false) {
       .filter(Boolean) as MediaAsset[]
 
     const cover =
-      mediaFromUrl(`${album._id}-cover`, album.coverImageUrl, album.titleNl || 'CLINIQ album', album.titleNl || 'CLINIQ Maastricht foto', album.titleEn || album.titleNl || 'CLINIQ Maastricht photo')
-      || photos[0]
-      || null
+      mediaFromUrl(
+        `${album._id}-cover`,
+        album.coverImageUrl,
+        album.titleNl || 'CLINIQ album',
+        album.titleNl || 'CLINIQ Maastricht foto',
+        album.titleEn || album.titleNl || 'CLINIQ Maastricht photo',
+      ) ||
+      photos[0] ||
+      null
 
     return {
       id: album._id,
@@ -406,18 +454,38 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
       key: mappedKey,
       titleNl: sanityPage.title || fallback?.titleNl || mappedKey,
       titleEn: sanityPage.title || fallback?.titleEn || mappedKey,
+
       heroTitleNl: sanityPage.headlineNl || fallback?.heroTitleNl,
       heroTitleEn: sanityPage.headlineEn || fallback?.heroTitleEn,
       heroSubtitleNl: sanityPage.introNl || fallback?.heroSubtitleNl,
       heroSubtitleEn: sanityPage.introEn || fallback?.heroSubtitleEn,
+
+      bodyEyebrowNl: sanityPage.bodyEyebrowNl,
+      bodyEyebrowEn: sanityPage.bodyEyebrowEn,
+      bodyTitleNl: sanityPage.bodyTitleNl,
+      bodyTitleEn: sanityPage.bodyTitleEn,
       bodyNl: sanityPage.bodyNl || fallback?.bodyNl,
       bodyEn: sanityPage.bodyEn || fallback?.bodyEn,
+
+      extraEyebrowNl: sanityPage.extraEyebrowNl,
+      extraEyebrowEn: sanityPage.extraEyebrowEn,
+      extraTitleNl: sanityPage.extraTitleNl,
+      extraTitleEn: sanityPage.extraTitleEn,
+      extraIntroNl: sanityPage.extraIntroNl,
+      extraIntroEn: sanityPage.extraIntroEn,
+      extraBodyNl: sanityPage.extraBodyNl,
+      extraBodyEn: sanityPage.extraBodyEn,
+
+      practicalCards: sanityPage.practicalCards || [],
+
       primaryCtaNl: sanityPage.primaryButtonNl || fallback?.primaryCtaNl,
       primaryCtaEn: sanityPage.primaryButtonEn || fallback?.primaryCtaEn,
       secondaryCtaNl: sanityPage.secondaryButtonNl || fallback?.secondaryCtaNl,
       secondaryCtaEn: sanityPage.secondaryButtonEn || fallback?.secondaryCtaEn,
+
       heroImageUrl: sanityPage.heroImageUrl || fallback?.heroImageUrl,
       imageUrl: sanityPage.heroImageUrl || fallback?.heroImageUrl,
+
       gallery,
       galleryImages: gallery.map((item, order) => ({
         imageId: item.id,
@@ -426,6 +494,7 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
         altEn: item.altEn,
         order,
       })),
+
       faqs: sanityFaqs,
     }
   }
@@ -450,7 +519,15 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
 }
 
 export async function getSectionPhotoMedia(section: PhotoSection, fallbackUrls: string[] = []) {
-  const pageSlug = section === 'homepage' ? 'home' : section === 'workshop' ? 'cocktail-workshop' : section === 'uitgaan' ? 'nightlife' : section
+  const pageSlug =
+    section === 'homepage'
+      ? 'home'
+      : section === 'workshop'
+        ? 'cocktail-workshop'
+        : section === 'uitgaan'
+          ? 'nightlife'
+          : section
+
   const content = await getPageContent(pageSlug)
 
   if (content?.gallery?.length) return content.gallery
@@ -478,13 +555,23 @@ export async function getPhotoAlbums(includeDrafts = false) {
     .sort((a, b) => b.date.localeCompare(a.date))
     .map((album) => {
       const cover =
-        store.media.find((media) => media.id === album.coverImageId)
-        || store.media.find((media) => album.imageIds.includes(media.id))
-        || mediaFromUrl(`${album.id}-cover`, album.coverImageUrl, album.titleNl, album.titleNl, album.titleEn)
+        store.media.find((media) => media.id === album.coverImageId) ||
+        store.media.find((media) => album.imageIds.includes(media.id)) ||
+        mediaFromUrl(`${album.id}-cover`, album.coverImageUrl, album.titleNl, album.titleNl, album.titleEn)
 
       const photos = album.photos?.length
-        ? album.photos.map((photo, index) => mediaFromUrl(photo.imageId || `${album.id}-${index}`, photo.imageUrl, album.titleNl, photo.altNl || album.titleNl, photo.altEn || album.titleEn)).filter(Boolean) as MediaAsset[]
-        : album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[]
+        ? (album.photos
+            .map((photo, index) =>
+              mediaFromUrl(
+                photo.imageId || `${album.id}-${index}`,
+                photo.imageUrl,
+                album.titleNl,
+                photo.altNl || album.titleNl,
+                photo.altEn || album.titleEn,
+              ),
+            )
+            .filter(Boolean) as MediaAsset[])
+        : (album.imageIds.map((id) => store.media.find((media) => media.id === id)).filter(Boolean) as MediaAsset[])
 
       return { ...album, cover, photos }
     })
@@ -515,10 +602,20 @@ export async function getSeo(pageKey: string, language: Lang) {
   const sanityPage = await getSanityPage(pageKey)
 
   if (sanityPage) {
-    const seoTitle = language === 'en' ? sanityPage.seoTitleEn || sanityPage.seoTitleNl : sanityPage.seoTitleNl || sanityPage.seoTitleEn
-    const metaDescription = language === 'en' ? sanityPage.seoDescriptionEn || sanityPage.seoDescriptionNl : sanityPage.seoDescriptionNl || sanityPage.seoDescriptionEn
-    const ogTitle = language === 'en' ? sanityPage.ogTitleEn || sanityPage.ogTitleNl || seoTitle : sanityPage.ogTitleNl || sanityPage.ogTitleEn || seoTitle
-    const ogDescription = language === 'en' ? sanityPage.ogDescriptionEn || sanityPage.ogDescriptionNl || metaDescription : sanityPage.ogDescriptionNl || sanityPage.ogDescriptionEn || metaDescription
+    const seoTitle =
+      language === 'en' ? sanityPage.seoTitleEn || sanityPage.seoTitleNl : sanityPage.seoTitleNl || sanityPage.seoTitleEn
+    const metaDescription =
+      language === 'en'
+        ? sanityPage.seoDescriptionEn || sanityPage.seoDescriptionNl
+        : sanityPage.seoDescriptionNl || sanityPage.seoDescriptionEn
+    const ogTitle =
+      language === 'en'
+        ? sanityPage.ogTitleEn || sanityPage.ogTitleNl || seoTitle
+        : sanityPage.ogTitleNl || sanityPage.ogTitleEn || seoTitle
+    const ogDescription =
+      language === 'en'
+        ? sanityPage.ogDescriptionEn || sanityPage.ogDescriptionNl || metaDescription
+        : sanityPage.ogDescriptionNl || sanityPage.ogDescriptionEn || metaDescription
 
     if (seoTitle || metaDescription || ogTitle || ogDescription || sanityPage.ogImageUrl) {
       return {
