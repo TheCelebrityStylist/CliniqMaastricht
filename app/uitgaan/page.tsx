@@ -24,9 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: {
-      canonical: 'https://www.cliniqmaastricht.nl/uitgaan',
-    },
+    alternates: { canonical: 'https://www.cliniqmaastricht.nl/uitgaan' },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
@@ -44,6 +42,34 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
+
+type PracticalCard = {
+  titleNl?: string
+  textNl?: string
+}
+
+const fallbackPracticalCards: PracticalCard[] = [
+  {
+    titleNl: 'Openingstijden',
+    textNl: 'CLINIQ is normaal geopend op donderdag, vrijdag en zaterdag. Controleer per event de actuele tijden.',
+  },
+  {
+    titleNl: 'Minimumleeftijd',
+    textNl: 'De leeftijd kan per avond verschillen. Neem altijd een geldig ID mee.',
+  },
+  {
+    titleNl: 'Deurbeleid',
+    textNl: 'We letten op sfeer, veiligheid en respect. Kom op tijd en verzorgd.',
+  },
+  {
+    titleNl: 'Locatie',
+    textNl: 'Platielstraat 9A, op loopafstand van Vrijthof, Markt en uitgaansstraten.',
+  },
+  {
+    titleNl: 'Groepen',
+    textNl: 'Kom je met een groep of plan je een speciale avond? Neem vooraf contact op.',
+  },
+]
 
 export default async function NightlifePage() {
   const [events, albums, pageContent, sectionPhotos] = await Promise.all([
@@ -71,9 +97,19 @@ export default async function NightlifePage() {
   const heroSubtitle =
     pageContent?.heroSubtitleNl ||
     'Donderdag 18+, vrijdag en zaterdag 21+. Open vanaf 22:00 aan de Platielstraat 9A, midden in het centrum.'
+
   const primaryCta = pageContent?.primaryCtaNl || 'Bekijk agenda'
   const secondaryCta = pageContent?.secondaryCtaNl || 'Bekijk foto’s'
+
+  const practicalCards =
+    pageContent?.practicalCards?.length ? pageContent.practicalCards : fallbackPracticalCards
+
   const seoBody = pageContent?.bodyNl
+  const extraTitle = pageContent?.extraTitleNl || 'Voor groepen, vrienden en late plannen'
+  const extraIntro =
+    pageContent?.extraIntroNl ||
+    'CLINIQ zit precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.'
+  const extraBody = pageContent?.extraBodyNl
 
   const pageFaqs = pageContent?.faqs?.length
     ? pageContent.faqs.map((faq) => ({ question: faq.question, answer: faq.answer }))
@@ -111,7 +147,7 @@ export default async function NightlifePage() {
         <SafeImage
           src={heroImage}
           fallbackSrc={images.fallbackHero}
-          alt="Uitgaan bij CLINIQ Maastricht met rood en blauw licht"
+          alt="Uitgaan bij CLINIQ Maastricht"
           fill
           priority
           sizes="100vw"
@@ -139,13 +175,7 @@ export default async function NightlifePage() {
 
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
-          <SectionIntro
-            eyebrow="Agenda"
-            title="Deze week bij CLINIQ"
-            text="Eerstvolgende avonden aan de Platielstraat."
-            ctaHref="/uitgaan"
-            ctaLabel="Alle events"
-          />
+          <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Eerstvolgende avonden aan de Platielstraat." />
 
           {events.length ? (
             <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
@@ -222,11 +252,13 @@ export default async function NightlifePage() {
         <h2 className="h2 mt-4">Goed om te weten</h2>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          <Practical title="Openingstijden" text="CLINIQ is normaal geopend op donderdag, vrijdag en zaterdag. Controleer per event de actuele tijden." />
-          <Practical title="Minimumleeftijd" text="De leeftijd kan per avond verschillen. Neem altijd een geldig ID mee." />
-          <Practical title="Deurbeleid" text="We letten op sfeer, veiligheid en respect. Kom op tijd en verzorgd." />
-          <Practical title="Locatie" text="Platielstraat 9A, op loopafstand van Vrijthof, Markt en uitgaansstraten." />
-          <Practical title="Groepen" text="Kom je met een groep of plan je een speciale avond? Neem vooraf contact op." />
+          {practicalCards.map((card, index) => (
+            <Practical
+              key={`${card.titleNl || 'card'}-${index}`}
+              title={card.titleNl || 'Praktisch'}
+              text={card.textNl || ''}
+            />
+          ))}
         </div>
       </section>
 
@@ -244,12 +276,7 @@ export default async function NightlifePage() {
               <>
                 <p>
                   Cliniq Maastricht is hét adres voor een avondje stappen in het centrum. Drie avonden per week open —
-                  donderdag, vrijdag en zaterdag — aan de Platielstraat 9A, op loopafstand van de Vrijthof en het
-                  Onze-Lieve-Vrouweplein.
-                </p>
-                <p>
-                  Donderdag is voor iedereen vanaf 18 jaar. Vrijdag en zaterdag trekt Cliniq een gemengd publiek van
-                  studenten, locals en bezoekers uit de regio. Het muziekprogramma wisselt per avond.
+                  donderdag, vrijdag en zaterdag — aan de Platielstraat 9A.
                 </p>
                 <p>
                   Kom op tijd, neem altijd een geldig legitimatiebewijs mee en controleer per event de minimumleeftijd,
@@ -265,27 +292,29 @@ export default async function NightlifePage() {
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div>
             <p className="eyebrow">Maastricht nightlife</p>
-            <h2 className="h2 mt-4">Voor groepen, vrienden en late plannen</h2>
-            <p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">
-              CLINIQ zit precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.
-            </p>
+            <h2 className="h2 mt-4">{extraTitle}</h2>
+            <p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p>
           </div>
 
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
-            <p>
-              Wie zoekt naar uitgaan in Maastricht, club Maastricht, nachtleven Maastricht of stappen met vrienden, zoekt
-              meestal geen uitleg van drie alinea’s voordat de avond begint. Je wilt weten wanneer er iets gebeurt, hoe
-              laat je moet komen, wat de sfeer is en of je met je groep goed zit.
-            </p>
-            <p>
-              De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of
-              verzamelen en daarna willen doorpakken. Het Vrijthof, de Markt, hotels, parkeergarages en andere
-              uitgaansplekken liggen dichtbij.
-            </p>
-            <p>
-              Voor grotere groepen of een besloten invulling kun je ook contact opnemen over ruimte huren of een private
-              event.
-            </p>
+            {extraBody ? (
+              <p>{extraBody}</p>
+            ) : (
+              <>
+                <p>
+                  Wie zoekt naar uitgaan in Maastricht, club Maastricht, nachtleven Maastricht of stappen met vrienden,
+                  zoekt vooral een duidelijke agenda, een goede sfeer en een centrale locatie.
+                </p>
+                <p>
+                  De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of
+                  verzamelen en daarna willen doorpakken.
+                </p>
+                <p>
+                  Voor grotere groepen of een besloten invulling kun je ook contact opnemen over ruimte huren of een
+                  private event.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -312,32 +341,12 @@ export default async function NightlifePage() {
   )
 }
 
-function SectionIntro({
-  eyebrow,
-  title,
-  text,
-  ctaHref,
-  ctaLabel,
-}: {
-  eyebrow: string
-  title: string
-  text: string
-  ctaHref?: string
-  ctaLabel?: string
-}) {
+function SectionIntro({ eyebrow, title, text }: { eyebrow: string; title: string; text: string }) {
   return (
-    <div className="reveal-up flex flex-col justify-between gap-5 md:flex-row md:items-end">
-      <div>
-        <p className="eyebrow">{eyebrow}</p>
-        <h2 className="h2 mt-3">{title}</h2>
-        <p className="mt-4 max-w-3xl text-lg leading-[1.65] text-white/70 md:text-xl">{text}</p>
-      </div>
-
-      {ctaHref && ctaLabel ? (
-        <Link href={ctaHref} className="btn-secondary hidden shrink-0 sm:inline-flex">
-          {ctaLabel}
-        </Link>
-      ) : null}
+    <div className="reveal-up">
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 className="h2 mt-3">{title}</h2>
+      <p className="mt-4 max-w-3xl text-lg leading-[1.65] text-white/70 md:text-xl">{text}</p>
     </div>
   )
 }
