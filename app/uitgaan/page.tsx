@@ -48,6 +48,13 @@ type PracticalCard = {
   textNl?: string
 }
 
+type ExtendedPageContent = Awaited<ReturnType<typeof getPageContent>> & {
+  practicalCards?: PracticalCard[]
+  extraTitleNl?: string
+  extraIntroNl?: string
+  extraBodyNl?: string
+}
+
 const fallbackPracticalCards: PracticalCard[] = [
   {
     titleNl: 'Openingstijden',
@@ -72,7 +79,7 @@ const fallbackPracticalCards: PracticalCard[] = [
 ]
 
 export default async function NightlifePage() {
-  const [events, albums, pageContent, sectionPhotos] = await Promise.all([
+  const [events, albums, rawPageContent, sectionPhotos] = await Promise.all([
     getAgendaEvents(),
     getPhotoAlbums(),
     getPageContent('nightlife', 'nl'),
@@ -85,6 +92,8 @@ export default async function NightlifePage() {
       images.bar,
     ]),
   ])
+
+  const pageContent = rawPageContent as ExtendedPageContent
 
   const photos = (pageContent?.gallery?.length ? pageContent.gallery : sectionPhotos)
     .map((photo) => photo.url)
