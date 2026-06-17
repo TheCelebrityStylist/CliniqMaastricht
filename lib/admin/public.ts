@@ -62,6 +62,42 @@ type SanityPage = {
     textEn?: string
   }[]
 
+  eventTypeEyebrowNl?: string
+  eventTypeEyebrowEn?: string
+  eventTypeTitleNl?: string
+  eventTypeTitleEn?: string
+  eventTypeCards?: {
+    titleNl?: string
+    titleEn?: string
+    textNl?: string
+    textEn?: string
+  }[]
+
+  facilityEyebrowNl?: string
+  facilityEyebrowEn?: string
+  facilityTitleNl?: string
+  facilityTitleEn?: string
+  facilityIntroNl?: string
+  facilityIntroEn?: string
+  facilityCards?: {
+    titleNl?: string
+    titleEn?: string
+    textNl?: string
+    textEn?: string
+  }[]
+
+  galleryEyebrowNl?: string
+  galleryEyebrowEn?: string
+  galleryTitleNl?: string
+  galleryTitleEn?: string
+
+  requestEyebrowNl?: string
+  requestEyebrowEn?: string
+  requestTitleNl?: string
+  requestTitleEn?: string
+  requestIntroNl?: string
+  requestIntroEn?: string
+
   primaryButtonNl?: string
   primaryButtonEn?: string
   secondaryButtonNl?: string
@@ -200,6 +236,32 @@ async function getSanityPage(slug: string) {
       extraBodyEn,
 
       practicalCards,
+
+      eventTypeEyebrowNl,
+      eventTypeEyebrowEn,
+      eventTypeTitleNl,
+      eventTypeTitleEn,
+      eventTypeCards,
+
+      facilityEyebrowNl,
+      facilityEyebrowEn,
+      facilityTitleNl,
+      facilityTitleEn,
+      facilityIntroNl,
+      facilityIntroEn,
+      facilityCards,
+
+      galleryEyebrowNl,
+      galleryEyebrowEn,
+      galleryTitleNl,
+      galleryTitleEn,
+
+      requestEyebrowNl,
+      requestEyebrowEn,
+      requestTitleNl,
+      requestTitleEn,
+      requestIntroNl,
+      requestIntroEn,
 
       primaryButtonNl,
       primaryButtonEn,
@@ -477,6 +539,32 @@ export async function getPageContent(slug: string, lang: Lang = 'nl') {
       extraBodyEn: sanityPage.extraBodyEn,
 
       practicalCards: sanityPage.practicalCards || [],
+
+      eventTypeEyebrowNl: sanityPage.eventTypeEyebrowNl,
+      eventTypeEyebrowEn: sanityPage.eventTypeEyebrowEn,
+      eventTypeTitleNl: sanityPage.eventTypeTitleNl,
+      eventTypeTitleEn: sanityPage.eventTypeTitleEn,
+      eventTypeCards: sanityPage.eventTypeCards || [],
+
+      facilityEyebrowNl: sanityPage.facilityEyebrowNl,
+      facilityEyebrowEn: sanityPage.facilityEyebrowEn,
+      facilityTitleNl: sanityPage.facilityTitleNl,
+      facilityTitleEn: sanityPage.facilityTitleEn,
+      facilityIntroNl: sanityPage.facilityIntroNl,
+      facilityIntroEn: sanityPage.facilityIntroEn,
+      facilityCards: sanityPage.facilityCards || [],
+
+      galleryEyebrowNl: sanityPage.galleryEyebrowNl,
+      galleryEyebrowEn: sanityPage.galleryEyebrowEn,
+      galleryTitleNl: sanityPage.galleryTitleNl,
+      galleryTitleEn: sanityPage.galleryTitleEn,
+
+      requestEyebrowNl: sanityPage.requestEyebrowNl,
+      requestEyebrowEn: sanityPage.requestEyebrowEn,
+      requestTitleNl: sanityPage.requestTitleNl,
+      requestTitleEn: sanityPage.requestTitleEn,
+      requestIntroNl: sanityPage.requestIntroNl,
+      requestIntroEn: sanityPage.requestIntroEn,
 
       primaryCtaNl: sanityPage.primaryButtonNl || fallback?.primaryCtaNl,
       primaryCtaEn: sanityPage.primaryButtonEn || fallback?.primaryCtaEn,
