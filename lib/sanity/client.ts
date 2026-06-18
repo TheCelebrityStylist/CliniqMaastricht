@@ -1,32 +1,67 @@
-import { createClient } from '@sanity/client'
+export const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'jlnikrdc'
+export const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
+export const sanityApiVersion = '2025-01-01'
 
-export const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'placeholder',
-  dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET   || 'production',
-  apiVersion: '2024-01-01',
-  useCdn:    true,
-  stega:     { enabled: false },
-})
+export function hasSanityWriteConfig() {
+  return Boolean(sanityProjectId && sanityDataset && process.env.SANITY_API_WRITE_TOKEN)
+}
 
-export async function getAgendaEvents() {
+function sanityMutateUrl() {
+  return `https://${sanityProjectId}.api.sanity.io/v${sanityApiVersion}/data/mutate/${sanityDataset}`
+}
+
+function sanityQueryUrl(query: string, params?: Record<string, string>) {
+  const url = new URL(`https://${sanityProjectId}.api.sanity.io/v${sanityApiVersion}/data/query/${sanityDataset}`)
+  url.searchParams.set('query', query)
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    url.searchParams.set(`$${key}`, JSON.stringify(value))
+  })
+
+  return url.toString()
+}
+
+export async function fetchSanity<T>(query: string, params?: Record<string, string>): Promise<T | null> {
   try {
-    return await sanityClient.fetch<AgendaEvent[]>(
-      `*[_type == "agendaEvent" && is_visible == true] | order(date asc) { _id, dj, date, day, time, age, description, special }`,
-      {},
-      { next: { revalidate: 1800 } }
-    )
-  } catch {
-    return []
+    const response = await fetch(sanityQueryUrl(query, params), {
+      next: { revalidate: 60 },
+    })
+
+    if (!response.ok) {
+      console.error('[sanity] query failed', response.status, await response.text().catch(() => ''))
+      return null
+    }
+
+    const json = await response.json()
+    return json.result as T
+  } catch (error) {
+    console.error('[sanity] fetch failed', error)
+    return null
   }
 }
 
-export interface AgendaEvent {
-  _id:         string
-  dj:          string
-  date:        string   // DD-MM-YYYY
-  day:         string
-  time:        string
-  age:         string
-  description?: string
-  special?:    string
+export async function createSanityDocument<T extends Record<string, unknown>>(document: T) {
+  const token = process.env.SANITY_API_WRITE_TOKEN
+
+  if (!hasSanityWriteConfig() || !token) {
+    throw new Error('Form backend not configured')
+  }
+
+  const response = await fetch(sanityMutateUrl(), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      mutations: [{ create: document }],
+    }),
+  })
+
+  if (!response.ok) {
+    console.error('[sanity] document create failed', response.status, await response.text().catch(() => ''))
+    throw new Error('Could not save form submission')
+  }
+
+  return document
 }

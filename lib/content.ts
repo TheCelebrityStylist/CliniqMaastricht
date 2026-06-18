@@ -1,583 +1,272 @@
-// ─────────────────────────────────────────────────────────
-//  CLINIQ MAASTRICHT — CONTENT
-//  All NL/EN copy in one place. Edit here, reflects everywhere.
-// ─────────────────────────────────────────────────────────
+import { images, site } from './site'
 
-export type Lang = 'nl' | 'en'
+export const SITE_COPY = {
+  tagline: {
+    nl: 'Club, events en workshops in Maastricht.',
+    en: 'Club nights, events and workshops in Maastricht.',
+  },
+} as const
+
+export const TICKER_ITEMS = ['CLINIQ MAASTRICHT', 'DO · VR · ZA', 'PLATIELSTRAAT 9A', 'MAASTRICHT', 'EVENEMENTENLOCATIE', 'CLUBAVONDEN', '400 GASTEN', 'SINCE 2012'] as const
 
 export const SITE = {
-  name:    'Cliniq Maastricht',
-  tagline: { nl: 'De beste nachtclub van Maastricht.', en: 'The best nightclub in Maastricht.' },
-  address: { street: 'Platielstraat 9A', city: 'Maastricht', postal: '6211 GV' },
-  phone:   '+31 6 12530987',
-  email:   'contact@cafecliniq.com',
-  whatsapp: 'https://wa.me/31612530987',
-  mapsUrl: 'https://www.google.com/maps/place/Platielstraat+9A,+6211+GV+Maastricht',
-  instagram: 'https://instagram.com/cliniqmaastricht',
-  tiktok:    'https://tiktok.com/@cliniqmaastricht',
-  url:       'https://www.cliniqmaastricht.nl',
-}
+  ...site,
+  address: { ...site.address, postal: site.address.postalCode },
+} as const
 
 export const HOURS = [
-  { nl: 'Donderdag', en: 'Thursday', abbr: { nl: 'DO',  en: 'THU' }, time: '22:00 – 02:00', age: '18+' },
-  { nl: 'Vrijdag',   en: 'Friday',   abbr: { nl: 'VR',  en: 'FRI' }, time: '22:00 – 03:00', age: '21+' },
-  { nl: 'Zaterdag',  en: 'Saturday', abbr: { nl: 'ZA',  en: 'SAT' }, time: '22:00 – 03:00', age: '21+' },
-]
+  { abbr: { nl: 'Do', en: 'Thu' }, time: '22:00–02:00' },
+  { abbr: { nl: 'Vr', en: 'Fri' }, time: '22:00–03:00' },
+  { abbr: { nl: 'Za', en: 'Sat' }, time: '22:00–03:00' },
+] as const
 
 export const PHOTOS = {
-  hero:      'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/aa79c0ac-5561-41b3-9a9a-d4fb009a4a5d/001_EnriqueMeesters_Maastricht_Cliniq_20221111.jpg',
-  nightlife: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/25d285a5-e73e-4f38-a55c-a3d9fcd73d60/003_EnriqueMeesters_Maastricht+-+Cliniq_20230204.jpg',
-  crowd:     'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/512e92e4-396c-4a4a-aedd-eb928ab681d6/20240822_Cliniq_HR_SanderPaulussen-44.jpg',
-  venue1:    'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/820c06b1-de40-417c-808f-9c1b3b25dc1f/20240822_Cliniq_HR_SanderPaulussen-50.jpg',
-  venue2:    'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/4fa88dae-1327-459e-95c4-6f2e95bf02b3/4_Wildschieters_JtT_Cliniq_20230318.JPG',
-  venue3:    'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/da0a2e37-0788-4871-9599-33cf1791c42b/28_Wildschieters_JtT_Cliniq_20230318.JPG',
-  venue4:    'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/3bca36ed-2b9f-4ea8-b0dd-a74da6130864/8_Wildschieters_JtT_Cliniq_20230318.JPG',
-  workshop1: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/a7c3297c-cc9d-425c-a39d-c5e5670abdce/DSCF4723.jpg',
-  workshop2: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/5b018394-bade-4a94-b3e4-6e940b11901d/DSCF4699.jpg',
-  workshop3: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/be637eab-7863-4dbd-af9b-e33732d136b0/DSCF4832.jpg',
-  workshop4: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/c0304cbc-2486-46a5-849c-8f88388de65b/DSCF4774.jpg',
-  workshop5: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/3caa9e75-6e8e-4bc2-9b2d-452caa088e23/DSCF4712.jpg',
-}
+  crowd: images.crowd,
+  nightlife: images.redCrowd,
+  workshop1: images.workshopBar,
+  workshop2: images.mixing,
+  venue3: images.redRoom,
+  venue4: images.party,
+} as const
 
-export const NAV = {
-  nl: [
-    { href: '/uitgaan',           label: 'Uitgaan' },
-    { href: '/cocktail-workshop', label: 'Workshop' },
-    { href: '/event-space',       label: 'Event Space' },
-    { href: '/contact',           label: 'Contact' },
-  ],
-  en: [
-    { href: '/uitgaan',           label: 'Nightlife' },
-    { href: '/cocktail-workshop', label: 'Workshop' },
-    { href: '/event-space',       label: 'Event Space' },
-    { href: '/contact',           label: 'Contact' },
-  ],
-}
+export const EVENT_TYPES = [
+  {
+    key: 'private-party',
+    description: {
+      nl: 'Van kleine verjaardagsfeestjes tot grote jubileumvieringen. Cliniq is exclusief voor jou en je gasten.',
+      en: 'From intimate birthdays to big celebration nights. Cliniq is yours exclusively.',
+    },
+  },
+  {
+    key: 'corporate',
+    description: {
+      nl: 'Bedrijfsborrel of personeelsfeest? Cliniq heeft de ruimte, de bar en het geluid. Jij regelt de gasten.',
+      en: 'Corporate drinks or staff party? Cliniq has the space, bar and sound system. You bring the team.',
+    },
+  },
+  {
+    key: 'launch',
+    description: {
+      nl: 'Presenteer je merk of product in een setting die mensen bijblijft. Podium, scherm, bar en licht aanwezig.',
+      en: 'Present your brand or product in a setting people remember. Stage, screen, bar and lighting all in place.',
+    },
+  },
+  {
+    key: 'bachelorette',
+    description: {
+      nl: 'Cocktail workshop als opener, daarna de club in. Cliniq is een van de populairste locaties voor vrijgezellenavonden in Maastricht.',
+      en: 'Workshop to open, then straight into the club. One of the most-booked hen night venues in Maastricht.',
+    },
+  },
+] as const
 
 export const COPY = {
   nl: {
-    nav: {
-      cta: 'Ruimte Huren',
-    },
     home: {
-      heroEyebrow: 'Do · Vr · Za — Platielstraat 9A, Maastricht',
-      heroLine1:   'Maastricht',
-      heroLine2:   'After Dark.',
-      heroCta1:    'Bekijk agenda',
-      heroCta2:    'Ruimte huren',
-      agendaLabel: 'Aankomend programma',
-      agendaTitle: 'DEZE WEEK',
-      agendaLink:  'Volledige agenda',
-      nightLabel:  'Uitgaan Maastricht',
-      nightTitle:  'De beste\nnacht van\nMaastricht.',
-      nightBody:   'Drie avonden per week open. Premium club, verse cocktails, de beste beats en een sfeer die je nergens anders vindt.',
-      nightCta:    'Bekijk agenda',
-      cultureLabel:'De sfeer',
-      cultureTitle:'Premium\nnachtleven',
-      cultureBody: 'Drie avonden per week creëren wij de sfeer die Maastricht kenmerkt. Energie, muziek, mensen.',
-      cultureLink: 'Ontdek de avonden',
-      spaceLabel:  'Zaal verhuur · Feestzaal Maastricht',
-      spaceTitle:  'Jouw avond,\njouw regels.',
-      spaceBody:   'Exclusieve zaalverhuur in het hart van Maastricht. Voor privéfeesten, vrijgezellenfeesten, bedrijfsevents en productlanceringen tot 400 personen.',
-      spaceCta1:   'Vraag ruimte aan',
-      spaceCta2:   'Meer info',
-      spaceFeatures: ['Tot 400 gasten', 'Exclusief gebruik', 'Professioneel geluid & licht', 'Volledige bar', 'Catering op aanvraag', 'DJ arrangement'],
-      workshopLabel:'Cocktail workshop Maastricht',
-      workshopTitle:'Leer\nhet vak.',
-      workshopBody: 'Ideaal voor vrijgezellenfeesten, bedrijfsuitjes en verjaardagsfeesten. Groepen vanaf 15 personen.',
-      workshopCta:  'Reserveer workshop',
-      workshopFacts:['Min. 3 cocktails p.p.', '15+ personen', '2 uur workshop', 'Inclusief DJ'],
-      closingLabel: 'Vind ons',
-      closingCta1:  'Neem contact op',
-      closingCta2:  'Ruimte huren',
-      closingCta3:  'Cocktail workshop',
+      agendaTitle: 'Dit speelt er',
+      heroCta2: "Foto's bekijken",
+      nightBody: 'Donderdag, vrijdag en zaterdag open. Op stap in Maastricht? Cliniq is de plek.',
+      cultureLabel: 'Clubavonden',
+      cultureTitle: 'Drie avonden.\nElke week.',
+      cultureBody: 'Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00. Op stap in het centrum van Maastricht.',
+      spaceBody: 'Cliniq is beschikbaar voor privéfeesten, vrijgezellenavonden, bedrijfsfeesten en productlanceringen. Tot 400 personen, exclusief gebruik, altijd met eigen bar.',
+      workshopBody: 'Cocktails leren maken met je groep. Begeleiding door onze bartenders, daarna gewoon blijven voor de avond.',
     },
-    uitgaan: {
-      heroLabel: 'Cliniq Maastricht',
-      heroTitle: 'Uitgaan in\nMaastricht.',
-      heroBody:  'Elke week de beste nacht van Maastricht. Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00.',
-      heroLink:  'Ruimte huren',
-      schedule:  'Openingstijden',
-      agendaLabel:'Agenda',
-      agendaTitle:'Aankomende\navonden',
-      empty:     'Geen events gepland — check later',
-      eventCta:  'Ruimte huren voor privé event',
-      eventSub:  'Privé event plannen?',
-      eventLink1:'Vraag ruimte aan',
-      eventLink2:'Cocktail workshop',
-    },
-    workshop: {
-      heroLabel: 'Activiteit · Cliniq Maastricht',
-      heroTitle: 'Cocktail\nWorkshop.',
-      heroSub:   'De ideale activiteit voor jouw bedrijf of vrijgezellenfeest.',
-      heroCta:   'Reserveer workshop',
-      statDur:   'Duur',
-      statMin:   'Min. personen',
-      statPrice: 'Prijs',
-      statInc:   'Inclusief',
-      aboutLabel:'Over de workshop',
-      aboutTitle:'Shaken als\neen echte pro.',
-      aboutBody1:'Bij ons ontdek je de geheimen achter het mixen en shaken van heerlijke cocktails, onder begeleiding van onze ervaren bartenders.',
-      aboutBody2:'Tijdens onze workshops geniet je van een hands-on ervaring waarbij je stap voor stap leert hoe je de perfecte cocktail samenstelt.',
-      bullets: [
-        'Minimaal 3 cocktails per persoon (€15 per cocktail)',
-        'Beschikbaar op donderdag, vrijdag en zaterdag',
-        'Start in overleg tussen 19:00 en 20:30',
-        'Na afloop welkom te blijven voor de rest van de avond',
-        'Minimaal 15 personen vereist',
-      ],
-      forLabel:  'Perfect voor',
-      forTitle:  'Voor elke groep.',
-      groups:    [{ emoji: '💍', label: 'Vrijgezellenfeest' }, { emoji: '💼', label: 'Bedrijfsuitje' }, { emoji: '🎂', label: 'Verjaardag' }, { emoji: '👫', label: 'Vriendengroep' }],
-      ctaLabel:  'Reserveren',
-      ctaTitle:  'Klaar om\nte shaken?',
-      ctaBody:   'Neem contact op en wij plannen samen de perfecte avond.',
-      priceFrom: 'Prijs vanaf',
-      perPerson: '/ persoon',
-      minCocktails:'(3 cocktails min.)',
-      groupSize: 'Groepsgrootte',
-      people:    'personen',
-      emailBtn:  'Reserveer workshop',
-      waBtn:     'WhatsApp',
+    footer: {
+      tagline: 'Op stap in Maastricht. Donderdag, vrijdag en zaterdag open aan de Platielstraat.',
     },
     eventspace: {
-      heroLabel: 'Zaal verhuur · Maastricht',
-      heroTitle: 'Jouw event.\nOnze ruimte.',
-      heroSub:   'De meest sfeervolle evenementenlocatie van Maastricht.',
-      heroCta:   'Vrijblijvende aanvraag',
-      callUs:    'Bel ons',
-      facLabel:  'Faciliteiten',
-      facTitle:  'Alles wat je\nnodig hebt.',
-      typesLabel:'Voor ieder evenement',
-      typesTitle:'Wij maken\nhet mogelijk.',
-      statsLabel:'De cijfers',
-      stats: [
-        { n: '400', label: 'Max. capaciteit' },
-        { n: '3×',  label: 'Avonden p/week' },
-        { n: '100%', label: 'Exclusief gebruik' },
-        { n: '<24u', label: 'Reactietijd' },
-      ],
-      faqLabel:  'Veelgestelde vragen',
-      faqTitle:  'Veelgestelde\nvragen.',
-      formLabel: 'Vrijblijvende aanvraag',
-      formTitle: 'Plan jouw\nevent.',
-      formSub:   'We nemen binnen 24 uur contact met je op.',
-      fields: {
-        name: 'Naam', email: 'E-mail', phone: 'Telefoon',
-        eventType: 'Type event', date: 'Gewenste datum',
-        guests: 'Aantal gasten', guestsPlaceholder: 'bijv. 150',
-        message: 'Bericht / wensen', messagePlaceholder: 'Vertel ons over jouw event, speciale wensen, budget...',
-        submit: 'Aanvraag versturen',
-        eventTypes: ['Privéfeest / Verjaardag', 'Bedrijfsfeest / Borrel', 'Studentenfeest / Afstuderen', 'Productlancering / Presentatie', 'Netwerkevent', 'Vrijgezellenfeest', 'Anders'],
-        selectPlaceholder: 'Selecteer type...',
-      },
-      successTitle: 'Aanvraag verstuurd!',
-      successBody:  'We nemen zo snel mogelijk contact met je op.',
-      directContact:'Liever direct contact?',
-      orDirect:     'Of direct:',
+      heroSub: 'Exclusief te huren voor feesten, bedrijfsevents en private parties. Tot 400 personen.',
+      seoText: `Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is op aanvraag mogelijk.
+
+Ruimte huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte feestlocaties in de regio voor verjaardagen en jubilea. Bij exclusief gebruik heb je de volledige club voor jou en je gasten.
+
+Bedrijfsfeest of borrel in Maastricht organiseren? Cliniq leent zich goed voor personeelsfeesten, netwerkevenementen en productlanceringen. Professionele AV-faciliteiten, eigen branding mogelijk, flexibele opstellingen.
+
+Vrijgezellenavond plannen? Combineer een cocktail workshop met een exclusieve clubavond. Populair bij groepen uit heel Limburg.
+
+Aanvragen via het formulier of WhatsApp. We reageren binnen 24 uur.`,
     },
-    contact: {
-      heroLabel:    'Cliniq Maastricht',
-      heroTitle:    'Neem contact\nop.',
-      locationLabel:'Locatie',
-      mapsLink:     'Bekijk op Google Maps →',
-      hoursLabel:   'Openingstijden',
-      contactLabel: 'Contact',
-      followLabel:  'Volg ons',
-      moreLabel:    'Meer informatie',
-      faqLabel:     'Veelgestelde vragen',
-      formLabel:    'Stuur een bericht',
-      formName:     'Naam',
-      formEmail:    'E-mail',
-      formMessage:  'Bericht',
-      formSubmit:   'Versturen',
-      formSuccess:  'Bedankt! We nemen zo snel mogelijk contact op.',
+    uitgaan: {
+      heroLabel: 'Cliniq — Platielstraat 9A',
+      heroTitle: 'Uitgaan in\nMaastricht.',
+      heroBody: 'Donderdag (18+), vrijdag en zaterdag (21+) open vanaf 22:00. Platielstraat 9A, midden in het centrum.',
+      seoText: `Cliniq Maastricht is hét adres voor wie op zoek is naar een avondje stappen in het centrum. Drie avonden per week — donderdag, vrijdag en zaterdag — open aan de Platielstraat 9A, op loopafstand van de Vrijthof.
+
+Donderdag is voor iedereen vanaf 18 jaar. Vrijdag en zaterdag (21+) trekt Cliniq een gemengd publiek van studenten, locals en bezoekers uit de regio. Het muziekprogramma wisselt per avond — van house en tech-house tot urban en pop.
+
+Dresscode geldt: kom er netjes bij. Tracksuits en sportschoenen zijn niet welkom. Neem altijd een geldig legitimatiebewijs mee.
+
+Vrijgezellenavond of groepsuitje? Cliniq is ook beschikbaar voor privéfeesten en exclusieve groepsboekingen. Vraag vrijblijvend via het contactformulier of WhatsApp.`,
       faqs: [
-        { q: '🎂 Hoe oud moet ik zijn?', a: 'Op donderdag is de minimumleeftijd 18 jaar. Op vrijdag en zaterdag is de minimumleeftijd 21 jaar. Vergeet je ID niet.' },
-        { q: '🎉 Kan ik een feest organiseren bij Cliniq?', a: 'Absoluut! Mail naar contact@cafecliniq.com of stuur een WhatsApp. We denken graag met je mee!' },
-        { q: '🚗 Waar kan ik parkeren?', a: 'We zitten midden in het centrum. Er zijn meerdere parkeergarages op loopafstand.' },
-        { q: '👗 Is er een dresscode?', a: 'Cliniq is een premium club. We verwachten dat je er goed uit ziet. Tracksuits en sportschoenen laten we liever thuis.' },
-        { q: '🍹 Doen jullie cocktail workshops?', a: 'Ja! Onze cocktail workshops zijn perfect voor groepen van 15+. Prijs: €15 per cocktail, minimaal 3 p.p.' },
-        { q: '📍 Waar zijn jullie precies?', a: 'Platielstraat 9A, 6211 GV Maastricht. In het hart van het centrum, vlakbij de Vrijthof.' },
+        { q: 'Hoe laat gaat Cliniq open?', a: 'Donderdag, vrijdag en zaterdag om 22:00. Donderdag sluit om 02:00, vrijdag en zaterdag om 03:00.' },
+        { q: 'Wat is de minimumleeftijd?', a: 'Donderdag 18+. Vrijdag en zaterdag 21+. Neem altijd een geldig ID mee.' },
+        { q: 'Is er een dresscode?', a: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sportschoenen zijn niet toegestaan.' },
+        { q: 'Waar kan ik parkeren?', a: 'Er zijn meerdere parkeergarages op loopafstand van de Platielstraat. Het centrum is ook goed bereikbaar per fiets of taxi.' },
+        { q: 'Kan ik entree vooraf betalen?', a: 'Verschilt per avond. Bij speciale avonden kan presale beschikbaar zijn. Reguliere avonden zijn aan de deur te betalen.' },
+        { q: 'Zijn er lockers?', a: 'Ja. Reserveer vooraf via cliniq.elockers.shop.' },
       ],
-      quickLinks: [
-        { href: '/uitgaan',           label: 'Agenda & uitgaan' },
-        { href: '/cocktail-workshop', label: 'Cocktail workshop' },
-        { href: '/event-space',       label: 'Ruimte huren' },
+    },
+    workshop: {
+      heroSub: 'Voor groepen van 15+. Cocktails maken, daarna de avond in.',
+      aboutBody1: 'Onze bartenders leren jou en je groep alles over mixen, shaken en garneren. Gewoon doen, niet kijken.',
+      aboutBody2: 'Elke deelnemer maakt minimaal 3 cocktails. Je drinkt wat je maakt. Daarna ben je welkom voor de rest van de avond.',
+      ctaBody: 'Stuur een e-mail of WhatsApp. We reageren snel en denken mee over de invulling van de avond.',
+      seoText: `Een cocktail workshop organiseren in Maastricht? Dat doe je bij Cliniq op de Platielstraat. Beschikbaar op donderdag, vrijdag en zaterdag, start in overleg tussen 19:00 en 20:30. Na afloop ben je welkom voor de reguliere clubavond.
+
+Geschikt voor groepen van minimaal 15 personen. Iedereen maakt minstens drie cocktails (€15 per cocktail), begeleid door onze bartenders. Geen voorkennis nodig.
+
+Vrijgezellenavond in Maastricht? Cliniq is een van de populairste locaties in de regio voor bachelorette en vrijgezellenfeesten. Exclusief gebruik van de ruimte mogelijk, drankpakket op aanvraag.
+
+Maastricht is goed bereikbaar vanuit Luik, Hasselt, Heerlen en Sittard. Parkeren kan in meerdere garages op loopafstand.`,
+      faqs: [
+        { q: 'Wat kost een cocktail workshop?', a: '€15 per cocktail, minimaal 3 per persoon. Geen extra kosten voor ruimte of bartenders.' },
+        { q: 'Hoeveel personen zijn minimaal nodig?', a: 'Minimaal 15 personen.' },
+        { q: 'Hoe boek ik een workshop?', a: 'Mail naar contact@cafecliniq.com of stuur een WhatsApp. Geef je datum, groepsgrootte en gewenste starttijd door.' },
+        { q: 'Kan ik na de workshop blijven voor de avond?', a: 'Ja. Je bent welkom voor de reguliere clubavond. Normale entreeregels gelden.' },
+        { q: 'Op welke dagen zijn workshops?', a: 'Donderdag, vrijdag en zaterdag. Start tussen 19:00 en 20:30 in overleg.' },
+        { q: 'Is de workshop geschikt voor een vrijgezellenavond?', a: 'Ja — een van onze meest geboekte activiteiten voor vrijgezellenfeesten. Exclusieve ruimte en totaalpakket mogelijk.' },
       ],
     },
     vacatures: {
-      heroLabel:  'Werk bij Cliniq',
-      heroTitle:  'Vacatures',
-      introLabel: 'Werken bij Cliniq',
-      intro:      'Word onderdeel van ons team',
-      introBody:  'Bij Cliniq werken we met een hecht team van enthousiaste mensen die samen zorgen voor onvergetelijke avonden. Ben jij de perfecte aanvulling?',
-      applyBtn:   'Solliciteer',
-      reqLabel:   'Vereisten',
-      openLabel:  'Open sollicitatie',
-      openTitle:  'Geen vacature die bij jou past?',
-      openBody:   'Stuur een open sollicitatie! We zijn altijd op zoek naar getalenteerde mensen.',
-      openBtn:    'Open sollicitatie',
+      introBody: 'Bij Cliniq werk je op de avonden dat anderen op stap gaan. Goed team, goede energie. Zin om erbij te horen?',
       positions: [
         {
-          title: 'Barmedewerker', type: 'Parttime', hours: 'Donderdag t/m zaterdag',
-          description: 'Ben jij de persoon die moeiteloos meerdere cocktails tegelijk mixt terwijl je iedereen aan het lachen houdt? Dan zoeken wij jou! Als barmedewerker bij Cliniq ben jij de ster achter de bar.',
-          requirements: ['18+ jaar', 'Klantgerichte instelling', 'Ervaring is een pré', 'Beschikbaar in weekenden'],
+          description: 'Je staat drie avonden per week achter de bar van een van de drukste clubs van Maastricht. Goed in multitasken, kalm onder druk, altijd vriendelijk. Ervaring is een pré maar geen must.',
         },
       ],
     },
+    contact: {
+      faqs: [
+        { q: '👗 Is er een dresscode?', a: 'Ja. Kom er goed bij. Tracksuits, sportbroeken en sportschoenen zijn niet welkom — dat geldt voor iedereen.' },
+      ],
+    },
     houseRules: {
-      label: 'Cliniq Maastricht',
-      title: 'Huis\nregels.',
       rules: [
         'We verwelkomen iedereen ongeacht geslacht, nationaliteit of religie, zolang zij ons pand, ons personeel, onze huisregels en — het allerbelangrijkste — elkaar respecteren.',
-        'Op weekdagen moeten gasten minimaal 18 jaar oud zijn. Op vrijdag en zaterdag geldt een minimumleeftijd van 21 jaar. Een geldig legitimatiebewijs is verplicht en dient op verzoek van ons personeel te worden getoond.',
-        'Sportkleding (tenzij bij speciale sportevenementen), heuptasjes en schoudertasjes zijn niet toegestaan. Om veiligheidsredenen zijn ook gezichtsbedekkende kleding, petten, caps en (donkere) zonnebrillen verboden.',
-        'Roken is niet toegestaan in ons pand. Wie binnen rookt wordt verwijderd. Vapen valt hier ook onder.',
-        'Het is niet toegestaan om eigen drank mee te nemen. Wij behouden ons het recht voor om bij binnenkomst te controleren.',
-        'Drugs van welke aard dan ook zijn ten strengste verboden. Bij gebruik of handel wordt de bezoeker verwijderd en mogelijk overgedragen aan de politie.',
-        'Door ons pand te betreden ga je automatisch akkoord met beeld- en video-opnamen en het gebruik hiervan door Cliniq Maastricht.',
+        'Op weekdagen geldt een minimumleeftijd van 18 jaar. Op vrijdag en zaterdag is de minimumleeftijd 21 jaar. Een geldig legitimatiebewijs is verplicht en moet op verzoek van ons personeel worden getoond.',
+        'Sportkleding (tenzij bij speciale evenementen die wij zelf organiseren), heuptasjes en schoudertasjes zijn niet toegestaan. Om veiligheidsredenen zijn ook gezichtsbedekkende kleding, petten, caps en (getinte) zonnebrillen verboden.',
+        'Roken is verboden in ons pand — dit geldt in alle Nederlandse horecagelegenheden sinds 2008. Wie binnen rookt wordt verwijderd. Vapen valt hier ook onder.',
+        'Het is niet toegestaan eigen drank mee te nemen. We behouden ons het recht voor om bij binnenkomst te controleren. Wie wordt betrapt op het nuttigen van meegenomen drank, wordt verwijderd.',
+        'Drugs van welke aard dan ook zijn ten strengste verboden. Bij gebruik of handel wordt de bezoeker verwijderd en mogelijk overgedragen aan de politie. Wie zichtbaar onder invloed is kan worden geweigerd bij de deur.',
+        'Door ons pand te betreden ga je automatisch akkoord met beeld- en video-opnamen en het gebruik hiervan door Cliniq Maastricht, in geval van een mogelijke overtreding van onze huisregels of de Nederlandse wetgeving.',
       ],
     },
-    artists: {
-      eyebrow: 'Ons podium',
-      title1:  'Namen',
-      title2:  'Die',
-      title3:  'Klinken.',
-      sub:     'Een selectie van de artiesten die het podium van Cliniq Maastricht tot leven brachten.',
-    },
-    footer: {
-      tagline: 'De beste nachtclub van Maastricht. Elke donderdag, vrijdag en zaterdag staan onze deuren voor je open.',
-      hours:   'Openingstijden',
-      contact: 'Contact',
-      links:   'Links',
-      thursday:'Donderdag',
-      friday:  'Vrijdag',
-      saturday:'Zaterdag',
+    fotos: {
+      heroLabel: "Foto's",
+      heroTitle: 'Zo ziet\nCliniq eruit.',
+      heroBody: 'Sfeerimpressies van clubavonden, events en workshops op de Platielstraat.',
+      albumLabel: 'Albums',
+      emptyTitle: "Nog geen foto's",
+      emptyBody: 'Binnenkort worden hier nieuwe albums geplaatst. Volg ons op Instagram voor updates.',
+      seoText: "Clubfoto's van Cliniq Maastricht — sfeerimpressies van uitgaansavonden, feesten en cocktail workshops op de Platielstraat 9A in Maastricht.",
     },
   },
-
   en: {
-    nav: {
-      cta: 'Hire Venue',
-    },
     home: {
-      heroEyebrow: 'Thu · Fri · Sat — Platielstraat 9A, Maastricht',
-      heroLine1:   'Maastricht',
-      heroLine2:   'After Dark.',
-      heroCta1:    'View agenda',
-      heroCta2:    'Hire venue',
-      agendaLabel: 'Upcoming programme',
-      agendaTitle: 'THIS WEEK',
-      agendaLink:  'Full agenda',
-      nightLabel:  'Nightlife Maastricht',
-      nightTitle:  'The best\nnight in\nMaastricht.',
-      nightBody:   'Open three nights per week. Premium club, fresh cocktails, the best beats and an atmosphere you won\'t find anywhere else.',
-      nightCta:    'View agenda',
-      cultureLabel:'The vibe',
-      cultureTitle:'Premium\nnightlife',
-      cultureBody: 'Three nights a week we create the atmosphere Maastricht is known for. Energy, music, people.',
-      cultureLink: 'Discover nights',
-      spaceLabel:  'Venue hire · Maastricht',
-      spaceTitle:  'Your evening,\nyour rules.',
-      spaceBody:   'Exclusive venue hire in the heart of Maastricht. For private parties, hen parties, corporate events and product launches up to 400 people.',
-      spaceCta1:   'Request a quote',
-      spaceCta2:   'Learn more',
-      spaceFeatures: ['Up to 400 guests', 'Exclusive hire', 'Professional sound & lighting', 'Full bar service', 'Catering on request', 'DJ arrangement'],
-      workshopLabel:'Cocktail workshop Maastricht',
-      workshopTitle:'Master\nthe craft.',
-      workshopBody: 'Ideal for hen parties, corporate outings and birthdays. Groups from 15 people.',
-      workshopCta:  'Book workshop',
-      workshopFacts:['Min. 3 cocktails p.p.', '15+ people', '2 hour workshop', 'DJ included'],
-      closingLabel: 'Find us',
-      closingCta1:  'Get in touch',
-      closingCta2:  'Hire venue',
-      closingCta3:  'Cocktail workshop',
+      agendaTitle: "What's on",
+      heroCta2: 'See photos',
+      nightBody: 'Thursday, Friday and Saturday. The place to go out in Maastricht.',
+      cultureLabel: 'Club nights',
+      cultureTitle: 'Three nights.\nEvery week.',
+      cultureBody: 'Thursday (18+), Friday and Saturday (21+) from 22:00. Right in the centre of Maastricht.',
+      spaceBody: 'Available for private parties, hen nights, corporate events and launches. Up to 400 people, exclusive hire, full bar included.',
+      workshopBody: 'Make cocktails with your group. Our bartenders guide you through it — stay on for the night after.',
     },
-    uitgaan: {
-      heroLabel: 'Cliniq Maastricht',
-      heroTitle: 'Nightlife in\nMaastricht.',
-      heroBody:  'Every week the best night in Maastricht. Thursday (18+), Friday and Saturday (21+) open from 22:00.',
-      heroLink:  'Hire venue',
-      schedule:  'Opening hours',
-      agendaLabel:'Agenda',
-      agendaTitle:'Upcoming\nevenings',
-      empty:     'No events scheduled — check back soon',
-      eventCta:  'Hire venue for a private event',
-      eventSub:  'Planning a private event?',
-      eventLink1:'Request venue',
-      eventLink2:'Cocktail workshop',
-    },
-    workshop: {
-      heroLabel: 'Activity · Cliniq Maastricht',
-      heroTitle: 'Cocktail\nWorkshop.',
-      heroSub:   'The perfect activity for your company or bachelor party.',
-      heroCta:   'Book workshop',
-      statDur:   'Duration',
-      statMin:   'Min. people',
-      statPrice: 'Price',
-      statInc:   'Includes',
-      aboutLabel:'About the workshop',
-      aboutTitle:'Shake like\na real pro.',
-      aboutBody1:'Discover the secrets behind mixing and shaking delicious cocktails, guided by our experienced bartenders.',
-      aboutBody2:'During our workshops you enjoy a hands-on experience where you learn step by step how to craft the perfect cocktail.',
-      bullets: [
-        'Minimum 3 cocktails per person (€15 per cocktail)',
-        'Available on Thursday, Friday and Saturday',
-        'Start time between 19:00 and 20:30 by arrangement',
-        'You\'re welcome to stay for the rest of the evening afterwards',
-        'Minimum 15 people required',
-      ],
-      forLabel:  'Perfect for',
-      forTitle:  'For every group.',
-      groups:    [{ emoji: '💍', label: 'Bachelor Party' }, { emoji: '💼', label: 'Team Outing' }, { emoji: '🎂', label: 'Birthday' }, { emoji: '👫', label: 'Friend Group' }],
-      ctaLabel:  'Book now',
-      ctaTitle:  'Ready to\nshake?',
-      ctaBody:   'Get in touch and we\'ll plan the perfect evening together.',
-      priceFrom: 'Price from',
-      perPerson: '/ person',
-      minCocktails:'(3 cocktails min.)',
-      groupSize: 'Group size',
-      people:    'people',
-      emailBtn:  'Book workshop',
-      waBtn:     'WhatsApp',
+    footer: {
+      tagline: 'Going out in Maastricht. Open Thursday, Friday and Saturday on Platielstraat.',
     },
     eventspace: {
-      heroLabel: 'Venue hire · Maastricht',
-      heroTitle: 'Your event.\nOur space.',
-      heroSub:   'The most atmospheric event venue in Maastricht.',
-      heroCta:   'Free enquiry',
-      callUs:    'Call us',
-      facLabel:  'Facilities',
-      facTitle:  'Everything\nyou need.',
-      typesLabel:'For every event',
-      typesTitle:'We make\nit happen.',
-      statsLabel:'The numbers',
-      stats: [
-        { n: '400',  label: 'Max. capacity' },
-        { n: '3×',   label: 'Evenings/week' },
-        { n: '100%', label: 'Exclusive use' },
-        { n: '<24h', label: 'Response time' },
-      ],
-      faqLabel:  'FAQ',
-      faqTitle:  'Frequently\nasked questions.',
-      formLabel: 'Free enquiry',
-      formTitle: 'Plan your\nevent.',
-      formSub:   'We\'ll get back to you within 24 hours.',
-      fields: {
-        name: 'Name', email: 'Email', phone: 'Phone',
-        eventType: 'Event type', date: 'Preferred date',
-        guests: 'Number of guests', guestsPlaceholder: 'e.g. 150',
-        message: 'Message / wishes', messagePlaceholder: 'Tell us about your event, special requests, budget...',
-        submit: 'Send enquiry',
-        eventTypes: ['Private Party / Birthday', 'Corporate Event / Drinks', 'Student Event / Graduation', 'Product Launch / Presentation', 'Networking Event', 'Bachelor Party', 'Other'],
-        selectPlaceholder: 'Select type...',
-      },
-      successTitle: 'Enquiry sent!',
-      successBody:  'We\'ll get back to you as soon as possible.',
-      directContact:'Prefer direct contact?',
-      orDirect:     'Or directly:',
+      heroSub: 'Available for private hire. Parties, corporate events and launches. Up to 400 guests.',
+      seoText: `Cliniq Maastricht is available for exclusive private hire on Thursday, Friday and Saturday. Up to 400 guests standing, full bar, professional sound, lighting and dancefloor. Catering available on request.
+
+Private party venue in Maastricht? Cliniq is one of the region's most-booked spaces for birthdays and anniversaries. Exclusive hire means the entire club is yours.
+
+Corporate event or business drinks? Professional AV, flexible layouts and branding options available.
+
+Hen party? Combine a cocktail workshop with an exclusive club night. Popular with groups from across Limburg.
+
+Enquire via the form or WhatsApp. We respond within 24 hours.`,
     },
-    contact: {
-      heroLabel:    'Cliniq Maastricht',
-      heroTitle:    'Get in\ntouch.',
-      locationLabel:'Location',
-      mapsLink:     'View on Google Maps →',
-      hoursLabel:   'Opening hours',
-      contactLabel: 'Contact',
-      followLabel:  'Follow us',
-      moreLabel:    'More information',
-      faqLabel:     'Frequently asked questions',
-      formLabel:    'Send a message',
-      formName:     'Name',
-      formEmail:    'Email',
-      formMessage:  'Message',
-      formSubmit:   'Send',
-      formSuccess:  'Thank you! We\'ll get back to you as soon as possible.',
+    uitgaan: {
+      heroLabel: 'Cliniq — Platielstraat 9A',
+      heroTitle: 'Nightlife in\nMaastricht.',
+      heroBody: 'Thursday (18+), Friday and Saturday (21+) from 22:00. Platielstraat 9A, central Maastricht.',
+      seoText: `Cliniq Maastricht is the go-to nightlife venue in the city centre. Open three nights a week — Thursday, Friday and Saturday — on Platielstraat 9A, a short walk from the Vrijthof.
+
+Thursday is 18+. Friday and Saturday (21+) attract a mixed crowd of students, locals and visitors from across the region. The music programme varies by night — house, tech-house, urban and pop.
+
+Dress code applies. Tracksuits and trainers are not allowed. Always bring a valid ID.
+
+Planning a hen party or group night? Cliniq is also available for private hire and exclusive group bookings. Contact us for a no-obligation quote.`,
       faqs: [
-        { q: '🎂 What is the minimum age?', a: 'On Thursdays the minimum age is 18. On Fridays and Saturdays it\'s 21+. Don\'t forget your ID.' },
-        { q: '🎉 Can I organise a party at Cliniq?', a: 'Absolutely! Email us at contact@cafecliniq.com or send a WhatsApp. We love planning great events!' },
-        { q: '🚗 Where can I park?', a: 'We\'re right in the centre of Maastricht. Multiple parking garages are within walking distance.' },
-        { q: '👗 Is there a dress code?', a: 'Cliniq is a premium club — look your best! Tracksuits and trainers, please leave those at home.' },
-        { q: '🍹 Do you offer cocktail workshops?', a: 'Yes! Our cocktail workshops are perfect for groups of 15+. Price: €15 per cocktail, minimum 3 per person.' },
-        { q: '📍 Where exactly are you?', a: 'Platielstraat 9A, 6211 GV Maastricht. In the heart of the city, close to the Vrijthof.' },
+        { q: 'What time does Cliniq open?', a: 'Thursday, Friday and Saturday at 22:00. Thursday closes at 02:00; Friday and Saturday at 03:00.' },
+        { q: 'What is the minimum age?', a: 'Thursday 18+. Friday and Saturday 21+. Always bring a valid ID.' },
+        { q: 'Is there a dress code?', a: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed." },
+        { q: 'Where can I park?', a: 'Several car parks are within easy walking distance of Platielstraat.' },
+        { q: 'Can I buy tickets in advance?', a: 'Depends on the night. Check the agenda — regular nights are pay at the door.' },
+        { q: 'Are lockers available?', a: 'Yes. Reserve in advance at cliniq.elockers.shop.' },
       ],
-      quickLinks: [
-        { href: '/uitgaan',           label: 'Agenda & nightlife' },
-        { href: '/cocktail-workshop', label: 'Cocktail workshop' },
-        { href: '/event-space',       label: 'Hire venue' },
+    },
+    workshop: {
+      heroSub: 'For groups of 15 or more. Make cocktails, then stay for the night.',
+      aboutBody1: 'Our bartenders walk you through mixing, shaking and garnishing — hands on, no slides, no theory.',
+      aboutBody2: 'Every guest makes at least 3 cocktails and drinks what they make. Stay on for the club night after.',
+      ctaBody: 'Drop us a message. We respond fast and help you plan the full evening.',
+      seoText: `Book a cocktail workshop in Maastricht at Cliniq on Platielstraat. Available Thursday, Friday and Saturday, starting between 19:00 and 20:30. Stay on for the club night after.
+
+Groups from 15. Every guest makes at least 3 cocktails (€15 each) guided by our bartenders. No experience needed.
+
+Hen party in Maastricht? Cliniq is one of the most-booked venues in the region for hen nights. Exclusive hire and drinks packages available on request.
+
+Maastricht is easy to reach from Liège, Hasselt, Heerlen and Sittard. Car parks within walking distance of Platielstraat.`,
+      faqs: [
+        { q: 'How much does a workshop cost?', a: '€15 per cocktail, minimum 3 per person. No venue or bartender surcharge.' },
+        { q: 'What is the minimum group size?', a: '15 people minimum.' },
+        { q: 'How do I book?', a: 'Email contact@cafecliniq.com or send a WhatsApp. Share your date, group size and preferred start time.' },
+        { q: 'Can we stay after the workshop?', a: "Yes — stay for the regular club night. Normal entry rules apply." },
+        { q: 'Which days are available?', a: 'Thursday, Friday and Saturday. Start between 19:00 and 20:30.' },
+        { q: 'Is it good for a hen party?', a: "Yes, one of our most-booked activities for hen nights. Exclusive use and full packages available." },
       ],
     },
     vacatures: {
-      heroLabel:  'Work at Cliniq',
-      heroTitle:  'Vacancies',
-      introLabel: 'Working at Cliniq',
-      intro:      'Join our team',
-      introBody:  'At Cliniq we work with a tight-knit team of enthusiastic people who together create unforgettable nights. Are you the perfect addition?',
-      applyBtn:   'Apply',
-      reqLabel:   'Requirements',
-      openLabel:  'Open application',
-      openTitle:  'No vacancy that fits you?',
-      openBody:   'Send an open application! We\'re always looking for talented people.',
-      openBtn:    'Open application',
+      introBody: 'At Cliniq you work the nights others go out. Good team, good atmosphere. Want in?',
       positions: [
         {
-          title: 'Bartender', type: 'Part-time', hours: 'Thursday to Saturday',
-          description: 'Are you the person who effortlessly mixes multiple cocktails at once while keeping everyone laughing? Then we need you! As a bartender at Cliniq, you\'re the star behind the bar.',
-          requirements: ['18+ years', 'Customer-focused attitude', 'Experience is a plus', 'Available on weekends'],
+          description: "Three nights a week behind the bar of one of Maastricht's busiest clubs. Good under pressure, friendly, quick. Experience helps but isn't required.",
         },
       ],
     },
-    houseRules: {
-      label: 'Cliniq Maastricht',
-      title: 'House\nRules.',
-      rules: [
-        'We welcome all people regardless of their gender, nationality or religion as long as they respect our venue, our staff, our house rules, and most importantly each other.',
-        'On weekdays we require our guests to be at least 18 years old. On Fridays and Saturdays we require our guests to be at least 21 years old. A valid ID is required and must be shown upon request of our staff.',
-        'We do not allow sportswear (except in case of special sport events), fanny packs or bum bags inside our venue. For security reasons we also do not allow face covering clothes including hats, caps and sunglasses.',
-        'We do not allow smoking inside our venue. Visitors who smoke inside will be removed. Vaping is also accounted for as smoking.',
-        'We do not allow bringing your own drinks into our venue. We reserve the right to check upon arrival.',
-        'We do not allow drugs of any kind inside our venue. Visitors found using or dealing drugs will be removed and may be handed over to the police.',
-        'By entering the club you automatically agree to image and video registration and the use of these by Cliniq Maastricht.',
+    contact: {
+      faqs: [
+        { q: '👗 Is there a dress code?', a: "Yes. Look the part. Tracksuits, sports trousers and trainers aren't allowed — no exceptions." },
       ],
     },
-    artists: {
-      eyebrow: 'Our stage',
-      title1:  'Names',
-      title2:  'That',
-      title3:  'Resonate.',
-      sub:     'A selection of the artists who brought the Cliniq Maastricht stage to life.',
+    houseRules: {
+      rules: [
+        'We welcome all people regardless of their gender, nationality or religion as long as they respect our venue, our staff, our house rules, and most importantly each other.',
+        'On weekdays we require our guests to be at least 18 years old. On Fridays and Saturdays the minimum age is 21. A valid ID is required and must be shown upon request of our staff.',
+        'We do not allow sportswear (except in case of special sport events hosted by us), fanny packs or bum bags inside our venue. For security reasons we also do not allow face covering clothes including hats, caps and (tinted) sunglasses.',
+        'We do not allow smoking inside our venue — it has been prohibited in all Dutch bars and restaurants since 2008. Visitors who smoke inside will be removed. Vaping is treated as smoking.',
+        'We do not allow smuggling your own drinks into our venue. We reserve the right to check upon arrival. Visitors found consuming their own drinks will be removed.',
+        'We do not allow drugs of any kind inside our venue. Visitors found using or dealing drugs will be removed and may be handed over to the police. Visitors who are visibly intoxicated may be refused entry.',
+        'By entering the club you automatically agree to image and video registration and the use of these by Cliniq Maastricht in case of a potential breach of our house rules or Dutch legislation.',
+      ],
     },
-    footer: {
-      tagline: 'The best nightclub in Maastricht. Open every Thursday, Friday and Saturday.',
-      hours:   'Opening hours',
-      contact: 'Contact',
-      links:   'Links',
-      thursday:'Thursday',
-      friday:  'Friday',
-      saturday:'Saturday',
+    fotos: {
+      heroLabel: 'Photos',
+      heroTitle: 'What Cliniq\nlooks like.',
+      heroBody: 'Shots from club nights, events and workshops on Platielstraat.',
+      albumLabel: 'Albums',
+      emptyTitle: 'No photos yet',
+      emptyBody: 'New albums coming soon. Follow us on Instagram for the latest.',
+      seoText: 'Photos from Cliniq Maastricht — club nights, events and cocktail workshops on Platielstraat 9A in central Maastricht.',
     },
   },
 } as const
 
-export type Copy = typeof COPY.nl
-
-// Event types for the Event Space page
-export const EVENT_TYPES = {
-  nl: [
-    { emoji: '🎉', title: 'Privéfeest', subtitle: 'Verjaardagen & Jubilea', description: 'Vier jouw speciale dag in stijl. Van intieme verjaardagsfeestjes tot grote jubileumvieringen — wij zorgen voor een onvergetelijke avond.', features: ['Exclusief gebruik van de gehele ruimte', 'Eigen DJ of onze resident DJ', 'Gepersonaliseerd drankpakket', 'Decoratie & theming op aanvraag', 'VIP behandeling voor gasten'] },
-    { emoji: '💼', title: 'Bedrijfsfeest', subtitle: 'Personeelsfeesten & Borrels', description: 'Versterk de teamband in een unieke setting. Cliniq biedt de perfecte sfeer voor personeelsfeesten, borrels en bedrijfsactiviteiten.', features: ['Flexibele opstellingen (staand & zittend)', 'Catering & buffet mogelijkheden', 'Professionele AV-apparatuur', 'Branding & signage mogelijkheden', 'Gratis rondleiding vooraf'] },
-    { emoji: '🚀', title: 'Productlancering', subtitle: 'Launches & Presentaties', description: 'Lanceer jouw merk of product met impact. Combineer een professionele presentatieopstelling met een feestelijke borrel in een iconische omgeving.', features: ['Podium & backdrop op maat', 'Groot projectiescherm beschikbaar', 'Club-grade lighting & sfeer', 'Persgelegenheid & fotografie', 'Branded cocktails op aanvraag'] },
-    { emoji: '💍', title: 'Vrijgezellenfeest', subtitle: 'Bachelor & Bachelorette', description: 'Start de bruiloftsweek in stijl. Combineer een exclusieve cocktail workshop met een avondje dansen — de perfecte kick-off.', features: ['Cocktail workshop als kick-off', 'VIP-arrangement beschikbaar', 'Welkomstdrankje voor de groep', 'Persoonlijke aandacht & service', 'Onvergetelijke start van het feest'] },
-    { emoji: '🤝', title: 'Netwerkevent', subtitle: 'Business Networking', description: 'Creëer de perfecte sfeer voor zakelijke netwerkevenementen. Professionele faciliteiten met een ontspannen clubsfeer zorgen voor echte verbindingen.', features: ['Lounge & standing tafelopstelling', 'Cocktail workshop als icebreaker', 'Naamkaartjes & registratie balie', 'Flexibele looptijden', 'Op maat gemaakt drankmenu'] },
-    { emoji: '🎓', title: 'Studentenevent', subtitle: 'Afstuderen & Intro', description: 'Maastricht is studentenstad — Cliniq is de thuishaven. Perfect voor afstudeerfesten en introductiefeesten.', features: ['Studenten-friendly prijzen', 'Grote dansvloer & capaciteit 400p', 'Ervaren & enthousiast personeel', 'Speciale deals voor grote groepen', 'Late night tot zonsopgang op aanvraag'] },
-  ],
-  en: [
-    { emoji: '🎉', title: 'Private Party', subtitle: 'Birthdays & Anniversaries', description: 'Celebrate your special day in style. From intimate birthdays to large anniversary celebrations — we create an unforgettable evening.', features: ['Exclusive use of the entire venue', 'Your own DJ or our resident DJ', 'Personalised drinks package', 'Decoration & theming on request', 'VIP treatment for all guests'] },
-    { emoji: '💼', title: 'Corporate Event', subtitle: 'Staff Parties & Drinks', description: 'Strengthen team bonds in a unique setting. Cliniq provides the perfect atmosphere for staff parties, drinks evenings and corporate activities.', features: ['Flexible layouts (standing & seated)', 'Catering & buffet options', 'Professional AV equipment', 'Branding & signage options', 'Free venue tour beforehand'] },
-    { emoji: '🚀', title: 'Product Launch', subtitle: 'Launches & Presentations', description: 'Launch your brand or product with impact. Combine a professional presentation setup with a celebratory drinks reception in an iconic setting.', features: ['Custom stage & backdrop', 'Large projection screen available', 'Club-grade lighting & atmosphere', 'Press & photography opportunity', 'Branded cocktails on request'] },
-    { emoji: '💍', title: 'Bachelor Party', subtitle: 'Bachelor & Bachelorette', description: 'Start the wedding week in style. Combine an exclusive cocktail workshop with a night of dancing — the perfect send-off.', features: ['Cocktail workshop as kick-off', 'VIP arrangement available', 'Welcome drink for the group', 'Personal attention & service', 'Unforgettable start to the celebrations'] },
-    { emoji: '🤝', title: 'Networking Event', subtitle: 'Business Networking', description: 'Create the perfect atmosphere for business networking. Professional facilities combined with a relaxed club vibe foster real connections.', features: ['Lounge & standing table layout', 'Cocktail workshop as icebreaker', 'Name badges & registration desk', 'Flexible time slots', 'Custom drinks menu'] },
-    { emoji: '🎓', title: 'Student Event', subtitle: 'Graduation & Intro', description: 'Maastricht is a student city — Cliniq is home base. Perfect for graduation parties and introduction events.', features: ['Student-friendly pricing', 'Large dancefloor & capacity up to 400', 'Experienced & enthusiastic staff', 'Special deals for large groups', 'Late night on request'] },
-  ],
-}
-
-export const EVENT_SPACE_FAQS = {
-  nl: [
-    { q: 'Hoeveel personen passen er in de zaal?', a: 'Cliniq Maastricht biedt ruimte voor tot 400 gasten staand. Voor zittende evenementen adviseren wij maximaal 250 gasten voor optimaal comfort.' },
-    { q: 'Kan ik de zaal exclusief huren?', a: 'Ja, bij een privé-evenement huur je de volledige ruimte exclusief. Jij en je gasten hebben de gehele club voor jezelf, inclusief dansvloer, bar en terras.' },
-    { q: 'Is catering mogelijk?', a: 'Absoluut. Wij kunnen hapjes, een buffet of een volledige cateringservice regelen. Ook drankarrangementen zijn beschikbaar. Bespreek je wensen bij de aanvraag.' },
-    { q: 'Kunnen we een eigen DJ meebrengen?', a: 'Ja, je kunt een eigen DJ meebrengen of gebruik maken van onze resident DJ. Ons professionele geluids- en lichtsysteem staat klaar voor de beste show.' },
-    { q: 'Hoe snel ontvang ik een reactie op mijn aanvraag?', a: 'We streven ernaar binnen 24 uur te reageren op alle aanvragen. Heb je spoed? Mail direct naar contact@cafecliniq.com of stuur een WhatsApp.' },
-  ],
-  en: [
-    { q: 'How many guests can the venue hold?', a: 'Cliniq Maastricht accommodates up to 400 guests standing. For seated events, we recommend a maximum of 250 guests for optimal comfort.' },
-    { q: 'Can I hire the venue exclusively?', a: 'Yes, for private events you hire the entire space exclusively. You and your guests have the whole club to yourselves, including the dancefloor, bar and terrace.' },
-    { q: 'Is catering available?', a: 'Absolutely. We can arrange snacks, a buffet, or a full catering service. Drinks packages are also available. Discuss your wishes in your enquiry.' },
-    { q: 'Can we bring our own DJ?', a: 'Yes, you can bring your own DJ or use our resident DJ. Our professional sound and lighting system is ready for an incredible show.' },
-    { q: 'How quickly will I receive a response?', a: 'We aim to respond to all enquiries within 24 hours. In a hurry? Email contact@cafecliniq.com directly or send a WhatsApp message.' },
-  ],
-}
-
-export const ARTISTS = [
-  {
-    name: 'Nicky Romero',
-    genre: 'Progressive House · EDM',
-    origin: 'Netherlands',
-    bio: { nl: 'Nicky Romero is een van de meest invloedrijke Nederlandse DJ/producers in de elektronische dansmuziek. Bekend van wereldhits als "Toulouse" en zijn Protocol Recordings label, speelt hij op de grootste festivals ter wereld — van Tomorrowland tot Ultra Miami.', en: 'Nicky Romero is one of the most influential Dutch DJ/producers in electronic dance music. Known for global hits like "Toulouse" and his Protocol Recordings label, he performs at the world\'s biggest festivals — from Tomorrowland to Ultra Miami.' },
-    image: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/25d285a5-e73e-4f38-a55c-a3d9fcd73d60/003_EnriqueMeesters_Maastricht+-+Cliniq_20230204.jpg',
-    spotify: 'https://open.spotify.com/artist/5ChF3i92IPZHduM7jN3dpg',
-    instagram: 'https://www.instagram.com/nickyromero/',
-  },
-  {
-    name: 'La Fuente',
-    genre: 'Tech-House · House',
-    origin: 'Eindhoven, Netherlands',
-    bio: { nl: 'La Fuente (Job Smeltzer) is een huis-DJ uit Eindhoven met meer dan 300 shows per jaar. Met 715K+ maandelijkse Spotify-luisteraars en een enorme aanhang op social media, is hij een van de meest geboekte namen in de Nederlandse clubscene.', en: 'La Fuente (Job Smeltzer) is a house DJ from Eindhoven with 300+ shows a year. With 715K+ monthly Spotify listeners and a massive social following, he is one of the most booked names in the Dutch club scene.' },
-    image: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/512e92e4-396c-4a4a-aedd-eb928ab681d6/20240822_Cliniq_HR_SanderPaulussen-44.jpg',
-    spotify: 'https://open.spotify.com/artist/0vhJymgsCubfAfFjEGVsoD',
-    instagram: 'https://www.instagram.com/djlafuente/',
-  },
-  {
-    name: 'Ronny Flex',
-    genre: 'Hip-Hop · R&B',
-    origin: 'Amsterdam, Netherlands',
-    bio: { nl: 'Ronny Flex is een pionier van de Nederlandse urban scene. Van straatmuziek tot een van de bekendste artiesten van het land — zijn kruising van hip-hop en pop inspireerde een hele generatie.', en: 'Ronny Flex is a pioneer of the Dutch urban scene. From street music to one of the country\'s most recognized artists — his fusion of hip-hop and pop has inspired an entire generation.' },
-    image: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/4fa88dae-1327-459e-95c4-6f2e95bf02b3/4_Wildschieters_JtT_Cliniq_20230318.JPG',
-    spotify: 'https://open.spotify.com/artist/6rTBPxQhHZjD2jdxl7MHUe',
-    instagram: 'https://www.instagram.com/ronnyflex/',
-  },
-  {
-    name: 'John Tana',
-    genre: 'Dance · House',
-    origin: 'Netherlands',
-    bio: { nl: 'John Tana is een opkomende Nederlandse producer en DJ bekend om zijn energieke dancetracks. Met hits in de Nederlandse charts bouwt hij snel een naam op in de clubwereld.', en: 'John Tana is a rising Dutch producer and DJ known for his high-energy dance tracks. With charting tracks in the Netherlands, he is rapidly building a name in the club world.' },
-    image: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/820c06b1-de40-417c-808f-9c1b3b25dc1f/20240822_Cliniq_HR_SanderPaulussen-50.jpg',
-    spotify: 'https://open.spotify.com/artist/6kGaFsToEjWlMrWm12vm8U',
-    instagram: null,
-  },
-  {
-    name: 'Billy de Clit',
-    genre: 'House · Tech-House',
-    origin: 'The Hague, Netherlands',
-    bio: { nl: 'Billy de Clit is een DJ/producer uit Den Haag die al jaren dansevloeren verwoest. Als house- en tech-house specialist heeft hij zijn stempel gedrukt op de Nederlandse clubcultuur.', en: 'Billy de Clit is a DJ/producer from The Hague who has been destroying dancefloors for years. As a house and tech-house specialist, he has left his mark on Dutch club culture.' },
-    image: 'https://images.squarespace-cdn.com/content/v1/668daa9a16b2fb43c8ce6f80/da0a2e37-0788-4871-9599-33cf1791c42b/28_Wildschieters_JtT_Cliniq_20230318.JPG',
-    spotify: null,
-    instagram: null,
-  },
-]
-
-export const TICKER_ITEMS = [
-  'CLINIQ MAASTRICHT',
-  'DO · VR · ZA',
-  'PLATIELSTRAAT 9A',
-  'COCKTAIL WORKSHOPS',
-  'EVENEMENTENLOCATIE',
-  'PREMIUM NIGHTLIFE',
-  '400 GASTEN',
-  'SINCE 2012',
-]
-
-export const LOCAL_BUSINESS_SCHEMA = {
-  '@context': 'https://schema.org',
-  '@type': ['NightClub', 'BarOrPub', 'EventVenue'],
-  name: 'Cliniq Maastricht',
-  url: 'https://www.cliniqmaastricht.nl',
-  telephone: '+31612530987',
-  email: 'contact@cafecliniq.com',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Platielstraat 9A',
-    addressLocality: 'Maastricht',
-    postalCode: '6211 GV',
-    addressCountry: 'NL',
-  },
-  geo: { '@type': 'GeoCoordinates', latitude: 50.8489, longitude: 5.7025 },
-  openingHoursSpecification: [
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Thursday', opens: '22:00', closes: '02:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday',   opens: '22:00', closes: '03:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '22:00', closes: '03:00' },
-  ],
-  sameAs: ['https://www.instagram.com/cliniqmaastricht', 'https://www.tiktok.com/@cliniqmaastricht'],
-  priceRange: '€€',
-}
+export const SEO_TEXT = {
+  uitgaan: { nl: COPY.nl.uitgaan.seoText, en: COPY.en.uitgaan.seoText },
+  workshop: { nl: COPY.nl.workshop.seoText, en: COPY.en.workshop.seoText },
+  eventspace: { nl: COPY.nl.eventspace.seoText, en: COPY.en.eventspace.seoText },
+} as const
