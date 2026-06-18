@@ -1,36 +1,36 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { faqSchema } from '@/lib/seo'
-import { images, imageSets } from '@/lib/site'
-import InquiryForm from '@/components/forms/InquiryForm'
-import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
-import JsonLd from '@/components/ui/JsonLd'
-import { eventSpaceFaqsNl as fallbackFaqs } from '@/lib/faqs'
+import { images } from '@/lib/site'
+import { getAgendaEvents, getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
+import { EventCard } from '@/components/ui/EventCard'
 import SafeImage from '@/components/ui/SafeImage'
+import HeroFrame from '@/components/ui/HeroFrame'
+import { ui } from '@/lib/i18n'
+import ClosingCTA from '@/components/layout/ClosingCTA'
 
 export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getSeoSettings('event-space', 'nl')
-
-  const title = seo?.seoTitle || 'Ruimte Huren Maastricht | Feestzaal & Eventlocatie Cliniq — Tot 400 pers.'
+  const seo = await getSeoSettings('home', 'nl')
+  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A'
   const description =
     seo?.metaDescription ||
-    'Feestlocatie of eventruimte huren in Maastricht? Cliniq biedt exclusieve zaalverhuur voor tot 400 personen. Voor privéfeesten, bedrijfsfeesten en vrijgezellenavonden. Platielstraat 9A.'
-  const ogTitle = seo?.ogTitle || title
-  const ogDescription = seo?.ogDescription || description
+    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
+  const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
+  const ogDescription =
+    seo?.ogDescription ||
+    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A.'
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
 
   return {
     title,
     description,
-    alternates: {
-      canonical: 'https://www.cliniqmaastricht.nl/event-space',
-    },
+    alternates: { canonical: 'https://www.cliniqmaastricht.nl' },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
-      url: 'https://www.cliniqmaastricht.nl/event-space',
+      url: 'https://www.cliniqmaastricht.nl',
       siteName: 'Cliniq Maastricht',
       locale: 'nl_NL',
       type: 'website',
@@ -45,243 +45,208 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-type EditableCard = {
-  titleNl?: string
-  titleEn?: string
-  textNl?: string
-  textEn?: string
-}
+export default async function Home() {
+  const t = ui.nl
 
-type ExtendedPageContent = Awaited<ReturnType<typeof getPageContent>> & {
-  eventTypeEyebrowNl?: string
-  eventTypeTitleNl?: string
-  eventTypeCards?: EditableCard[]
-
-  facilityEyebrowNl?: string
-  facilityTitleNl?: string
-  facilityIntroNl?: string
-  facilityCards?: EditableCard[]
-
-  bodyEyebrowNl?: string
-  bodyTitleNl?: string
-
-  galleryEyebrowNl?: string
-  galleryTitleNl?: string
-
-  requestEyebrowNl?: string
-  requestTitleNl?: string
-  requestIntroNl?: string
-}
-
-const fallbackEventTypes: EditableCard[] = [
-  {
-    titleNl: 'Bedrijfsfeest',
-    textNl: 'Bedrijfsborrel of personeelsfeest? Cliniq heeft de ruimte, de bar en het geluid. Jij regelt de gasten.',
-  },
-  {
-    titleNl: 'Privéfeest',
-    textNl: 'Van kleine verjaardagsfeestjes tot grote jubileumvieringen. Cliniq is exclusief voor jou en je gasten.',
-  },
-  {
-    titleNl: 'Vrijgezellenfeest',
-    textNl: 'Cocktail workshop als opener, daarna de club in. Cliniq is een van de populairste locaties voor vrijgezellenavonden in Maastricht.',
-  },
-  {
-    titleNl: 'Borrel',
-    textNl: 'Voor groepen die informeel willen samenkomen met bar en muziek dichtbij.',
-  },
-  {
-    titleNl: 'Private party',
-    textNl: 'Een eigen avond met deurbeleid, bar en invulling op maat.',
-  },
-  {
-    titleNl: 'Studentenfeest',
-    textNl: 'Geschikt voor grotere groepen met muziek, licht en duidelijke afspraken.',
-  },
-  {
-    titleNl: 'Productlancering',
-    textNl: 'Presenteer je merk of product in een setting die mensen bijblijft. Podium, scherm, bar en licht aanwezig.',
-  },
-  {
-    titleNl: 'Gala / besloten avond',
-    textNl: 'Voor een nettere avond met ontvangst, bar en clubgevoel later op de avond.',
-  },
-]
-
-const fallbackFacilities: EditableCard[] = [
-  {
-    titleNl: 'Bar',
-    textNl: 'Een vaste baropstelling met team en drankmogelijkheden.',
-  },
-  {
-    titleNl: 'Licht en geluid',
-    textNl: 'De basis voor muziek, speeches en dansen is aanwezig.',
-  },
-  {
-    titleNl: 'DJ mogelijkheden',
-    textNl: 'We denken mee over DJ, muziekstijl en timing van de avond.',
-  },
-  {
-    titleNl: 'Dansvloer',
-    textNl: 'De ruimte voelt direct als een avond uit, niet als een lege zaal.',
-  },
-  {
-    titleNl: 'Cocktailmogelijkheden',
-    textNl: 'Cocktails, welkomstdrankjes of drankafspraken zijn mogelijk.',
-  },
-  {
-    titleNl: 'Centrale locatie',
-    textNl: 'Platielstraat 9A, midden in het centrum van Maastricht.',
-  },
-  {
-    titleNl: 'Hospitality team',
-    textNl: 'Een team dat gewend is aan drukke avonden en groepen.',
-  },
-  {
-    titleNl: 'Garderobe / lockers',
-    textNl: 'Lockers en garderobe-afspraken kunnen per event worden afgestemd.',
-  },
-]
-
-export default async function EventSpacePage() {
-  const [rawContent, driveGallery] = await Promise.all([
-    getPageContent('event-space', 'nl'),
-    getSectionPhotoMedia('event-space', imageSets.eventSpace),
+  const [events, pageContent, homepagePhotos] = await Promise.all([
+    getAgendaEvents(),
+    getPageContent('home'),
+    getSectionPhotoMedia('homepage', [
+      images.crowd,
+      images.redCrowd,
+      images.party,
+      images.club,
+      images.contactInterior,
+      images.hero,
+    ]),
   ])
 
-  const content = rawContent as ExtendedPageContent
+  const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
+  const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
+  const carouselPhotos = photos.length ? [...photos, ...photos] : []
+  const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
 
-  const pageFaqs = content?.faqs?.length
-    ? content.faqs.map((faq) => ({ question: faq.question, answer: faq.answer }))
-    : fallbackFaqs
-
-  const gallerySource = content?.gallery?.length ? content.gallery : driveGallery
-  const gallery = gallerySource.map((photo) => ({
-    url: photo.url,
-    alt: photo.altNl || 'Feestlocatie CLINIQ Maastricht',
-  }))
-
-  const heroImage = content?.imageUrl || images.redRoom
-  const heroTitle = content?.heroTitleNl || 'Feestzaal & Eventlocatie Maastricht'
-  const heroSubtitle =
-    content?.heroSubtitleNl ||
-    'Exclusief te huren voor feesten, bedrijfsevents en private parties. Tot 400 personen.'
-  const primaryCta = content?.primaryCtaNl || 'Vrijblijvende aanvraag'
-
-  const eventTypeEyebrow = content?.eventTypeEyebrowNl || 'Event types'
-  const eventTypeTitle = content?.eventTypeTitleNl || 'Waarvoor kun je CLINIQ huren?'
-  const eventTypeCards = content?.eventTypeCards?.length ? content.eventTypeCards : fallbackEventTypes
-
-  const facilityEyebrow = content?.facilityEyebrowNl || 'Faciliteiten'
-  const facilityTitle = content?.facilityTitleNl || 'Wat is er aanwezig?'
-  const facilityIntro =
-    content?.facilityIntroNl ||
-    'CLINIQ heeft de basis voor een complete avond al in huis: bar, licht, geluid, dansvloer en een team dat gewend is aan drukke avonden.'
-  const facilityCards = content?.facilityCards?.length ? content.facilityCards : fallbackFacilities
-
-  const bodyEyebrow = content?.bodyEyebrowNl || 'Maastricht'
-  const bodyTitle = content?.bodyTitleNl || 'Ruimte huren in Maastricht'
-  const bodyText = content?.bodyNl
-
-  const galleryEyebrow = content?.galleryEyebrowNl || 'Beeld'
-  const galleryTitle = content?.galleryTitleNl || 'De ruimte'
-
-  const requestEyebrow = content?.requestEyebrowNl || 'Aanvraag'
-  const requestTitle = content?.requestTitleNl || 'Vrijblijvende aanvraag'
-  const requestIntro =
-    content?.requestIntroNl ||
-    'Vertel ons je datum, groepsgrootte en type event. Dan denken we mee over beschikbaarheid, indeling en mogelijkheden.'
+  const heroTitle = pageContent?.heroTitleNl || 'Maastricht After Dark.'
+  const heroSubtitle = pageContent?.heroSubtitleNl || 'Uitgaan, events en workshops aan de Platielstraat.'
+  const primaryCta = pageContent?.primaryCtaNl || t.common.viewAgenda
+  const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
+  const seoBodyNl = pageContent?.bodyNl
 
   return (
     <>
-      <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36">
+      <HeroFrame className="hero-clean">
         <SafeImage
-          src={heroImage}
-          fallbackSrc={images.fallbackWide}
-          alt="Feestzaal huren Maastricht — Cliniq evenementenlocatie"
+          src={heroPhoto}
+          fallbackSrc={images.fallbackHero}
+          alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat"
           fill
           priority
           sizes="100vw"
-          className="hero-media -z-10 object-cover brightness-[1.08]"
+          className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
 
-        <div className="container-premium py-24">
-          <p className="eyebrow mb-4">Events</p>
-          <h1 className="h1 max-w-5xl">{heroTitle}</h1>
-          <p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">{heroSubtitle}</p>
+        <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
+          <div className="max-w-4xl">
+            <p className="eyebrow mb-4">Platielstraat 9A</p>
+            <h1 className="hero-clean-title">{heroTitle}</h1>
+            <p className="hero-clean-subline">{heroSubtitle}</p>
 
-          <a href="#aanvraag" className="btn-primary mt-8">
-            {primaryCta}
-          </a>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link data-track="cta_click" className="btn-primary" href="/uitgaan">
+                {primaryCta}
+              </Link>
+
+              <Link data-track="cta_click" className="btn-secondary" href="/fotos">
+                {secondaryCta}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </HeroFrame>
+
+      <section className="event-section py-24">
+        <div className="container-premium">
+          <SectionIntro
+            eyebrow="Agenda"
+            title={t.home.eventsTitle}
+            text="De eerstvolgende avonden bij CLINIQ."
+            ctaHref="/uitgaan"
+            ctaLabel={t.common.allEvents}
+          />
+
+          {events.length ? (
+            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
+              {events.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0} />
+              ))}
+            </div>
+          ) : (
+            <div className="image-frame mt-10 min-h-[360px] p-8">
+              <SafeImage
+                src={images.club}
+                fallbackSrc={images.fallbackWide}
+                alt="Clubavond bij CLINIQ aan de Platielstraat"
+                fill
+                sizes="100vw"
+                className="-z-10 object-cover brightness-[1.08]"
+              />
+              <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
+              <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="container-premium py-24">
-        <p className="eyebrow">{eventTypeEyebrow}</p>
-        <h2 className="h2 mt-4">{eventTypeTitle}</h2>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {eventTypeCards.map((card, index) => (
-            <InfoCard
-              key={`${card.titleNl || 'event-type'}-${index}`}
-              title={card.titleNl || 'Event type'}
-              text={card.textNl || ''}
-            />
-          ))}
+      <section className="overflow-hidden pb-24">
+        <div className="container-premium">
+          <SectionIntro eyebrow="Foto’s" title="Foto’s" text="Recente avonden bij CLINIQ." />
         </div>
+
+        <div className="relative mt-10 overflow-hidden">
+          <div className="flex w-max animate-[photoMarquee_42s_linear_infinite] gap-5 px-6 hover:[animation-play-state:paused]">
+            {carouselPhotos.map((src, index) => (
+              <Link
+                key={`${src}-${index}`}
+                href="/fotos"
+                className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]"
+              >
+                <SafeImage
+                  src={src}
+                  fallbackSrc={images.fallbackWide}
+                  alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+                  fill
+                  sizes="(min-width:1024px) 500px, 80vw"
+                  className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
+                />
+              </Link>
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+        </div>
+
+        <div className="container-premium mt-8 flex justify-center">
+          <Link href="/fotos" className="btn-primary">
+            {t.common.allPhotos}
+          </Link>
+        </div>
+
+        <style>{`
+          @keyframes photoMarquee {
+            from {
+              transform: translateX(0);
+            }
+            to {
+              transform: translateX(-50%);
+            }
+          }
+        `}</style>
+      </section>
+
+      <section className="container-premium space-y-8 pb-24">
+        <ServiceRow
+          href="/cocktail-workshop"
+          image={images.workshopBar}
+          eyebrow="Workshop"
+          title="Cocktail workshop"
+          text={
+            <>
+              Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
+              bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
+              <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+                cocktail workshops
+              </Link>
+              .
+            </>
+          }
+          cta="Cocktail workshop bekijken"
+        />
+
+        <ServiceRow
+          href="/event-space"
+          image={images.redRoom}
+          eyebrow="Events"
+          title="Ruimte huren"
+          text={
+            <>
+              CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
+              Meer over{' '}
+              <Link href="/event-space" className="text-gold hover:text-white">
+                ruimte huren
+              </Link>
+              .
+            </>
+          }
+          cta="Mogelijkheden bekijken"
+          reverse
+        />
       </section>
 
       <section className="container-premium pb-24">
-        <div className="max-w-4xl">
-          <p className="eyebrow">{facilityEyebrow}</p>
-          <h2 className="h2 mt-4">{facilityTitle}</h2>
-          <p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{facilityIntro}</p>
-        </div>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {facilityCards.map((card, index) => (
-            <InfoCard
-              key={`${card.titleNl || 'facility'}-${index}`}
-              title={card.titleNl || 'Faciliteit'}
-              text={card.textNl || ''}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="container-premium pb-24">
-        <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
+        <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
-            <p className="eyebrow">{bodyEyebrow}</p>
-            <h2 className="h2 mt-4">{bodyTitle}</h2>
+            <p className="eyebrow">Maastricht</p>
+            <h2 className="h2 mt-4">Uitgaan en events in Maastricht</h2>
           </div>
 
           <div className="prose-premium">
-            {bodyText ? (
-              <TextBlock text={bodyText} />
+            {seoBodyNl ? (
+              <p>{seoBodyNl}</p>
             ) : (
               <>
                 <p>
-                  Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan
-                  tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is
-                  op aanvraag mogelijk.
+                  CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je vindt hier clubavonden,
+                  groepsactiviteiten, cocktail workshops en mogelijkheden om de ruimte te huren voor een besloten avond.
+                  De agenda wisselt per week en via de fotopagina zie je een indruk van recente avonden.
                 </p>
                 <p>
-                  Feestlocatie huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte
-                  evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten.
-                </p>
-                <p>
-                  Bedrijfsfeest of borrel organiseren in Maastricht? Cliniq leent zich uitstekend voor personeelsfeesten,
-                  netwerkevenementen en productlanceringen.
-                </p>
-                <p>
-                  Vrijgezellenavond plannen? Combineer een{' '}
-                  <Link href="/cocktail-workshop" className="text-gold hover:text-white">
-                    cocktail workshop
-                  </Link>{' '}
-                  met een exclusieve clubavond.
+                  Voor wie zoekt naar uitgaan in Maastricht, op stap gaan met vrienden, een vrijgezellenavond, een
+                  cocktail workshop of een ruimte voor een borrel of bedrijfsfeest, is CLINIQ een centrale plek in de
+                  stad. Controleer altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele details per
+                  avond.
                 </p>
               </>
             )}
@@ -289,105 +254,85 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
-        <p className="eyebrow">{galleryEyebrow}</p>
-        <h2 className="h2 mt-4">{galleryTitle}</h2>
+      <ClosingCTA />
+    </>
+  )
+}
 
-        <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">
-          {gallery.slice(0, 5).map((item, index) => (
-            <div
-              key={`${item.url}-${index}`}
-              className={`photo-tile image-frame ${
-                index === 0 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'
-              }`}
-            >
-              <SafeImage
-                src={item.url}
-                fallbackSrc={images.fallbackWide}
-                alt={item.alt}
-                fill
-                sizes="33vw"
-                className="object-cover brightness-[1.08]"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+function SectionIntro({
+  eyebrow,
+  title,
+  text,
+  ctaHref,
+  ctaLabel,
+}: {
+  eyebrow: string
+  title: string
+  text: string
+  ctaHref?: string
+  ctaLabel?: string
+}) {
+  return (
+    <div className="reveal-up flex flex-col justify-between gap-5 md:flex-row md:items-end">
+      <div>
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 className="h2 mt-3">{title}</h2>
+        <p className="mt-4 max-w-3xl text-lg leading-[1.65] text-white/70 md:text-xl">{text}</p>
+      </div>
 
-      <section className="container-premium pb-24">
-        <p className="eyebrow">FAQ</p>
-        <h2 className="h2 mt-4">Veelgestelde vragen</h2>
+      {ctaHref && ctaLabel ? (
+        <Link href={ctaHref} className="btn-secondary hidden shrink-0 sm:inline-flex">
+          {ctaLabel}
+        </Link>
+      ) : null}
+    </div>
+  )
+}
 
-        <div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">
-          {pageFaqs.map((faq) => (
-            <details key={faq.question} className="luxury-panel rounded-2xl p-5">
-              <summary className="cursor-pointer">
-                <h3 className="inline font-black">{faq.question}</h3>
-              </summary>
-              <p className="mt-3 text-base leading-7 text-white/72 md:text-lg">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section id="aanvraag" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]">
-        <div>
-          <p className="eyebrow">{requestEyebrow}</p>
-          <h2 className="h2 mt-4">{requestTitle}</h2>
-          <p className="mt-6 text-lg leading-[1.65] text-white/72">{requestIntro}</p>
-        </div>
-
-        <InquiryForm
-          type="event-space"
-          fields={[
-            { name: 'name', label: 'Naam', required: true },
-            { name: 'email', label: 'E-mail', type: 'email', required: true },
-            { name: 'phone', label: 'Telefoon' },
-            {
-              name: 'eventType',
-              label: 'Type event',
-              options: [
-                'Bedrijfsfeest',
-                'Verjaardag',
-                'Vrijgezellenfeest',
-                'Gala',
-                'Studentenfeest',
-                'Private party',
-                'Borrel',
-                'Product launch',
-              ],
-            },
-            { name: 'preferredDate', label: 'Gewenste datum', type: 'date' },
-            { name: 'guests', label: 'Aantal gasten', type: 'number' },
-            { name: 'message', label: 'Bericht', required: true },
-          ]}
+function ServiceRow({
+  href,
+  image,
+  eyebrow,
+  title,
+  text,
+  cta,
+  reverse = false,
+}: {
+  href: string
+  image: string
+  eyebrow: string
+  title: string
+  text: ReactNode
+  cta: string
+  reverse?: boolean
+}) {
+  return (
+    <article className="grid overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.045] lg:grid-cols-[45fr_55fr]">
+      <Link
+        href={href}
+        className={`image-frame group min-h-[360px] rounded-none border-0 ${reverse ? 'lg:order-2' : ''}`}
+      >
+        <SafeImage
+          src={image}
+          fallbackSrc={images.fallbackWide}
+          alt={title}
+          fill
+          sizes="(min-width:1024px) 45vw, 100vw"
+          className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105"
         />
-      </section>
+      </Link>
 
-      <JsonLd data={faqSchema(pageFaqs)} />
-    </>
-  )
-}
+      <div className="flex flex-col justify-center p-7 md:p-10">
+        <p className="eyebrow">{eyebrow}</p>
+        <h2 className="mt-4 max-w-3xl text-[32px] font-black leading-tight tracking-[-0.025em] md:text-[42px]">
+          {title}
+        </h2>
+        <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{text}</p>
 
-function InfoCard({ title, text }: { title: string; text: string }) {
-  return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5">
-      <h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3>
-      <p className="mt-3 text-white/66">{text}</p>
+        <Link className="btn-primary mt-8 w-fit" href={href}>
+          {cta}
+        </Link>
+      </div>
     </article>
-  )
-}
-
-function TextBlock({ text }: { text: string }) {
-  return (
-    <>
-      {text
-        .split(/\n\s*\n/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean)
-        .map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-    </>
   )
 }
