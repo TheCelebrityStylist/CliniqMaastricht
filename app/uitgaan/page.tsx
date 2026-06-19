@@ -13,10 +13,10 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('nightlife', 'nl')
-  const title = seo?.seoTitle || 'Uitgaan Maastricht | Club Cliniq — Donderdag, Vrijdag & Zaterdag'
+  const title = seo?.seoTitle || 'Uitgaan Maastricht | Club, Nachtleven & Stappen bij CLINIQ'
   const description =
     seo?.metaDescription ||
-    'Cliniq Maastricht is hét adres voor een avondje stappen. Donderdag 18+, vrijdag en zaterdag 21+, open vanaf 22:00 aan de Platielstraat 9A in het centrum van Maastricht.'
+    'Uitgaan in Maastricht? CLINIQ is een club aan de Platielstraat 9A met DJ-avonden, events en clubnachten op donderdag, vrijdag en zaterdag. Bekijk de agenda.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
@@ -65,19 +65,19 @@ const fallbackPracticalCards: PracticalCard[] = [
   },
   {
     titleNl: 'Minimumleeftijd',
-    textNl: 'De leeftijd kan per avond verschillen. Neem altijd een geldig ID mee.',
+    textNl: 'Donderdag is vaak 18+. Vrijdag en zaterdag zijn vaak 21+. De leeftijd kan per avond verschillen.',
   },
   {
     titleNl: 'Deurbeleid',
-    textNl: 'We letten op sfeer, veiligheid en respect. Kom op tijd en verzorgd.',
+    textNl: 'We letten op sfeer, veiligheid en respect. Kom op tijd, verzorgd en neem altijd een geldig ID mee.',
   },
   {
     titleNl: 'Locatie',
-    textNl: 'Platielstraat 9A, op loopafstand van Vrijthof, Markt en uitgaansstraten.',
+    textNl: 'Platielstraat 9A, midden in het centrum van Maastricht, vlak bij het Vrijthof en de Markt.',
   },
   {
     titleNl: 'Groepen',
-    textNl: 'Kom je met een groep of plan je een speciale avond? Neem vooraf contact op.',
+    textNl: 'Kom je met een groep of wil je een avond combineren met een borrel, workshop of private event? Neem vooraf contact op.',
   },
 ]
 
@@ -108,23 +108,23 @@ export default async function NightlifePage() {
   const heroTitle = pageContent?.heroTitleNl || 'Uitgaan in Maastricht.'
   const heroSubtitle =
     pageContent?.heroSubtitleNl ||
-    'Donderdag 18+, vrijdag en zaterdag 21+. Open vanaf 22:00 aan de Platielstraat 9A, midden in het centrum.'
+    'Clubnachten, DJ’s, events en late avonden aan de Platielstraat 9A. Donderdag, vrijdag en zaterdag open in het centrum van Maastricht.'
 
   const primaryCta = pageContent?.primaryCtaNl || 'Bekijk agenda'
   const secondaryCta = pageContent?.secondaryCtaNl || 'Bekijk foto’s'
 
-  const bodyEyebrow = pageContent?.bodyEyebrowNl || 'Maastricht'
-  const bodyTitle = pageContent?.bodyTitleNl || 'Uitgaan in Maastricht'
+  const bodyEyebrow = pageContent?.bodyEyebrowNl || 'Uitgaan Maastricht'
+  const bodyTitle = pageContent?.bodyTitleNl || 'Club, nachtleven en stappen in Maastricht'
   const seoBody = pageContent?.bodyNl
 
   const practicalCards =
     pageContent?.practicalCards?.length ? pageContent.practicalCards : fallbackPracticalCards
 
-  const extraEyebrow = pageContent?.extraEyebrowNl || 'Maastricht nightlife'
-  const extraTitle = pageContent?.extraTitleNl || 'Voor groepen, vrienden en late plannen'
+  const extraEyebrow = pageContent?.extraEyebrowNl || 'Stappen in Maastricht'
+  const extraTitle = pageContent?.extraTitleNl || 'Voor vrienden, groepen en spontane avonden uit'
   const extraIntro =
     pageContent?.extraIntroNl ||
-    'CLINIQ zit precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.'
+    'CLINIQ ligt precies waar je wilt zijn als je avond in Maastricht niet bij één drankje hoeft te blijven.'
   const extraBody = pageContent?.extraBodyNl
 
   const pageFaqs = pageContent?.faqs?.length
@@ -163,7 +163,7 @@ export default async function NightlifePage() {
         <SafeImage
           src={heroImage}
           fallbackSrc={images.fallbackHero}
-          alt="Uitgaan bij CLINIQ Maastricht"
+          alt="Uitgaan in Maastricht bij CLINIQ club aan de Platielstraat"
           fill
           priority
           sizes="100vw"
@@ -173,7 +173,7 @@ export default async function NightlifePage() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/60 to-black/25" />
 
         <div className="container-premium py-24">
-          <p className="eyebrow mb-4">Cliniq — Platielstraat 9A</p>
+          <p className="eyebrow mb-4">Club Maastricht — Platielstraat 9A</p>
           <h1 className="h1 max-w-5xl">{heroTitle}</h1>
           <p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">{heroSubtitle}</p>
 
@@ -191,7 +191,11 @@ export default async function NightlifePage() {
 
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
-          <SectionIntro eyebrow="Agenda" title="Deze week bij CLINIQ" text="Eerstvolgende avonden aan de Platielstraat." />
+          <SectionIntro
+            eyebrow="Agenda"
+            title="Agenda: uitgaan bij CLINIQ Maastricht"
+            text="Bekijk de eerstvolgende clubnachten, DJ-avonden en events aan de Platielstraat."
+          />
 
           {events.length ? (
             <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
@@ -209,7 +213,11 @@ export default async function NightlifePage() {
 
       <section className="overflow-hidden pb-24">
         <div className="container-premium">
-          <SectionIntro eyebrow="Sfeer" title="Een indruk van CLINIQ" text="Foto’s van recente avonden en events." />
+          <SectionIntro
+            eyebrow="Sfeer"
+            title="Zo voelt een avond uit bij CLINIQ"
+            text="Een indruk van recente clubnachten, events en avonden in Maastricht."
+          />
         </div>
 
         <div className="relative mt-10 overflow-hidden">
@@ -223,7 +231,7 @@ export default async function NightlifePage() {
                 <SafeImage
                   src={src}
                   fallbackSrc={images.fallbackWide}
-                  alt={`Uitgaan Maastricht sfeerbeeld ${index + 1}`}
+                  alt={`Uitgaan Maastricht bij CLINIQ sfeerbeeld ${index + 1}`}
                   fill
                   sizes="(min-width:1024px) 500px, 80vw"
                   className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
@@ -257,7 +265,7 @@ export default async function NightlifePage() {
       <section className="container-premium pb-24">
         <div className="mb-8">
           <p className="eyebrow">Fotoalbums</p>
-          <h2 className="h2 mt-3">Recente avonden</h2>
+          <h2 className="h2 mt-3">Recente avonden in de club</h2>
         </div>
 
         <AlbumGrid albums={albums.slice(0, 3)} />
@@ -265,7 +273,7 @@ export default async function NightlifePage() {
 
       <section className="container-premium pb-24">
         <p className="eyebrow">Praktisch</p>
-        <h2 className="h2 mt-4">Goed om te weten</h2>
+        <h2 className="h2 mt-4">Goed om te weten voor je gaat stappen</h2>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {practicalCards.map((card, index) => (
@@ -291,12 +299,19 @@ export default async function NightlifePage() {
             ) : (
               <>
                 <p>
-                  Cliniq Maastricht is hét adres voor een avondje stappen in het centrum. Drie avonden per week open —
-                  donderdag, vrijdag en zaterdag — aan de Platielstraat 9A.
+                  Zoek je naar uitgaan in Maastricht, een club in Maastricht of een plek om te stappen met vrienden?
+                  CLINIQ ligt aan de Platielstraat 9A, midden in het centrum van Maastricht. De locatie ligt op
+                  loopafstand van het Vrijthof, de Markt en meerdere restaurants, cafés en hotels.
                 </p>
                 <p>
-                  Kom op tijd, neem altijd een geldig legitimatiebewijs mee en controleer per event de minimumleeftijd,
-                  openingstijden en eventuele ticketinformatie.
+                  CLINIQ is normaal geopend op donderdag, vrijdag en zaterdag. De avonden verschillen per week: soms
+                  draait de avond om DJ’s en clubmuziek, soms om speciale events, groepsavonden of private parties.
+                  Controleer daarom altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinformatie.
+                </p>
+                <p>
+                  Voor bezoekers die zoeken naar nachtleven Maastricht, clubs Maastricht, stappen Maastricht of een
+                  avond uit in het centrum, is CLINIQ een centrale plek om de avond door te zetten. Kom op tijd, neem een
+                  geldig ID mee en houd rekening met het deurbeleid.
                 </p>
               </>
             )}
@@ -318,12 +333,25 @@ export default async function NightlifePage() {
             ) : (
               <>
                 <p>
-                  Wie zoekt naar uitgaan in Maastricht, club Maastricht, nachtleven Maastricht of stappen met vrienden,
-                  zoekt vooral een duidelijke agenda, een goede sfeer en een centrale locatie.
+                  Een avond uit in Maastricht begint vaak met eten, borrelen of verzamelen in het centrum. Daarna wil je
+                  niet nog een taxi pakken of naar de rand van de stad. CLINIQ zit daarom handig voor groepen die in de
+                  binnenstad willen blijven.
                 </p>
                 <p>
-                  De locatie aan de Platielstraat maakt CLINIQ handig voor groepen die eerst ergens eten, borrelen of
-                  verzamelen en daarna willen doorpakken.
+                  De club is geschikt voor spontane avonden met vrienden, verjaardagen, studentenavonden,
+                  vrijgezellenavonden en groepen die later op de avond willen aansluiten bij het nachtleven van
+                  Maastricht.
+                </p>
+                <p>
+                  Wil je iets organiseren voor een grotere groep? Bekijk ook onze mogelijkheden voor{' '}
+                  <Link href="/event-space" className="text-gold hover:text-white">
+                    ruimte huren in Maastricht
+                  </Link>{' '}
+                  of combineer je avond met een{' '}
+                  <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+                    cocktail workshop
+                  </Link>
+                  .
                 </p>
               </>
             )}
@@ -333,7 +361,7 @@ export default async function NightlifePage() {
 
       <section className="container-premium pb-24">
         <p className="eyebrow">FAQ</p>
-        <h2 className="h2 mt-4">Veelgestelde vragen</h2>
+        <h2 className="h2 mt-4">Veelgestelde vragen over uitgaan bij CLINIQ</h2>
 
         <div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">
           {pageFaqs.map((f) => (
