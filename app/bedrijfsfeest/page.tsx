@@ -45,7 +45,7 @@ export default function BedrijfsfeestPage() {
     ]}
     practical={[
       { label: 'Capaciteit', value: 'Tot 400 personen (staand)' },
-      { label: 'Beschikbaarheid', value: 'Donderdag t/m zaterdag (ook overdag op aanvraag)' },
+      { label: 'Beschikbaarheid', value: 'Zondag t/m woensdag beschikbaar. Donderdag t/m zaterdag overdag mogelijk op aanvraag.' },
       { label: 'Bar', value: 'Inbegrepen, drankpakket bespreekbaar' },
       { label: 'Catering', value: 'Op aanvraag' },
       { label: 'AV', value: 'Professioneel geluid & licht inbegrepen' },
