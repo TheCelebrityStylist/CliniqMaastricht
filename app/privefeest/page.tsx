@@ -47,7 +47,7 @@ export default function PrivefeestPage() {
       { label: 'Minimumgroep', value: 'Geen minimum — ook kleinere feesten bespreekbaar' },
       { label: 'Bar', value: 'Inbegrepen, pakket op maat mogelijk' },
       { label: 'DJ', value: 'Eigen DJ of resident DJ beschikbaar' },
-      { label: 'Beschikbaar', value: 'Do, vr, za (ook andere dagen op aanvraag)' },
+      { label: 'Beschikbaar', value: 'Zondag t/m woensdag beschikbaar. Donderdag t/m zaterdag overdag mogelijk op aanvraag.' },
     ]}
     ctaPrimary={{ label: 'Plan via WhatsApp', href: whatsapp }}
     ctaSecondary={{ label: 'Mail ons', href: 'mailto:contact@cafecliniq.com?subject=Privéfeest' }}
