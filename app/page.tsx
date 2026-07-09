@@ -238,15 +238,12 @@ export default async function Home() {
             ) : (
               <>
                 <p>
-                  CLINIQ ligt aan de Platielstraat, midden in het centrum van Maastricht. Je vindt hier clubavonden,
-                  groepsactiviteiten, cocktail workshops en mogelijkheden om de ruimte te huren voor een besloten avond.
-                  De agenda wisselt per week en via de fotopagina zie je een indruk van recente avonden.
-                </p>
-                <p>
-                  Voor wie zoekt naar uitgaan in Maastricht, op stap gaan met vrienden, een vrijgezellenavond, een
-                  cocktail workshop of een ruimte voor een borrel of bedrijfsfeest, is CLINIQ een centrale plek in de
-                  stad. Controleer altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele details per
-                  avond.
+                  Elke donderdag, vrijdag en zaterdag open in het centrum van Maastricht. Goede muziek, de juiste mensen
+                  en een dansvloer die pas leegloopt als het licht aangaat. Maar Cliniq is meer dan een club. Cocktail
+                  workshop met je vriendinnen, vrijgezellenfeest, bedrijfsborrel zonder saaie zaal of een verjaardag
+                  waarbij je de hele tent voor jezelf hebt — wij regelen het. Of je nu de week afsluit met vrienden, een
+                  feest viert of gewoon de beste club in Maastricht zoekt, je bent hier op het juiste adres. Check de
+                  agenda en we zien je snel.
                 </p>
               </>
             )}
