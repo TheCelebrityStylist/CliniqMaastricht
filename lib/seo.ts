@@ -55,6 +55,7 @@ export function localBusinessSchema() {
       'https://www.facebook.com/cliniqmaastricht',
     ],
     priceRange: '€€',
+    image: 'https://www.cliniqmaastricht.nl/og-image.jpg',
     currenciesAccepted: 'EUR',
     paymentAccepted: 'Cash, Credit Card, Debit Card',
   }
