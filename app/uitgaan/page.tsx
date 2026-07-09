@@ -299,19 +299,11 @@ export default async function NightlifePage() {
             ) : (
               <>
                 <p>
-                  Zoek je naar uitgaan in Maastricht, een club in Maastricht of een plek om te stappen met vrienden?
-                  CLINIQ ligt aan de Platielstraat 9A, midden in het centrum van Maastricht. De locatie ligt op
-                  loopafstand van het Vrijthof, de Markt en meerdere restaurants, cafés en hotels.
-                </p>
-                <p>
-                  CLINIQ is normaal geopend op donderdag, vrijdag en zaterdag. De avonden verschillen per week: soms
-                  draait de avond om DJ’s en clubmuziek, soms om speciale events, groepsavonden of private parties.
-                  Controleer daarom altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinformatie.
-                </p>
-                <p>
-                  Voor bezoekers die zoeken naar nachtleven Maastricht, clubs Maastricht, stappen Maastricht of een
-                  avond uit in het centrum, is CLINIQ een centrale plek om de avond door te zetten. Kom op tijd, neem een
-                  geldig ID mee en houd rekening met het deurbeleid.
+                  CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. Elke
+                  donderdag, vrijdag en zaterdag open. Donderdag is studentenavond. Vrijdag en zaterdag draaien
+                  wisselende DJ&apos;s tot sluitingstijd. Check altijd de agenda voor actuele tijden, leeftijdsindicatie en
+                  eventuele ticketinfo. Kom je met een grotere groep? Combineer je avond met een cocktail workshop of
+                  vraag naar de mogelijkheden voor een besloten feest.
                 </p>
               </>
             )}
@@ -333,25 +325,10 @@ export default async function NightlifePage() {
             ) : (
               <>
                 <p>
-                  Een avond uit in Maastricht begint vaak met eten, borrelen of verzamelen in het centrum. Daarna wil je
-                  niet nog een taxi pakken of naar de rand van de stad. CLINIQ zit daarom handig voor groepen die in de
-                  binnenstad willen blijven.
-                </p>
-                <p>
-                  De club is geschikt voor spontane avonden met vrienden, verjaardagen, studentenavonden,
-                  vrijgezellenavonden en groepen die later op de avond willen aansluiten bij het nachtleven van
-                  Maastricht.
-                </p>
-                <p>
-                  Wil je iets organiseren voor een grotere groep? Bekijk ook onze mogelijkheden voor{' '}
-                  <Link href="/event-space" className="text-gold hover:text-white">
-                    ruimte huren in Maastricht
-                  </Link>{' '}
-                  of combineer je avond met een{' '}
-                  <Link href="/cocktail-workshop" className="text-gold hover:text-white">
-                    cocktail workshop
-                  </Link>
-                  .
+                  Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen
+                  taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen
+                  die later op de avond willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de
+                  mogelijkheden voor ruimte huren of combineer je avond met een cocktail workshop.
                 </p>
               </>
             )}
