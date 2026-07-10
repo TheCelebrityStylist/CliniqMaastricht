@@ -277,11 +277,22 @@ export default async function EventSpacePage() {
                   netwerkevenementen en productlanceringen.
                 </p>
                 <p>
+                  Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
+                  <Link href="/uitgaan" className="text-gold hover:text-white">
+                    nachtleven van CLINIQ Maastricht
+                  </Link>
+                  .
+                </p>
+                <p>
                   Vrijgezellenavond plannen? Combineer een{' '}
                   <Link href="/cocktail-workshop" className="text-gold hover:text-white">
                     cocktail workshop
                   </Link>{' '}
-                  met een exclusieve clubavond.
+                  met{' '}
+                  <Link href="/uitgaan" className="text-gold hover:text-white">
+                    uitgaan in Maastricht en een exclusieve clubavond
+                  </Link>
+                  .
                 </p>
               </>
             )}
