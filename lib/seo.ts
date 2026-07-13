@@ -27,15 +27,24 @@ export function organizationSchema() {
 export function localBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': ['NightClub', 'EventVenue'],
+    '@type': ['NightClub', 'EventVenue', 'LocalBusiness'],
+    '@id': 'https://www.cliniqmaastricht.nl/#business',
     name: 'Cliniq Maastricht',
+    alternateName: ['CLINIQ', 'Cafe Cliniq', 'Club Cliniq Maastricht'],
     url: 'https://www.cliniqmaastricht.nl',
     telephone: '+31612530987',
     email: 'contact@cafecliniq.com',
+    description: 'Uitgaan in Maastricht? CLINIQ is dé nachtclub op de Platielstraat 9A. Open elke donderdag, vrijdag en zaterdag. Clubavonden met wisselende DJ\'s, cocktail workshops en ruimte voor besloten feesten en bedrijfsfeesten.',
+    image: [
+      'https://www.cliniqmaastricht.nl/og-image.jpg',
+    ],
+    logo: 'https://www.cliniqmaastricht.nl/icon.png',
+    hasMap: 'https://maps.google.com/?q=Platielstraat+9A,+6211+GV+Maastricht',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Platielstraat 9A',
       addressLocality: 'Maastricht',
+      addressRegion: 'Limburg',
       postalCode: '6211 GV',
       addressCountry: 'NL',
     },
@@ -55,9 +64,55 @@ export function localBusinessSchema() {
       'https://www.facebook.com/cliniqmaastricht',
     ],
     priceRange: '€€',
-    image: 'https://www.cliniqmaastricht.nl/og-image.jpg',
     currenciesAccepted: 'EUR',
     paymentAccepted: 'Cash, Credit Card, Debit Card',
+    amenityFeature: [
+      { '@type': 'LocationFeatureSpecification', name: 'Dancefloor', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'DJ', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Bar', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Private Events', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Cocktail Workshop', value: true },
+    ],
+    areaServed: [
+      { '@type': 'City', name: 'Maastricht' },
+      { '@type': 'State', name: 'Limburg' },
+    ],
+  }
+}
+
+export function breadcrumbSchema(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  }
+}
+
+export function cocktailWorkshopSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://www.cliniqmaastricht.nl/cocktail-workshop#service',
+    name: 'Cocktail Workshop Maastricht',
+    description: 'Cocktail workshop in Maastricht bij CLINIQ. Leer cocktails maken met je groep, begeleid door onze bartenders. Vanaf 15 personen, €15 per cocktail. Ideaal voor vrijgezellenfeesten, bedrijfsuitjes en vriendinnengroepen.',
+    provider: {
+      '@type': 'LocalBusiness',
+      '@id': 'https://www.cliniqmaastricht.nl/#business',
+    },
+    areaServed: { '@type': 'City', name: 'Maastricht' },
+    serviceType: 'Cocktail Workshop',
+    offers: {
+      '@type': 'Offer',
+      price: '15',
+      priceCurrency: 'EUR',
+      description: '€15 per cocktail, minimaal 3 per persoon. Groepen vanaf 15 personen.',
+    },
+    url: 'https://www.cliniqmaastricht.nl/cocktail-workshop',
   }
 }
 

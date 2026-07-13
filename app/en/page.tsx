@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: 'https://www.cliniqmaastricht.nl/en',
       languages: {
-        nl: 'https://www.cliniqmaastricht.nl',
+        'nl-NL': 'https://www.cliniqmaastricht.nl',
         en: 'https://www.cliniqmaastricht.nl/en',
         'x-default': 'https://www.cliniqmaastricht.nl',
       },

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { faqSchema } from '@/lib/seo'
+import { breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPageContent, getPhotoAlbums, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
@@ -13,10 +13,10 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('nightlife', 'nl')
-  const title = seo?.seoTitle || 'Uitgaan Maastricht (2026) | Club, DJ’s & Nachtleven | CLINIQ'
+  const title = seo?.seoTitle || 'Uitgaan Maastricht — Nachtclub CLINIQ | Platielstraat 9A'
   const description =
     seo?.metaDescription ||
-    'Uitgaan in Maastricht? CLINIQ is een club aan de Platielstraat 9A met DJ-avonden, clubnachten, studentenavonden en events op donderdag, vrijdag en zaterdag.'
+    'Uitgaan in Maastricht? CLINIQ is open elke do, vr & za op de Platielstraat. Clubavonden met wisselende DJ\'s, studentenavonden en private events. Check de agenda.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
@@ -201,19 +201,10 @@ export default async function NightlifePage() {
     image: event.imageUrl ? [event.imageUrl] : undefined,
   }))
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'CLINIQ Maastricht', item: 'https://www.cliniqmaastricht.nl' },
-      { '@type': 'ListItem', position: 2, name: 'Uitgaan Maastricht', item: 'https://www.cliniqmaastricht.nl/uitgaan' },
-    ],
-  }
-
   return (
     <>
       <section className="hero-section relative min-h-[82vh] overflow-hidden pt-36">
-        <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="Uitgaan in Maastricht bij CLINIQ club aan de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
+        <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="CLINIQ Maastricht nachtclub aan de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/60 to-black/25" />
         <div className="container-premium py-24">
           <p className="eyebrow mb-4">Club Maastricht — Platielstraat 9A</p>
@@ -260,7 +251,7 @@ export default async function NightlifePage() {
           <div className="flex w-max animate-[photoMarquee_42s_linear_infinite] gap-5 px-6 hover:[animation-play-state:paused]">
             {carouselPhotos.map((src, index) => (
               <Link key={`${src}-${index}`} href="/fotos" className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]">
-                <SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Uitgaan Maastricht bij CLINIQ sfeerbeeld ${index + 1}`} fill sizes="(min-width:1024px) 500px, 80vw" className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105" />
+                <SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Sfeerbeeld clubavond CLINIQ Maastricht ${index + 1}`} fill sizes="(min-width:1024px) 500px, 80vw" className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105" />
               </Link>
             ))}
           </div>
@@ -297,7 +288,7 @@ export default async function NightlifePage() {
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div><p className="eyebrow">{extraEyebrow}</p><h2 className="h2 mt-4">{extraTitle}</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p></div>
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
-            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor ruimte huren of combineer je avond met een cocktail workshop.</p></>}
+            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-gold hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-gold hover:text-white">cocktail workshop Maastricht</Link>.</p></>}
           </div>
         </div>
       </section>
@@ -323,7 +314,10 @@ export default async function NightlifePage() {
 
       <JsonLd data={faqSchema(allFaqs)} />
       <JsonLd data={{ '@context': 'https://schema.org', '@graph': eventSchemas }} />
-      <JsonLd data={breadcrumbSchema} />
+      <JsonLd data={breadcrumbSchema([
+        { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
+        { name: 'Uitgaan Maastricht', url: 'https://www.cliniqmaastricht.nl/uitgaan' },
+      ])} />
     </>
   )
 }

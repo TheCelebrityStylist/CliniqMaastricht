@@ -13,10 +13,10 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'nl')
-  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops | Platielstraat 9A'
+  const title = seo?.seoTitle || 'Uitgaan Maastricht — CLINIQ | Nachtclub Platielstraat 9A'
   const description =
     seo?.metaDescription ||
-    'Op stap in Maastricht? Cliniq is open elke donderdag, vrijdag en zaterdag aan de Platielstraat 9A. Club, feestlocatie en cocktail workshops in het centrum van Maastricht.'
+    'Uitgaan in Maastricht? CLINIQ is open elke do, vr & za op de Platielstraat. Clubavonden, cocktail workshops en private events in het centrum. Check de agenda.'
   const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
   const ogDescription =
     seo?.ogDescription ||
@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: 'https://www.cliniqmaastricht.nl',
       languages: {
-        nl: 'https://www.cliniqmaastricht.nl',
+        'nl-NL': 'https://www.cliniqmaastricht.nl',
         en: 'https://www.cliniqmaastricht.nl/en',
         'x-default': 'https://www.cliniqmaastricht.nl',
       },
@@ -85,7 +85,7 @@ export default async function Home() {
         <SafeImage
           src={heroPhoto}
           fallbackSrc={images.fallbackHero}
-          alt="Cliniq Maastricht nachtclub — uitgaan op de Platielstraat"
+          alt="CLINIQ Maastricht nachtclub op de Platielstraat"
           fill
           priority
           sizes="100vw"
@@ -162,7 +162,7 @@ export default async function Home() {
                 <SafeImage
                   src={src}
                   fallbackSrc={images.fallbackWide}
-                  alt={`Sfeerfoto van CLINIQ Maastricht ${index + 1}`}
+                  alt={`Sfeerbeeld clubavond CLINIQ Maastricht ${index + 1}`}
                   fill
                   sizes="(min-width:1024px) 500px, 80vw"
                   className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105"
@@ -204,7 +204,7 @@ export default async function Home() {
               Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
               bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
               <Link href="/cocktail-workshop" className="text-gold hover:text-white">
-                cocktail workshops
+                cocktail workshop Maastricht
               </Link>
               .
             </>
@@ -222,7 +222,7 @@ export default async function Home() {
               CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
               Meer over{' '}
               <Link href="/event-space" className="text-gold hover:text-white">
-                ruimte huren
+                ruimte huren Maastricht
               </Link>
               .
             </>
@@ -312,7 +312,7 @@ function ServiceRow({
         <SafeImage
           src={image}
           fallbackSrc={images.fallbackWide}
-          alt={title}
+          alt={title === 'Ruimte huren' ? 'Ruimte huren Maastricht CLINIQ' : 'Cocktail workshop Maastricht bij CLINIQ'}
           fill
           sizes="(min-width:1024px) 45vw, 100vw"
           className="object-cover brightness-[1.08] transition duration-700 group-hover:scale-105"

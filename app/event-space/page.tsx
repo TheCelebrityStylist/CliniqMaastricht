@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { faqSchema } from '@/lib/seo'
+import { breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
@@ -376,6 +376,10 @@ export default async function EventSpacePage() {
       </section>
 
       <JsonLd data={faqSchema(pageFaqs)} />
+      <JsonLd data={breadcrumbSchema([
+        { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
+        { name: 'Ruimte Huren Maastricht', url: 'https://www.cliniqmaastricht.nl/event-space' },
+      ])} />
     </>
   )
 }

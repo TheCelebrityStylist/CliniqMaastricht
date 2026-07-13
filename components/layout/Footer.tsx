@@ -21,8 +21,13 @@ const TikTokIcon = () => (
 )
 
 const NAV_NL = [
-  { href: '/uitgaan', label: 'Uitgaan' },
-  { href: '/cocktail-workshop', label: 'Cocktail workshop' },
+  { href: '/uitgaan', label: 'Uitgaan Maastricht' },
+  { href: '/nachtclub-maastricht', label: 'Nachtclub Maastricht' },
+  { href: '/discotheek-maastricht', label: 'Discotheek Maastricht' },
+  { href: '/cocktail-workshop', label: 'Cocktail Workshop Maastricht' },
+  { href: '/vrijgezellenavond', label: 'Vrijgezellenavond Maastricht' },
+  { href: '/bedrijfsfeest', label: 'Bedrijfsfeest Maastricht' },
+  { href: '/studentenavond', label: 'Studentenavond Maastricht' },
   { href: '/event-space', label: 'Ruimte huren' },
   { href: '/fotos', label: "Foto's" },
   { href: '/contact', label: 'Contact' },

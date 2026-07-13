@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import LandingLayout from '@/components/landing/LandingLayout'
 import { PHOTOS } from '@/lib/content'
+import JsonLd from '@/components/ui/JsonLd'
+import { breadcrumbSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Bedrijfsfeest Maastricht | Cliniq — Personeelsfeest & Borrel tot 400 pers.',
-  description: 'Bedrijfsfeest of personeelsborrel organiseren in Maastricht? Cliniq biedt exclusieve zaalverhuur voor teams tot 400 personen. Professionele AV, volledige bar, catering op aanvraag.',
+  title: 'Bedrijfsfeest Maastricht | CLINIQ — Locatie in het Centrum',
+  description: 'Bedrijfsfeest in Maastricht? CLINIQ biedt een unieke locatie op de Platielstraat voor borrels, diners en feesten. Exclusief gebruik mogelijk. Vraag een offerte aan.',
   alternates: {
     canonical: 'https://www.cliniqmaastricht.nl/bedrijfsfeest',
   },
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
 const whatsapp = 'https://wa.me/31612530987?text=Hoi%2C%20ik%20wil%20een%20bedrijfsfeest%20plannen'
 
 export default function BedrijfsfeestPage() {
-  return <LandingLayout
+  return <>
+  <LandingLayout
     meta={metadata as { title: string; description: string }}
     hero={{
       photo: PHOTOS.venue3,
@@ -64,4 +67,10 @@ export default function BedrijfsfeestPage() {
       ],
     }}
   />
+  <JsonLd data={breadcrumbSchema([
+    { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
+    { name: 'Ruimte Huren', url: 'https://www.cliniqmaastricht.nl/event-space' },
+    { name: 'Bedrijfsfeest Maastricht', url: 'https://www.cliniqmaastricht.nl/bedrijfsfeest' },
+  ])} />
+  </>
 }

@@ -2,10 +2,12 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import LandingLayout from '@/components/landing/LandingLayout'
 import { PHOTOS } from '@/lib/content'
+import JsonLd from '@/components/ui/JsonLd'
+import { breadcrumbSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Vrijgezellenavond Maastricht | Cliniq — Cocktail Workshop + Club',
-  description: 'De beste vrijgezellenavond in Maastricht bij Cliniq. Cocktail workshop gevolgd door een exclusieve clubavond. Voor groepen van 15+. Platielstraat 9A. Boek via WhatsApp.',
+  title: 'Vrijgezellenavond Maastricht | CLINIQ — Club & Cocktail Workshop',
+  description: 'Vrijgezellenavond in Maastricht bij CLINIQ. Combineer een cocktail workshop met een clubavond op de Platielstraat. Vanaf 15 personen. Vraag beschikbaarheid aan.',
   alternates: {
     canonical: 'https://www.cliniqmaastricht.nl/vrijgezellenavond',
   },
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
 const whatsapp = 'https://wa.me/31612530987?text=Hoi%2C%20ik%20wil%20een%20vrijgezellenavond%20plannen%20bij%20Cliniq'
 
 export default function VrijgezellenavondPage() {
-  return <LandingLayout
+  return <>
+  <LandingLayout
     meta={metadata as { title: string; description: string }}
     hero={{
       photo: PHOTOS.workshop1,
@@ -63,4 +66,10 @@ export default function VrijgezellenavondPage() {
       ],
     }}
   />
+  <JsonLd data={breadcrumbSchema([
+    { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
+    { name: 'Cocktail Workshop', url: 'https://www.cliniqmaastricht.nl/cocktail-workshop' },
+    { name: 'Vrijgezellenavond Maastricht', url: 'https://www.cliniqmaastricht.nl/vrijgezellenavond' },
+  ])} />
+  </>
 }
