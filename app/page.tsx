@@ -26,7 +26,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: 'https://www.cliniqmaastricht.nl' },
+    alternates: {
+      canonical: 'https://www.cliniqmaastricht.nl',
+      languages: {
+        nl: 'https://www.cliniqmaastricht.nl',
+        en: 'https://www.cliniqmaastricht.nl/en',
+        'x-default': 'https://www.cliniqmaastricht.nl',
+      },
+    },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
@@ -237,24 +244,7 @@ export default async function Home() {
               <p>{seoBodyNl}</p>
             ) : (
               <>
-                <p>
-                  Elke donderdag, vrijdag en zaterdag open in het centrum van Maastricht. Goede muziek, de juiste mensen
-                  en een dansvloer die pas leegloopt als het licht aangaat. Zoek je naar{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
-                    uitgaan in Maastricht
-                  </Link>
-                  ? CLINIQ ligt aan de Platielstraat en is een centrale{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
-                    club in Maastricht
-                  </Link>{' '}
-                  voor studenten, locals, vriendengroepen en bezoekers van de stad. Maar CLINIQ is meer dan een club.
-                  Cocktail workshop met je vriendinnen, vrijgezellenfeest, bedrijfsborrel zonder saaie zaal of een
-                  verjaardag waarbij je de hele tent voor jezelf hebt — wij regelen het. Bekijk de{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
-                    CLINIQ agenda
-                  </Link>{' '}
-                  en we zien je snel.
-                </p>
+                <p>Elke donderdag, vrijdag en zaterdag open in het centrum van Maastricht. Goede muziek, de juiste mensen en een dansvloer die pas leegloopt als het licht aangaat. Maar Cliniq is meer dan een club. Cocktail workshop met je vriendinnen, vrijgezellenfeest, bedrijfsborrel zonder saaie zaal of een verjaardag waarbij je de hele tent voor jezelf hebt — wij regelen het. Of je nu de week afsluit met vrienden, een feest viert of gewoon de beste club in Maastricht zoekt, je bent hier op het juiste adres. Check de agenda en we zien je snel.</p>
               </>
             )}
           </div>

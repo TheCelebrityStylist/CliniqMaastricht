@@ -288,7 +288,7 @@ export default async function NightlifePage() {
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div><p className="eyebrow">{bodyEyebrow}</p><h2 className="h2 mt-4">{bodyTitle}</h2></div>
           <div className="prose-premium">
-            {seoBody ? <TextBlock text={seoBody} /> : <><p>CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. Elke donderdag, vrijdag en zaterdag open. Donderdag is studentenavond. Vrijdag en zaterdag draaien wisselende DJ&apos;s tot sluitingstijd. Check altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinfo. Kom je met een grotere groep? Combineer je avond met een cocktail workshop of vraag naar de mogelijkheden voor een besloten feest.</p></>}
+            {seoBody ? <TextBlock text={seoBody} /> : <><p>CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. Elke donderdag, vrijdag en zaterdag open. Donderdag is studentenavond. Vrijdag en zaterdag draaien wisselende DJ&apos;s tot sluitingstijd. Check altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinfo.</p></>}
           </div>
         </div>
       </section>
@@ -297,7 +297,7 @@ export default async function NightlifePage() {
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div><p className="eyebrow">{extraEyebrow}</p><h2 className="h2 mt-4">{extraTitle}</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p></div>
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
-            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later op de avond willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-gold hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-gold hover:text-white">cocktail workshop</Link>.</p></>}
+            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor ruimte huren of combineer je avond met een cocktail workshop.</p></>}
           </div>
         </div>
       </section>

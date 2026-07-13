@@ -24,7 +24,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: 'https://www.cliniqmaastricht.nl/en' },
+    alternates: {
+      canonical: 'https://www.cliniqmaastricht.nl/en',
+      languages: {
+        nl: 'https://www.cliniqmaastricht.nl',
+        en: 'https://www.cliniqmaastricht.nl/en',
+        'x-default': 'https://www.cliniqmaastricht.nl',
+      },
+    },
     openGraph: {
       title: ogTitle,
       description: ogDescription,

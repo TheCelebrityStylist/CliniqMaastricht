@@ -13,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/cocktail-workshop`,       lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/event-space`,             lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
 
+    // English pages
+    { url: `${base}/en`,                      lastModified: now, changeFrequency: 'weekly',  priority: 0.90 },
+    { url: `${base}/en/nightlife`,            lastModified: now, changeFrequency: 'weekly',  priority: 0.85 },
+    { url: `${base}/en/cocktail-workshop`,    lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${base}/en/event-space`,          lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+
     // Campaign landing pages — monthly
     { url: `${base}/vrijgezellenavond`,       lastModified: now, changeFrequency: 'monthly', priority: 0.80 },
     { url: `${base}/bedrijfsfeest`,           lastModified: now, changeFrequency: 'monthly', priority: 0.80 },

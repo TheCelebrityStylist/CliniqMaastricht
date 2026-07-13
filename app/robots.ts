@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/studio/', '/_next/'],
+        disallow: ['/api/', '/studio/', '/admin/', '/_next/'],
       },
     ],
     sitemap: 'https://www.cliniqmaastricht.nl/sitemap.xml',
