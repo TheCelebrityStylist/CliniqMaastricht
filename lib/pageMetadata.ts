@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import type { Lang } from '@/lib/admin/types'
 import { getSeoSettings } from '@/lib/admin/public'
+import { images } from '@/lib/site'
 
 type FallbackMetadata = {
   title: string
   description: string
   path: string
+  image?: string
 }
 
 type SeoSettings = {
@@ -36,74 +38,86 @@ const fallbackByPage: Record<string, Record<Lang, FallbackMetadata>> = {
   },
   nightlife: {
     nl: {
-      title: 'Uitgaan in Maastricht | CLINIQ Maastricht',
-      description: 'Bekijk de agenda van CLINIQ Maastricht met DJ-avonden, club nights en speciale events.',
+      title: 'Uitgaan in Maastricht? Dit is Cliniq — Club & Cocktails aan de Platielstraat',
+      description: 'Uitgaan in Maastricht? Cliniq is open do, vr & za tot 03:00 aan de Platielstraat 9A. DJ\'s, cocktails en een dansvloer die niet leegloopt. Check nu de agenda van deze week.',
       path: '/uitgaan',
+      image: images.redCrowd,
     },
     en: {
-      title: 'Nightlife in Maastricht | CLINIQ Maastricht',
-      description: 'View the CLINIQ Maastricht agenda with DJ nights, club nights and special events.',
+      title: 'Nightlife in Maastricht? This is Cliniq — Club & Cocktails on Platielstraat',
+      description: 'Going out in Maastricht? Cliniq is open Thu, Fri & Sat until 03:00 on Platielstraat 9A. DJ\'s, cocktails and a dancefloor that stays full. Check this week\'s agenda.',
       path: '/en/nightlife',
+      image: images.redCrowd,
     },
   },
   uitgaan: {
     nl: {
-      title: 'Uitgaan in Maastricht | CLINIQ Maastricht',
-      description: 'Bekijk de agenda van CLINIQ Maastricht met DJ-avonden, club nights en speciale events.',
+      title: 'Uitgaan in Maastricht? Dit is Cliniq — Club & Cocktails aan de Platielstraat',
+      description: 'Uitgaan in Maastricht? Cliniq is open do, vr & za tot 03:00 aan de Platielstraat 9A. DJ\'s, cocktails en een dansvloer die niet leegloopt. Check nu de agenda van deze week.',
       path: '/uitgaan',
+      image: images.redCrowd,
     },
     en: {
-      title: 'Nightlife in Maastricht | CLINIQ Maastricht',
-      description: 'View the CLINIQ Maastricht agenda with DJ nights, club nights and special events.',
+      title: 'Nightlife in Maastricht? This is Cliniq — Club & Cocktails on Platielstraat',
+      description: 'Going out in Maastricht? Cliniq is open Thu, Fri & Sat until 03:00 on Platielstraat 9A. DJ\'s, cocktails and a dancefloor that stays full. Check this week\'s agenda.',
       path: '/en/nightlife',
+      image: images.redCrowd,
     },
   },
   workshop: {
     nl: {
-      title: 'Cocktail workshop Maastricht | CLINIQ Maastricht',
-      description: 'Boek een cocktail workshop bij CLINIQ Maastricht voor groepen, bedrijfsuitjes, verjaardagen en vrijgezellenfeesten.',
+      title: 'Cocktail Workshop Maastricht | Cliniq — Boek nu vanaf €15',
+      description: 'Cocktail workshop Maastricht voor een vrijgezellenfeest, bedrijfsuitje of verjaardag. 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen. Boek direct.',
       path: '/cocktail-workshop',
+      image: images.workshopBar,
     },
     en: {
-      title: 'Cocktail workshop Maastricht | CLINIQ Maastricht',
-      description: 'Book a cocktail workshop at CLINIQ Maastricht for groups, company outings, birthdays and bachelor or bachelorette parties.',
+      title: 'Cocktail Workshop Maastricht | Cliniq — Book from €15',
+      description: 'Cocktail workshop in Maastricht for a hen party, corporate outing or birthday. 2 hours of cocktail making at Cliniq. €15 per cocktail, min. 3 p.p. Groups from 15 people.',
       path: '/en/cocktail-workshop',
+      image: images.workshopBar,
     },
   },
   'cocktail-workshop': {
     nl: {
-      title: 'Cocktail workshop Maastricht | CLINIQ Maastricht',
-      description: 'Boek een cocktail workshop bij CLINIQ Maastricht voor groepen, bedrijfsuitjes, verjaardagen en vrijgezellenfeesten.',
+      title: 'Cocktail Workshop Maastricht | Cliniq — Boek nu vanaf €15',
+      description: 'Cocktail workshop Maastricht voor een vrijgezellenfeest, bedrijfsuitje of verjaardag. 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen. Boek direct.',
       path: '/cocktail-workshop',
+      image: images.workshopBar,
     },
     en: {
-      title: 'Cocktail workshop Maastricht | CLINIQ Maastricht',
-      description: 'Book a cocktail workshop at CLINIQ Maastricht for groups, company outings, birthdays and bachelor or bachelorette parties.',
+      title: 'Cocktail Workshop Maastricht | Cliniq — Book from €15',
+      description: 'Cocktail workshop in Maastricht for a hen party, corporate outing or birthday. 2 hours of cocktail making at Cliniq. €15 per cocktail, min. 3 p.p. Groups from 15 people.',
       path: '/en/cocktail-workshop',
+      image: images.workshopBar,
     },
   },
   eventSpace: {
     nl: {
-      title: 'Ruimte huren Maastricht | CLINIQ Maastricht',
-      description: 'Huur CLINIQ Maastricht voor private events, borrels, bedrijfsfeesten en groepsavonden.',
+      title: 'Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen',
+      description: 'Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.',
       path: '/event-space',
+      image: images.redRoom,
     },
     en: {
-      title: 'Private event venue Maastricht | CLINIQ Maastricht',
-      description: 'Hire CLINIQ Maastricht for private events, drinks, company parties and group nights.',
+      title: 'Event Location Maastricht | Cliniq — City Centre Venue, Up to 400 Guests',
+      description: 'Event location in central Maastricht. Cliniq on Platielstraat 9A offers exclusive private hire for up to 400 guests — for corporate events, drinks, private parties and hen nights.',
       path: '/en/event-space',
+      image: images.redRoom,
     },
   },
   'event-space': {
     nl: {
-      title: 'Ruimte huren Maastricht | CLINIQ Maastricht',
-      description: 'Huur CLINIQ Maastricht voor private events, borrels, bedrijfsfeesten en groepsavonden.',
+      title: 'Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen',
+      description: 'Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.',
       path: '/event-space',
+      image: images.redRoom,
     },
     en: {
-      title: 'Private event venue Maastricht | CLINIQ Maastricht',
-      description: 'Hire CLINQ Maastricht for private events, drinks, company parties and group nights.',
+      title: 'Event Location Maastricht | Cliniq — City Centre Venue, Up to 400 Guests',
+      description: 'Event location in central Maastricht. Cliniq on Platielstraat 9A offers exclusive private hire for up to 400 guests — for corporate events, drinks, private parties and hen nights.',
       path: '/en/event-space',
+      image: images.redRoom,
     },
   },
   contact: {
@@ -196,6 +210,7 @@ export async function buildPageMetadata(
   const description = settings?.metaDescription || fallback.description
   const ogTitle = settings?.ogTitle || title
   const ogDescription = settings?.ogDescription || description
+  const ogImage = settings?.socialImageUrl || fallback.image
 
   return {
     title,
@@ -212,7 +227,7 @@ export async function buildPageMetadata(
       description: ogDescription,
       url: canonicalUrl,
       siteName: 'CLINIQ Maastricht',
-      images: settings?.socialImageUrl ? [{ url: settings.socialImageUrl }] : undefined,
+      images: ogImage ? [{ url: ogImage }] : undefined,
       locale: lang === 'nl' ? 'nl_NL' : 'en_GB',
       type: 'website',
     },
@@ -220,7 +235,7 @@ export async function buildPageMetadata(
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      images: settings?.socialImageUrl ? [settings.socialImageUrl] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
   }
 }

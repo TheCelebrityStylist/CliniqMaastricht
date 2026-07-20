@@ -1,5 +1,5 @@
-import { faqSchema } from '@/lib/seo'
-import { images, imageSets } from '@/lib/site'
+import { breadcrumbSchema, cocktailWorkshopSchema, faqSchema } from '@/lib/seo'
+import { images, imageSets, site } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
 import { workshopFaqsEn as faqs } from '@/lib/faqs'
@@ -20,6 +20,8 @@ export default function WorkshopPageEn(){
     <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Cocktail workshop in Maastricht</h2></div><div className="prose-premium">{SEO_TEXT.workshop.en.split('\n\n').map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div></section>
     <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Frequently asked questions</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-base leading-7 text-white/72 md:text-lg">{f.answer}</p></details>)}</div></section>
     <section id="inquiry" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Inquiry</p><h2 className="h2 mt-4">Request workshop</h2><p className="mt-6 text-lg leading-[1.65] text-white/72">Drop us a message. We respond fast and help you plan the full evening.</p></div><InquiryForm type="workshop" sourcePage="/en/cocktail-workshop" fields={[{name:'name',label:'Name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'preferredDate',label:'Preferred date',type:'date'},{name:'groupSize',label:'Group size',type:'number'},{name:'message',label:'Message',required:true,placeholder:'Date, group size and any wishes.'}]} /></section><JsonLd data={faqSchema(faqs)} />
+    <JsonLd data={cocktailWorkshopSchema()} />
+    <JsonLd data={breadcrumbSchema([{ name: 'Home', url: `${site.url}/en` }, { name: 'Cocktail Workshop Maastricht', url: `${site.url}/en/cocktail-workshop` }])} />
   </>
 }
 function Fact({ title, text }: { title: string; text: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"><h2 className="text-2xl font-black tracking-[-0.035em]">{title}</h2><p className="mt-3 text-white/66">{text}</p></article> }

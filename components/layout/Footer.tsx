@@ -149,6 +149,26 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.05] pt-6 text-xs text-white/25">
+          {(lang === 'nl'
+            ? [
+                { href: '/uitgaan', label: 'uitgaan in Maastricht' },
+                { href: '/event-space', label: 'eventlocatie Maastricht' },
+                { href: '/cocktail-workshop', label: 'cocktail workshop Maastricht' },
+              ]
+            : [
+                { href: '/uitgaan', label: 'nightlife in Maastricht' },
+                { href: '/event-space', label: 'event location Maastricht' },
+                { href: '/cocktail-workshop', label: 'cocktail workshop Maastricht' },
+              ]
+          ).map((link, index, arr) => (
+            <span key={link.href} className="flex items-center gap-x-4">
+              <Link href={link.href} className="transition-colors duration-200 hover:text-magenta">{link.label}</Link>
+              {index < arr.length - 1 ? <span className="text-white/10">·</span> : null}
+            </span>
+          ))}
+        </div>
+
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/[0.05] pt-6 md:flex-row">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/[0.12]">
             © {new Date().getFullYear()} Cliniq Maastricht

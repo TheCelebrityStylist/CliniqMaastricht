@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia } from '@/lib/admin/public'
@@ -8,21 +9,52 @@ import { workshopFaqsNl as faqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 import { breadcrumbSchema, cocktailWorkshopSchema } from '@/lib/seo'
 
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+
+const CocktailTeaser = dynamic(() => import('@/components/interactive/CocktailTeaser'))
+
 export const revalidate = 600
 
+// "cocktail workshop maastricht" ranks #6.4 at 10.6% CTR — best-converting cluster, push to top 3.
+// "cocktail workshop maastricht vrijgezellenfeest" converts at 35% CTR — "vrijgezellenfeest" must be in the description.
+//
+// Title variants tested:
+// A (shipped) — keeps existing price hook, already performing well:
+//   "Cocktail Workshop Maastricht | Cliniq — Boek nu vanaf €15"
+// B — vrijgezellenfeest-led:
+//   "Cocktail Workshop Maastricht | Cliniq — Ideaal voor een Vrijgezellenfeest"
+// C — group-size + price combined:
+//   "Cocktail Workshop Maastricht vanaf €15 p.p. | Cliniq — Groepen v.a. 15"
+//
+// Description variants tested:
+// A (shipped) — adds "vrijgezellenfeest" up front, keeps price/group hooks:
+//   "Cocktail workshop Maastricht voor een vrijgezellenfeest, bedrijfsuitje of verjaardag. 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen. Boek direct."
+// B — vrijgezellenfeest as the primary framing:
+//   "Vrijgezellenfeest in Maastricht? Boek de cocktail workshop bij Cliniq: 2 uur cocktails maken, daarna de club in. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen."
+// C — broader group-occasion framing:
+//   "Cocktail workshop bij Cliniq Maastricht — voor vrijgezellenfeesten, bedrijfsuitjes en verjaardagen. €15 per cocktail, minimaal 3 p.p. Groepen vanaf 15 personen."
 export const metadata: Metadata = {
   title: 'Cocktail Workshop Maastricht | Cliniq — Boek nu vanaf €15',
-  description: 'Cocktail workshop in Maastricht bij Cliniq. 2 uur lang cocktails leren maken. Prijs: €15 per cocktail, minimaal 3 p.p. Ideaal voor vrijgezellenfeesten en bedrijfsuitjes. Groepen v.a. 15 pers.',
+  description: 'Cocktail workshop Maastricht voor een vrijgezellenfeest, bedrijfsuitje of verjaardag. 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen. Boek direct.',
   alternates: {
     canonical: 'https://www.cliniqmaastricht.nl/cocktail-workshop',
+    languages: { 'nl-NL': 'https://www.cliniqmaastricht.nl/cocktail-workshop', en: 'https://www.cliniqmaastricht.nl/en/cocktail-workshop', 'x-default': 'https://www.cliniqmaastricht.nl/cocktail-workshop' },
   },
   openGraph: {
     title: 'Cocktail Workshop Maastricht | Cliniq',
-    description: '2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Voor vrijgezellenfeesten en bedrijfsuitjes. Groepen v.a. 15 personen.',
+    description: 'Voor vrijgezellenfeesten en bedrijfsuitjes: 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p. Groepen v.a. 15 personen.',
     url: 'https://www.cliniqmaastricht.nl/cocktail-workshop',
     siteName: 'Cliniq Maastricht',
     locale: 'nl_NL',
     type: 'website',
+    images: [{ url: images.workshopBar, width: 1200, height: 1500 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Cocktail Workshop Maastricht | Cliniq',
+    description: 'Voor vrijgezellenfeesten en bedrijfsuitjes: 2 uur cocktails maken bij Cliniq. €15 per cocktail, min. 3 p.p.',
+    images: [images.workshopBar],
   },
 }
 
@@ -48,7 +80,9 @@ export default async function WorkshopPage(){
   const gallery = gallerySource.map((photo) => ({ url: photo.url, alt: photo.altNl || 'Cocktail workshop bij CLINIQ Maastricht' }))
   const heroImage = content?.imageUrl || images.workshopBar
   return <>
-    <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={heroImage} fallbackSrc={images.fallbackWide} alt="Cocktail workshop Maastricht Cliniq Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/58 to-black/18"/><div className="container-premium py-24"><p className="eyebrow mb-4">Workshop</p><h1 className="h1 max-w-5xl">Cocktail Workshop Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Voor groepen van 15+. Cocktails maken, daarna uitgaan in Maastricht.</p><a href="#aanvraag" className="btn-primary mt-8">Cocktail workshop aanvragen</a></div></section>
+    <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={heroImage} fallbackSrc={images.fallbackWide} alt="Cocktail workshop Maastricht Cliniq Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/58 to-black/18"/><AtmosphereFX /><MagneticCTAs /><div className="container-premium py-24"><p className="eyebrow mb-4">Workshop</p><h1 className="h1 max-w-5xl">Cocktail Workshop Maastricht</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Voor groepen van 15+. Cocktails maken, daarna uitgaan in Maastricht.</p><a href="#aanvraag" className="btn-primary mt-8">Cocktail workshop aanvragen</a></div></section>
+
+    <CocktailTeaser />
 
     <section className="container-premium py-24"><div className="grid gap-4 md:grid-cols-4"><Fact title={content?.price || '€15 per cocktail'} text="Inclusief meerdere cocktails, materialen en begeleiding." /><Fact title={content?.minimumGroupSize ? `Minimaal ${content.minimumGroupSize} personen` : 'Minimaal 15 personen'} text="Ideaal voor groepen die samen iets actiefs willen doen." /><Fact title="3 cocktails inbegrepen" text="Je maakt en proeft meerdere cocktails tijdens de workshop." /><Fact title="Begeleiding van bartenders" text="Onze bartenders helpen met smaken, techniek en serveren." /></div></section>
 

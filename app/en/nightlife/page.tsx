@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { faqSchema } from '@/lib/seo'
+import { breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPhotoAlbums } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
@@ -17,6 +17,7 @@ export default async function NightlifePageEn() {
   const photos = [images.redCrowd, images.club, images.party, images.hero, images.contactInterior, images.bar]
   const eventSchemas = events.map((event) => ({
     '@type': 'Event',
+    '@id': `${site.url}/en/nightlife/${event.slug?.current || event._id}#event`,
     name: event.titleEn || event.title,
     startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
     endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
@@ -25,7 +26,11 @@ export default async function NightlifePageEn() {
     image: event.imageUrl ? [event.imageUrl] : undefined,
     description: event.fullDescriptionEn || event.shortDescriptionEn || event.shortDescription,
     url: `${site.url}/en/nightlife/${event.slug?.current || event._id}`,
+    organizer: { '@type': 'Organization', name: site.name, url: site.url },
     location: { '@type': 'Place', name: site.name, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: site.address.country } },
+    offers: event.ticketUrl
+      ? { '@type': 'Offer', url: event.ticketUrl, availability: 'https://schema.org/InStock', priceCurrency: 'EUR' }
+      : undefined,
   }))
 
   return <>
@@ -36,6 +41,10 @@ export default async function NightlifePageEn() {
     <section className="container-premium pb-24"><p className="eyebrow">Practical</p><h2 className="h2 mt-4">Good to know</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5"><Practical title="Opening hours" text="CLINIQ is usually open on Thursday, Friday and Saturday. Check current times per event." /><Practical title="Minimum age" text="Age limits can differ per night. Always bring valid ID." /><Practical title="Door policy" text="We look at atmosphere, safety and respect. Arrive on time and well-presented." /><Practical title="Lockers" text="Lockers are handled through the official locker link on the website." /><Practical title="Location" text="Platielstraat 9A, within walking distance of Vrijthof, Markt and nightlife streets." /></div></section>
     <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Nightlife in central Maastricht</h2></div><div className="prose-premium">{SEO_TEXT.uitgaan.en.split('\n\n').map((paragraph) => <p key={paragraph}>{paragraph}</p>)}<p><Link href="/en/cocktail-workshop" className="text-gold hover:text-white">Cocktail workshop Maastricht</Link> · <Link href="/en/event-space" className="text-gold hover:text-white">venue hire Maastricht</Link> · <Link href="/en/photos" className="text-gold hover:text-white">photos</Link> · <Link href="/en/contact" className="text-gold hover:text-white">contact</Link></p></div></div></section>
     <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Frequently asked questions</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-white/70">{f.answer}</p></details>)}</div></section><JsonLd data={faqSchema(faqs)} /><JsonLd data={{ '@context': 'https://schema.org', '@graph': eventSchemas }} />
+    <JsonLd data={breadcrumbSchema([
+      { name: 'Home', url: `${site.url}/en` },
+      { name: 'Nightlife Maastricht', url: `${site.url}/en/nightlife` },
+    ])} />
   </>
 }
 function Practical({ title, text }: { title: string; text: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"><h3 className="text-xl font-black tracking-[-0.03em]">{title}</h3><p className="mt-3 text-white/66">{text}</p></article> }

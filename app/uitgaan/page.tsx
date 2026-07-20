@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPageContent, getPhotoAlbums, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
@@ -9,22 +10,50 @@ import JsonLd from '@/components/ui/JsonLd'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+
+const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
+const LightboxImageLink = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageLink })))
+const LocationBlock = dynamic(() => import('@/components/interactive/LocationBlock'))
+
 export const revalidate = 60
 
+// CTR-first rewrite for /uitgaan — position ~10.6, 0.78% CTR vs 0.93% sitewide.
+// Query cluster: "uitgaan maastricht", "club maastricht", "clubs maastricht", "nachtclub maastricht", "stappen maastricht".
+//
+// Title variants tested:
+// A (shipped) — question hook + brand + concrete offer, matches task-specified pattern:
+//   "Uitgaan in Maastricht? Dit is Cliniq — Club & Cocktails aan de Platielstraat"
+// B — benefit-led, DJ's + late hours as the hook:
+//   "Uitgaan Maastricht: Cliniq Club — DJ's, Cocktails & Dansen tot 03:00"
+// C — freshness/urgency hook for "this week" searchers:
+//   "Uitgaan in Maastricht Vanavond? Cliniq Club — Bekijk de Agenda"
+//
+// Description variants tested:
+// A (shipped) — repeats query, concrete hooks (DJ's, cocktails, Platielstraat, hours), CTA:
+//   "Uitgaan in Maastricht? Cliniq is open do, vr & za tot 03:00 aan de Platielstraat 9A. DJ's, cocktails en een dansvloer die niet leegloopt. Check nu de agenda van deze week."
+// B — social proof / crowd-led:
+//   "Cliniq Maastricht: club aan de Platielstraat met wisselende DJ's, cocktails en een gemengd publiek van studenten en locals. Open do, vr & za tot 03:00. Bekijk wie er draait."
+// C — practical/decision-led:
+//   "Club zoeken in Maastricht? Cliniq zit centraal aan de Platielstraat 9A, open do, vr & za tot 03:00. DJ's, cocktailbar en dansvloer. Bekijk de actuele agenda."
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('nightlife', 'nl')
-  const title = seo?.seoTitle || 'Uitgaan Maastricht — Nachtclub CLINIQ | Platielstraat 9A'
+  const title = seo?.seoTitle || 'Uitgaan in Maastricht? Dit is Cliniq — Club & Cocktails aan de Platielstraat'
   const description =
     seo?.metaDescription ||
-    'Uitgaan in Maastricht? CLINIQ is open elke do, vr & za op de Platielstraat. Clubavonden met wisselende DJ\'s, studentenavonden en private events. Check de agenda.'
+    'Uitgaan in Maastricht? Cliniq is open do, vr & za tot 03:00 aan de Platielstraat 9A. DJ\'s, cocktails en een dansvloer die niet leegloopt. Check nu de agenda van deze week.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
-  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
+  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : [{ url: images.redCrowd, width: 1200, height: 1500 }]
 
   return {
     title,
     description,
-    alternates: { canonical: 'https://www.cliniqmaastricht.nl/uitgaan' },
+    alternates: {
+      canonical: 'https://www.cliniqmaastricht.nl/uitgaan',
+      languages: { 'nl-NL': 'https://www.cliniqmaastricht.nl/uitgaan', en: 'https://www.cliniqmaastricht.nl/en/nightlife', 'x-default': 'https://www.cliniqmaastricht.nl/uitgaan' },
+    },
     openGraph: {
       title: ogTitle,
       description: ogDescription,
@@ -38,7 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      images: seo?.socialImageUrl ? [seo.socialImageUrl] : undefined,
+      images: seo?.socialImageUrl ? [seo.socialImageUrl] : [images.redCrowd],
     },
   }
 }
@@ -180,10 +209,13 @@ export default async function NightlifePage() {
   })
 
   const eventSchemas = events.map((event) => ({
-    '@context': 'https://schema.org',
     '@type': 'Event',
+    '@id': `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}#event`,
     name: `${event.titleNl || event.title} bij Cliniq Maastricht`,
     startDate: `${event.date}T${event.startTime || '22:00'}:00+01:00`,
+    endDate: `${event.date}T${event.endTime || '03:00'}:00+01:00`,
+    description: event.shortDescriptionNl || event.shortDescription || `${event.titleNl || event.title} bij Cliniq Maastricht, Platielstraat 9A.`,
+    url: `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}`,
     location: {
       '@type': 'Place',
       name: 'Cliniq Maastricht',
@@ -199,6 +231,9 @@ export default async function NightlifePage() {
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     image: event.imageUrl ? [event.imageUrl] : undefined,
+    offers: event.ticketUrl
+      ? { '@type': 'Offer', url: event.ticketUrl, availability: 'https://schema.org/InStock', priceCurrency: 'EUR' }
+      : undefined,
   }))
 
   return (
@@ -206,6 +241,8 @@ export default async function NightlifePage() {
       <section className="hero-section relative min-h-[82vh] overflow-hidden pt-36">
         <SafeImage src={heroImage} fallbackSrc={images.fallbackHero} alt="CLINIQ Maastricht nachtclub aan de Platielstraat" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/60 to-black/25" />
+        <AtmosphereFX />
+        <MagneticCTAs />
         <div className="container-premium py-24">
           <p className="eyebrow mb-4">Club Maastricht — Platielstraat 9A</p>
           <h1 className="h1 max-w-5xl">{heroTitle}</h1>
@@ -247,17 +284,19 @@ export default async function NightlifePage() {
         <div className="container-premium">
           <SectionIntro eyebrow="Sfeer" title="Zo voelt een avond uit bij CLINIQ" text="Een indruk van recente clubnachten, events en avonden in Maastricht." />
         </div>
-        <div className="relative mt-10 overflow-hidden">
-          <div className="flex w-max animate-[photoMarquee_42s_linear_infinite] gap-5 px-6 hover:[animation-play-state:paused]">
-            {carouselPhotos.map((src, index) => (
-              <Link key={`${src}-${index}`} href="/fotos" className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]">
-                <SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Sfeerbeeld clubavond CLINIQ Maastricht ${index + 1}`} fill sizes="(min-width:1024px) 500px, 80vw" className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105" />
-              </Link>
-            ))}
+        <GalleryLightbox images={photos.map((src, index) => ({ src, alt: `Sfeerbeeld clubavond CLINIQ Maastricht ${index + 1}` }))}>
+          <div className="relative mt-10 overflow-hidden">
+            <div className="flex w-max animate-[photoMarquee_42s_linear_infinite] gap-5 px-6 hover:[animation-play-state:paused]">
+              {carouselPhotos.map((src, index) => (
+                <LightboxImageLink key={`${src}-${index}`} href="/fotos" index={index % Math.max(photos.length, 1)} className="image-frame group relative h-[420px] w-[320px] shrink-0 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035] sm:w-[420px] lg:w-[500px]">
+                  <SafeImage src={src} fallbackSrc={images.fallbackWide} alt={`Sfeerbeeld clubavond CLINIQ Maastricht ${index + 1}`} fill sizes="(min-width:1024px) 500px, 80vw" className="object-cover brightness-[1.08] contrast-[1.03] transition duration-700 group-hover:scale-105" />
+                </LightboxImageLink>
+              ))}
+            </div>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
           </div>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
-        </div>
+        </GalleryLightbox>
         <div className="container-premium mt-8 flex justify-center"><Link href="/fotos" className="btn-primary">Bekijk alle foto’s</Link></div>
         <style>{`@keyframes photoMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
       </section>
@@ -273,6 +312,12 @@ export default async function NightlifePage() {
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {practicalCards.map((card, index) => <Practical key={`${card.titleNl || 'card'}-${index}`} title={card.titleNl || 'Praktisch'} text={card.textNl || ''} />)}
         </div>
+      </section>
+
+      <section className="container-premium pb-24">
+        <p className="eyebrow">Route</p>
+        <h2 className="h2 mt-4">Zo kom je bij CLINIQ</h2>
+        <div className="mt-8 max-w-3xl"><LocationBlock /></div>
       </section>
 
       <section className="container-premium pb-24">

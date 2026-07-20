@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { breadcrumbSchema, faqSchema } from '@/lib/seo'
+import dynamic from 'next/dynamic'
+import { breadcrumbSchema, eventVenueSchema, faqSchema } from '@/lib/seo'
 import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
@@ -8,24 +9,50 @@ import JsonLd from '@/components/ui/JsonLd'
 import { eventSpaceFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+
+const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
+const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
+const EventSpaceConfigurator = dynamic(() => import('@/components/interactive/EventSpaceConfigurator'))
+
 export const revalidate = 60
 
+// Targets "eventlocatie maastricht" / "zakelijk evenement maastricht" — position ~11, CTR < 0.4%.
+// Also the canonical target for the /business-event-space-maastricht redirect (still ranking on Google).
+//
+// Title variants tested:
+// A (shipped) — capacity + centre-of-town hook:
+//   "Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen"
+// B — zakelijk-evenement angle:
+//   "Zakelijk Evenement Maastricht | Cliniq — Eventlocatie Platielstraat"
+// C — venue-hire angle, broadest match:
+//   "Ruimte Huren Maastricht | Cliniq Eventlocatie — Bedrijfsfeest & Privéfeest"
+//
+// Description variants tested:
+// A (shipped):
+//   "Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden."
+// B — zakelijk-evenement led:
+//   "Zakelijk evenement organiseren in Maastricht? Cliniq is een eventlocatie in het centrum met bar, licht, geluid en dansvloer al aanwezig. Tot 400 personen, Platielstraat 9A."
+// C — quote/quality hook:
+//   "Feestlocatie of eventlocatie huren in Maastricht? Cliniq biedt exclusieve zaalverhuur tot 400 personen aan de Platielstraat, midden in het centrum. Vraag vrijblijvend een offerte aan."
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('event-space', 'nl')
 
-  const title = seo?.seoTitle || 'Ruimte Huren Maastricht | Feestzaal & Eventlocatie Cliniq — Tot 400 pers.'
+  const title = seo?.seoTitle || 'Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen'
   const description =
     seo?.metaDescription ||
-    'Feestlocatie of eventruimte huren in Maastricht? Cliniq biedt exclusieve zaalverhuur voor tot 400 personen. Voor privéfeesten, bedrijfsfeesten en vrijgezellenavonden. Platielstraat 9A.'
+    'Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
-  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
+  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : [{ url: images.redRoom, width: 1200, height: 1500 }]
 
   return {
     title,
     description,
     alternates: {
       canonical: 'https://www.cliniqmaastricht.nl/event-space',
+      languages: { 'nl-NL': 'https://www.cliniqmaastricht.nl/event-space', en: 'https://www.cliniqmaastricht.nl/en/event-space', 'x-default': 'https://www.cliniqmaastricht.nl/event-space' },
     },
     openGraph: {
       title: ogTitle,
@@ -40,7 +67,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      images: seo?.socialImageUrl ? [seo.socialImageUrl] : undefined,
+      images: seo?.socialImageUrl ? [seo.socialImageUrl] : [images.redRoom],
     },
   }
 }
@@ -206,6 +233,8 @@ export default async function EventSpacePage() {
         />
 
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
         <div className="container-premium py-24">
           <p className="eyebrow mb-4">Events</p>
@@ -304,26 +333,32 @@ export default async function EventSpacePage() {
         <p className="eyebrow">{galleryEyebrow}</p>
         <h2 className="h2 mt-4">{galleryTitle}</h2>
 
-        <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">
-          {gallery.slice(0, 5).map((item, index) => (
-            <div
-              key={`${item.url}-${index}`}
-              className={`photo-tile image-frame ${
-                index === 0 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'
-              }`}
-            >
-              <SafeImage
-                src={item.url}
-                fallbackSrc={images.fallbackWide}
-                alt={item.alt}
-                fill
-                sizes="33vw"
-                className="object-cover brightness-[1.08]"
-              />
-            </div>
-          ))}
-        </div>
+        <GalleryLightbox images={gallery.slice(0, 5).map((item) => ({ src: item.url, alt: item.alt }))}>
+          <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">
+            {gallery.slice(0, 5).map((item, index) => (
+              <LightboxImageButton
+                key={`${item.url}-${index}`}
+                index={index}
+                label={item.alt}
+                className={`photo-tile image-frame block w-full text-left ${
+                  index === 0 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'
+                }`}
+              >
+                <SafeImage
+                  src={item.url}
+                  fallbackSrc={images.fallbackWide}
+                  alt={item.alt}
+                  fill
+                  sizes="33vw"
+                  className="object-cover brightness-[1.08]"
+                />
+              </LightboxImageButton>
+            ))}
+          </div>
+        </GalleryLightbox>
       </section>
+
+      <EventSpaceConfigurator ctaHref="#aanvraag" />
 
       <section className="container-premium pb-24">
         <p className="eyebrow">FAQ</p>
@@ -376,6 +411,7 @@ export default async function EventSpacePage() {
       </section>
 
       <JsonLd data={faqSchema(pageFaqs)} />
+      <JsonLd data={eventVenueSchema()} />
       <JsonLd data={breadcrumbSchema([
         { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
         { name: 'Ruimte Huren Maastricht', url: 'https://www.cliniqmaastricht.nl/event-space' },

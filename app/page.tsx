@@ -8,15 +8,34 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 
 export const revalidate = 60
 
+// Homepage title keeps the brand first — branded queries ("cliniq maastricht") already rank ~#2, don't touch what works.
+//
+// Title variants tested:
+// A (shipped) — brand + three core offers, matches task-specified pattern:
+//   "Cliniq Maastricht — Uitgaan, Cocktails & Events aan de Platielstraat"
+// B — brand + days open, practical hook:
+//   "Cliniq Maastricht — Club aan de Platielstraat | Open Do, Vr & Za"
+// C — brand + broader positioning:
+//   "Cliniq Maastricht — Nachtclub, Cocktail Workshops & Feestlocatie"
+//
+// Description variants tested:
+// A (shipped):
+//   "Cliniq Maastricht aan de Platielstraat 9A: club, cocktail workshops en feestlocatie tot 400 personen. Open do, vr & za tot 03:00. Bekijk de agenda."
+// B — hook on the three services with CTA:
+//   "Uitgaan, cocktails of een feest vieren in Maastricht? Cliniq zit aan de Platielstraat 9A en is open do, vr & za. Bekijk wat er deze week speelt."
+// C — short and brand-forward:
+//   "Cliniq Maastricht — dé club aan de Platielstraat. Clubavonden, cocktail workshops en ruimte voor besloten feesten. Open do, vr & za."
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'nl')
-  const title = seo?.seoTitle || 'Uitgaan Maastricht — CLINIQ | Nachtclub Platielstraat 9A'
+  const title = seo?.seoTitle || 'Cliniq Maastricht — Uitgaan, Cocktails & Events aan de Platielstraat'
   const description =
     seo?.metaDescription ||
-    'Uitgaan in Maastricht? CLINIQ is open elke do, vr & za op de Platielstraat. Clubavonden, cocktail workshops en private events in het centrum. Check de agenda.'
+    'Cliniq Maastricht aan de Platielstraat 9A: club, cocktail workshops en feestlocatie tot 400 personen. Open do, vr & za tot 03:00. Bekijk de agenda.'
   const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
   const ogDescription =
     seo?.ogDescription ||
@@ -93,6 +112,8 @@ export default async function Home() {
         />
 
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
         <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
           <div className="max-w-4xl">

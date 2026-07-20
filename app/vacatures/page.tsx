@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import InquiryForm from '@/components/forms/InquiryForm'
 import SafeImage from '@/components/ui/SafeImage'
+import JsonLd from '@/components/ui/JsonLd'
 import { getJobs } from '@/lib/admin/public'
-import { images } from '@/lib/site'
+import { images, site } from '@/lib/site'
+import { breadcrumbSchema } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Vacatures Maastricht Horeca & Nachtclub | Werken bij CLINIQ',
@@ -273,6 +275,8 @@ export default async function VacaturesPage() {
           ]}
         />
       </section>
+
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', url: site.url }, { name: 'Vacatures', url: `${site.url}/vacatures` }])} />
     </>
   )
 }

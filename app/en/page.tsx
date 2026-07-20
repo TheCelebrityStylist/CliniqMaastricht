@@ -8,15 +8,18 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 
 export const revalidate = 60
 
+// Mirrors the NL homepage rewrite — brand stays first (branded queries already rank well).
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'en')
-  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
+  const title = seo?.seoTitle || 'Cliniq Maastricht — Nightlife, Cocktails & Events on Platielstraat'
   const description =
     seo?.metaDescription ||
-    'Going out in Maastricht? CLINIQ is open every Thursday, Friday and Saturday at Platielstraat 9A. Club nights, private events and cocktail workshops in the city centre.'
+    'Cliniq Maastricht on Platielstraat 9A: club nights, cocktail workshops and an event space for up to 400 guests. Open Thu, Fri & Sat until 03:00. Check the agenda.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
@@ -94,6 +97,8 @@ export default async function HomeEn() {
         />
 
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
         <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
           <div className="max-w-4xl">
