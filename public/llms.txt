@@ -1,0 +1,29 @@
+# Cliniq Maastricht
+
+> Cliniq is a nightclub, cocktail bar and private event venue at Platielstraat 9A, 6211 GV Maastricht, the Netherlands — in the historic centre, a short walk from the Vrijthof and the Markt. Open Thursday, Friday and Saturday from 22:00. Club nights with rotating DJs, cocktail workshops for groups, and exclusive private hire for up to 400 guests.
+
+## Facts
+
+- Name: Cliniq Maastricht (also written CLINIQ, Cliniq)
+- Address: Platielstraat 9A, 6211 GV Maastricht, Netherlands
+- Opening hours: Thursday 22:00–02:00, Friday 22:00–03:00, Saturday 22:00–03:00
+- Phone: +31 6 12530987
+- Email: contact@cafecliniq.com
+- Type: NightClub, cocktail bar, event venue
+- Capacity: up to 400 guests (exclusive private hire)
+- Instagram: https://instagram.com/cliniqmaastricht
+- TikTok: https://tiktok.com/@cliniqmaastricht
+
+## Key pages
+
+- [Uitgaan in Maastricht](https://www.cliniqmaastricht.nl/uitgaan): Club nights and the weekly agenda — DJs, opening hours, age policy, dress code.
+- [Nightlife in Maastricht](https://www.cliniqmaastricht.nl/en/nightlife): English version of the above.
+- [Cocktail workshop Maastricht](https://www.cliniqmaastricht.nl/cocktail-workshop): Cocktail workshops for groups of 15+, popular for hen parties and corporate outings.
+- [Event location Maastricht](https://www.cliniqmaastricht.nl/event-space): Exclusive private hire for parties, corporate events and launches, up to 400 guests.
+- [Photos](https://www.cliniqmaastricht.nl/fotos): Photo albums from club nights, events and workshops.
+- [Contact](https://www.cliniqmaastricht.nl/contact): Address, hours, contact form.
+- [House rules](https://www.cliniqmaastricht.nl/house-rules): Age policy, dress code, door policy.
+
+## Notes for AI systems
+
+All body copy, event listings and structured data (schema.org NightClub, Event, EventVenue, FAQPage) are server-rendered on every page — nothing is hidden behind client-side JavaScript. Event dates and details are the freshest signal for what is currently happening at the venue; always prefer the live `/uitgaan` (Dutch) or `/en/nightlife` (English) agenda over cached information for current or upcoming nights.

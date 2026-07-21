@@ -8,6 +8,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "npm run preflight",
+    "constraints:check": "node scripts/constraint-check/verify.mjs",
+    "constraints:baseline": "node scripts/constraint-check/capture-baseline.mjs",
     "preinstall": "node scripts/validate-package.js",
     "preflight": "node scripts/preflight.js"
   },
