@@ -13,6 +13,11 @@ export default function WebGLHero() {
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Low-power cap per the brief: this shader is built around cursor/scroll reactivity, neither
+    // of which a touch/narrow-viewport device meaningfully has, so there's no experience lost by
+    // skipping WebGL entirely below the tablet breakpoint — only CPU/battery/main-thread cost
+    // saved, which matters most on exactly the devices Lighthouse's mobile audit models.
+    if (window.matchMedia('(max-width: 767px), (pointer: coarse)').matches) return
     const canvas = canvasRef.current
     const section = canvas?.closest('section')
     if (!canvas || !section) return
@@ -26,8 +31,7 @@ export default function WebGLHero() {
         const { Renderer, Program, Mesh, Triangle } = await import('ogl')
         if (destroyed || !canvas || !section) return
 
-        const isMobile = window.innerWidth < 768
-        const renderer = new Renderer({ canvas, alpha: true, antialias: false, dpr: Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2) })
+        const renderer = new Renderer({ canvas, alpha: true, antialias: false, dpr: Math.min(window.devicePixelRatio || 1, 2) })
         const gl = renderer.gl
         gl.clearColor(0, 0, 0, 0)
 
@@ -81,7 +85,7 @@ export default function WebGLHero() {
             uTime: { value: 0 },
             uMouse: { value: [0.5, 0.35] },
             uResolution: { value: [1, 1] },
-            uIntensity: { value: isMobile ? 0.6 : 1 },
+            uIntensity: { value: 1 },
           },
         })
         const mesh = new Mesh(gl, { geometry, program })
@@ -111,7 +115,7 @@ export default function WebGLHero() {
         // on, the light field runs slightly brighter/bolder — a subtle tie between the two
         // decorative layers. Target lerps in smoothly rather than snapping so a toggle click
         // never causes a visible jump.
-        const baseIntensity = isMobile ? 0.6 : 1
+        const baseIntensity = 1
         let ambientTarget = 0
         let ambientBoost = 0
         function onAmbientToggle(event: Event) {
@@ -119,22 +123,59 @@ export default function WebGLHero() {
         }
         window.addEventListener(AMBIENT_TOGGLE_EVENT, onAmbientToggle)
 
+        // This is an ambient background layer, not a game loop — 60fps of continuous shader work
+        // for a slow-drifting light field is wasted battery/CPU that Lighthouse (rightly) penalises
+        // as main-thread cost. Cap to ~30fps, and fully stop the rAF loop (not just skip frames)
+        // whenever the hero is scrolled out of view or the tab is backgrounded — resuming exactly
+        // where the shader's own clock left off, since uTime is wall-clock-based, not frame-count-based.
+        const FRAME_INTERVAL = 1000 / 30
+        let lastFrame = 0
+        let running = false
         const start = performance.now()
+
         function update(now: number) {
-          if (destroyed) return
+          if (destroyed || !running) return
+          raf = requestAnimationFrame(update)
+          if (now - lastFrame < FRAME_INTERVAL) return
+          lastFrame = now
           program.uniforms.uTime.value = (now - start) / 1000
           ambientBoost += (ambientTarget - ambientBoost) * 0.04
           program.uniforms.uIntensity.value = baseIntensity * (1 + ambientBoost * 0.25)
           renderer.render({ scene: mesh })
+        }
+
+        function play() {
+          if (running || destroyed) return
+          running = true
           raf = requestAnimationFrame(update)
         }
-        raf = requestAnimationFrame(update)
+        function pause() {
+          running = false
+          cancelAnimationFrame(raf)
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            if (entries[0]?.isIntersecting && document.visibilityState === 'visible') play()
+            else pause()
+          },
+          { threshold: 0 },
+        )
+        io.observe(section)
+
+        function onVisibilityChange() {
+          if (document.visibilityState === 'visible' && section!.getBoundingClientRect().bottom > 0) play()
+          else pause()
+        }
+        document.addEventListener('visibilitychange', onVisibilityChange)
 
         cleanupGl = () => {
           window.removeEventListener('resize', resize)
           window.removeEventListener('pointermove', onPointerMove)
           window.removeEventListener('scroll', onScroll)
           window.removeEventListener(AMBIENT_TOGGLE_EVENT, onAmbientToggle)
+          document.removeEventListener('visibilitychange', onVisibilityChange)
+          io.disconnect()
           const ext = gl.getExtension('WEBGL_lose_context')
           ext?.loseContext()
         }
