@@ -84,6 +84,13 @@ function run(cmd, args, opts = {}) {
   })
 }
 
+// A fixed port can appear "busy" from a previous run in some sandboxed environments even when no
+// process still owns it (observed: OS-level bind() refuses the port while `ss`/`ps` show nothing
+// holding it). Randomizing the port every run sidesteps this entirely instead of chasing it.
+export function randomPort() {
+  return 20000 + Math.floor(Math.random() * 20000)
+}
+
 export async function withServer(port, fn) {
   const server = spawn('npx', ['next', 'start', '-p', String(port)], { cwd: ROOT, stdio: 'pipe', env: HARNESS_ENV })
   const ready = new Promise((resolve, reject) => {

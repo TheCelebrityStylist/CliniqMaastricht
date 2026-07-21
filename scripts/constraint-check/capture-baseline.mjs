@@ -6,7 +6,7 @@
 // also pass --force (so accidental re-runs can't quietly erase the diff you were about to review).
 import fs from 'node:fs'
 import path from 'node:path'
-import { runBuild, withServer, readRouteManifest, extractVisibleText, extractJsonLdTypes, fetchWithTimeout, ROUTES_BASELINE, COPY_BASELINE_DIR, BASELINE_DIR, ensureDir } from './lib.mjs'
+import { runBuild, withServer, readRouteManifest, extractVisibleText, extractJsonLdTypes, fetchWithTimeout, randomPort, ROUTES_BASELINE, COPY_BASELINE_DIR, BASELINE_DIR, ensureDir } from './lib.mjs'
 import { WATCHED_PAGES } from './pages.mjs'
 
 const args = process.argv.slice(2)
@@ -30,7 +30,7 @@ console.log(`[constraint-check] Captured ${routes.length} routes.`)
 ensureDir(COPY_BASELINE_DIR)
 const jsonLdManifest = {}
 
-await withServer(4610, async (base) => {
+await withServer(randomPort(), async (base) => {
   for (const page of WATCHED_PAGES) {
     const res = await fetchWithTimeout(base + page.path)
     if (!res.ok) {

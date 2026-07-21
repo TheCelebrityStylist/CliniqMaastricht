@@ -16,6 +16,14 @@ const LightboxImageButton = dynamic(() => import('@/components/interactive/Galle
 const EventSpaceConfigurator = dynamic(() => import('@/components/interactive/EventSpaceConfigurator'))
 
 export async function generateMetadata() { return cmsMetadata('eventSpace', 'en') }
+
+// GEO answer block: standalone factual paragraph for "event location maastricht centre".
+const geoAnswer = {
+  question: 'What makes a good event location in central Maastricht?',
+  answer:
+    'Cliniq on Platielstraat 9A is an event location in central Maastricht, within walking distance of the Vrijthof and the Markt. The space is available for exclusive private hire on Thursday, Friday and Saturday for up to 400 guests, with bar, lighting, sound and dancefloor already in place — suitable for corporate events, drinks and private parties.',
+}
+
 const eventTypes = [['Corporate event','Corporate drinks or staff party? Cliniq has the space, bar and sound system. You bring the team.'],['Private party','From intimate birthdays to big celebration nights. Cliniq is yours exclusively.'],['Hen night','Workshop to open, then straight into the club. One of the most-booked hen night venues in Maastricht.'],['Drinks','For groups that want an informal setting without a standard room feel.'],['Private party','Your own night with door policy, bar and a tailored setup.'],['Student event','Suitable for larger groups with music, lighting and clear agreements.'],['Product launch','Present your brand or product in a setting people remember. Stage, screen, bar and lighting all in place.'],['Gala / private night','For a sharper evening with reception, bar and club atmosphere later on.']]
 const facilities = [['Bar','A fixed bar setup with team and drinks options.'],['Light and sound','The basis for music, speeches and a full dance floor is already there.'],['DJ options','We can help with DJ, music style and timing.'],['Dance floor','The space feels like a night out, not an empty room.'],['Cocktail options','Cocktails, welcome drinks or drinks packages are possible.'],['Central location','Platielstraat 9A, in the centre of Maastricht.'],['Hospitality team','A team used to busy nights and group events.'],['Cloakroom / lockers','Locker or cloakroom arrangements can be aligned per event.']]
 
@@ -33,8 +41,12 @@ export default function EventSpacePage(){
     </section>
 
     <EventSpaceConfigurator ctaHref="#inquiry" />
+    <section className="container-premium pb-24">
+      <h2 className="h2">{geoAnswer.question}</h2>
+      <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>
+    </section>
     <section className="container-premium pb-24"><p className="eyebrow">FAQ</p><h2 className="h2 mt-4">Frequently asked questions</h2><div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">{faqs.map((f)=><details key={f.question} className="luxury-panel rounded-2xl p-5"><summary className="cursor-pointer font-black">{f.question}</summary><p className="mt-3 text-base leading-7 text-white/72 md:text-lg">{f.answer}</p></details>)}</div></section>
-    <section id="inquiry" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Inquiry</p><h2 className="h2 mt-4">Request proposal</h2><p className="mt-6 text-lg leading-[1.65] text-white/72">Tell us your date, group size and type of event. We will think with you about availability, layout and options.</p></div><InquiryForm type="event-space" sourcePage="/en/event-space" fields={[{name:'name',label:'Name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'eventType',label:'Event type',options:['Corporate event','Birthday','Bachelorette party','Gala','Student party','Private party','Drinks','Product launch']},{name:'preferredDate',label:'Preferred date',type:'date'},{name:'guests',label:'Guests',type:'number'},{name:'message',label:'Message',required:true}]} /></section><JsonLd data={faqSchema(faqs)} />
+    <section id="inquiry" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Inquiry</p><h2 className="h2 mt-4">Request proposal</h2><p className="mt-6 text-lg leading-[1.65] text-white/72">Tell us your date, group size and type of event. We will think with you about availability, layout and options.</p></div><InquiryForm type="event-space" sourcePage="/en/event-space" fields={[{name:'name',label:'Name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'eventType',label:'Event type',options:['Corporate event','Birthday','Bachelorette party','Gala','Student party','Private party','Drinks','Product launch']},{name:'preferredDate',label:'Preferred date',type:'date'},{name:'guests',label:'Guests',type:'number'},{name:'message',label:'Message',required:true}]} /></section><JsonLd data={faqSchema([geoAnswer, ...faqs])} />
     <JsonLd data={eventVenueSchema()} />
     <JsonLd data={breadcrumbSchema([{ name: 'Home', url: `${site.url}/en` }, { name: 'Event Space Maastricht', url: `${site.url}/en/event-space` }])} />
   </>

@@ -79,6 +79,14 @@ type EditableCard = {
   textEn?: string
 }
 
+// GEO answer block: standalone factual paragraph for "eventlocatie maastricht centrum" —
+// mirrored in the FAQPage schema. New copy, not an edit of any existing sentence.
+const geoAnswer = {
+  question: 'Wat is een goede eventlocatie in het centrum van Maastricht?',
+  answer:
+    'Cliniq aan de Platielstraat 9A is een eventlocatie in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. De ruimte is exclusief te huren op donderdag, vrijdag en zaterdag voor tot 400 gasten, met bar, licht, geluid en dansvloer al aanwezig — geschikt voor bedrijfsfeesten, borrels en privéfeesten.',
+}
+
 type ExtendedPageContent = Awaited<ReturnType<typeof getPageContent>> & {
   eventTypeEyebrowNl?: string
   eventTypeTitleNl?: string
@@ -361,6 +369,11 @@ export default async function EventSpacePage() {
       <EventSpaceConfigurator ctaHref="#aanvraag" />
 
       <section className="container-premium pb-24">
+        <h2 className="h2">{geoAnswer.question}</h2>
+        <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>
+      </section>
+
+      <section className="container-premium pb-24">
         <p className="eyebrow">FAQ</p>
         <h2 className="h2 mt-4">Veelgestelde vragen</h2>
 
@@ -410,7 +423,7 @@ export default async function EventSpacePage() {
         />
       </section>
 
-      <JsonLd data={faqSchema(pageFaqs)} />
+      <JsonLd data={faqSchema([geoAnswer, ...pageFaqs])} />
       <JsonLd data={eventVenueSchema()} />
       <JsonLd data={breadcrumbSchema([
         { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },

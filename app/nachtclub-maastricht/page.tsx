@@ -11,6 +11,14 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.cliniqmaastricht.nl/nachtclub-maastricht' },
 }
 
+// GEO answer block: standalone factual paragraph for "beste club maastricht" — mirrored in the
+// FAQPage schema below. New copy, not an edit of any existing sentence.
+const geoAnswer = {
+  question: 'Wat is de beste club in Maastricht?',
+  answer:
+    'Cliniq wordt gezien als een van de beste clubs in Maastricht dankzij de centrale ligging aan de Platielstraat, wisselende DJ\'s en een sfeer die past bij studenten, locals en bezoekers. De club is open op donderdag, vrijdag en zaterdag vanaf 22:00 tot 02:00 of 03:00, met een dansvloer, bar en regelmatig speciale avonden.',
+}
+
 const faqs = [
   { question: 'Wanneer is nachtclub CLINIQ Maastricht open?', answer: 'CLINIQ is normaal geopend op donderdag van 22:00 tot 02:00 en op vrijdag en zaterdag van 22:00 tot 03:00.' },
   { question: 'Waar ligt CLINIQ Maastricht?', answer: 'CLINIQ ligt aan de Platielstraat 9A, op loopafstand van het Vrijthof en de Markt.' },
@@ -30,8 +38,13 @@ export default function NachtclubMaastrichtPage() {
       <div className="prose-premium"><p>CLINIQ is de nachtclub in het centrum van Maastricht. Platielstraat 9A, op loopafstand van het Vrijthof en de Markt. Elke donderdag, vrijdag en zaterdag open. Wisselende DJ&apos;s, een sterke bar en een dansvloer die pas leegloopt als het licht aangaat. Meer dan een club: cocktail workshops voor groepen, ruimte voor vrijgezellenfeesten en besloten events. Check de agenda.</p><p>Bekijk <Link href="/uitgaan" className="text-gold hover:text-white">uitgaan in Maastricht</Link>, boek een <Link href="/cocktail-workshop" className="text-gold hover:text-white">cocktail workshop Maastricht</Link> of ontdek <Link href="/event-space" className="text-gold hover:text-white">ruimte huren in Maastricht</Link>.</p></div>
     </section>
 
+    <section className="container-premium pb-24">
+      <h2 className="h2">{geoAnswer.question}</h2>
+      <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>
+    </section>
+
     <FaqSection items={faqs} />
-    <JsonLd data={faqSchema(faqs)} />
+    <JsonLd data={faqSchema([geoAnswer, ...faqs])} />
     <JsonLd data={breadcrumbSchema([
       { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
       { name: 'Nachtclub Maastricht', url: 'https://www.cliniqmaastricht.nl/nachtclub-maastricht' },

@@ -17,21 +17,36 @@ import {
   extractVisibleText,
   extractJsonLdTypes,
   fetchWithTimeout,
+  randomPort,
   ROUTES_BASELINE,
   COPY_BASELINE_DIR,
   BASELINE_DIR,
 } from './lib.mjs'
 import { WATCHED_PAGES } from './pages.mjs'
 
+// Multiset diff rather than positional: inserting a new paragraph shifts every later line down
+// by one, which a positional diff reports as a cascade of "changed" lines even though nothing
+// was edited. Comparing line counts instead reports exactly what a reviewer needs — which lines
+// were actually added or removed — regardless of where they landed.
 function diffLines(baseline, current) {
-  const a = baseline.split('\n')
-  const b = current.split('\n')
-  const max = Math.max(a.length, b.length)
-  const diffs = []
-  for (let i = 0; i < max; i++) {
-    if (a[i] !== b[i]) diffs.push({ line: i + 1, before: a[i] ?? '(missing)', after: b[i] ?? '(missing)' })
+  const count = (lines) => {
+    const map = new Map()
+    for (const line of lines) map.set(line, (map.get(line) || 0) + 1)
+    return map
   }
-  return diffs
+  const a = count(baseline.split('\n').filter(Boolean))
+  const b = count(current.split('\n').filter(Boolean))
+  const removed = []
+  const added = []
+  for (const [line, n] of a) {
+    const diff = n - (b.get(line) || 0)
+    for (let i = 0; i < diff; i++) removed.push(line)
+  }
+  for (const [line, n] of b) {
+    const diff = n - (a.get(line) || 0)
+    for (let i = 0; i < diff; i++) added.push(line)
+  }
+  return { removed, added }
 }
 
 if (!fs.existsSync(ROUTES_BASELINE)) {
@@ -61,7 +76,7 @@ if (added.length || removed.length) {
 const baselineJsonLd = JSON.parse(fs.readFileSync(path.join(BASELINE_DIR, 'jsonld.json'), 'utf8'))
 
 console.log('[constraint-check] Checking visible copy + JSON-LD on watched pages…')
-await withServer(4611, async (base) => {
+await withServer(randomPort(), async (base) => {
   for (const page of WATCHED_PAGES) {
     const snapshotPath = path.join(COPY_BASELINE_DIR, `${page.name}.txt`)
     if (!fs.existsSync(snapshotPath)) {
@@ -86,16 +101,12 @@ await withServer(4611, async (base) => {
 
     const currentText = extractVisibleText(html)
     const baselineText = fs.readFileSync(snapshotPath, 'utf8').replace(/\n$/, '')
-    const diffs = diffLines(baselineText, currentText)
-    if (diffs.length) {
+    const { removed, added } = diffLines(baselineText, currentText)
+    if (removed.length || added.length) {
       failed = true
-      console.error(`  FAIL ${page.path} — visible copy changed (${diffs.length} line(s)):`)
-      diffs.slice(0, 8).forEach((d) => {
-        console.error(`    line ${d.line}:`)
-        console.error(`      before: ${d.before}`)
-        console.error(`      after:  ${d.after}`)
-      })
-      if (diffs.length > 8) console.error(`    … and ${diffs.length - 8} more`)
+      console.error(`  FAIL ${page.path} — visible copy changed (${removed.length} removed/edited, ${added.length} added):`)
+      removed.forEach((line) => console.error(`    - ${line}`))
+      added.forEach((line) => console.error(`    + ${line}`))
     } else {
       console.log(`  OK   ${page.path} — copy unchanged.`)
     }
