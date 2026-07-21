@@ -12,6 +12,7 @@ import { localBusinessSchema, organizationSchema } from '@/lib/seo'
 import { getAgendaEvents } from '@/lib/admin/public'
 import StatusBadge from '@/components/interactive/StatusBadgeLoader'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
+import SmoothScroll from '@/components/experience/SmoothScroll'
 
 // Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
 // stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
@@ -51,9 +52,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     </head>
     <body>
       <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
-      <Header />
-      <main id="main">{children}</main>
-      <Footer />
+      <SmoothScroll>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+      </SmoothScroll>
       <StatusBadge events={statusEvents} />
       <MobileActionBar />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />
