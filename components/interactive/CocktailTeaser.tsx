@@ -6,6 +6,7 @@ import { useLang } from '@/lib/lang'
 import { INTERACTIVE_COPY } from '@/lib/content'
 import { images } from '@/lib/site'
 import SafeImage from '@/components/ui/SafeImage'
+import CocktailPourCanvas from '@/components/experience/CocktailPourCanvas'
 
 const COCKTAILS = [
   { key: 'mojito', nameNl: 'Mojito', nameEn: 'Mojito', image: images.mojito },
@@ -68,6 +69,7 @@ export default function CocktailTeaser() {
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   aria-hidden="true"
                 />
+                <CocktailPourCanvas active={isActive} />
               </motion.div>
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-3">
                 <p className="text-xs font-black uppercase tracking-[0.06em] text-white">{name}</p>

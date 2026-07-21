@@ -12,6 +12,7 @@ import {
 } from 'react'
 import SafeImage from '@/components/ui/SafeImage'
 import { images } from '@/lib/site'
+import GalleryDistortion from '@/components/experience/GalleryDistortion'
 
 export type LightboxImage = { src: string; alt: string }
 
@@ -157,6 +158,7 @@ export default function GalleryLightbox({ images: gallery, children }: { images:
               className="object-contain transition-transform duration-150 motion-reduce:transition-none"
               style={{ transform: `scale(${scale})` }}
             />
+            <GalleryDistortion trigger={index ?? 0} />
           </div>
 
           {gallery.length > 1 ? (

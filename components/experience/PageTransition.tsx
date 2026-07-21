@@ -1,8 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 // Route-crossfade "no white flash" transition. React 19's experimental View Transition API isn't
 // available on this project's React 18, and Next.js App Router doesn't expose a clean hook to
@@ -12,9 +12,20 @@ import type { ReactNode } from 'react'
 // animated (avoids double-animating against CinematicEntry, and matches "content is there
 // immediately" for SSR/no-JS — this wrapper only ever affects client-side route changes, the
 // underlying content is identical either way).
+//
+// Deliberately NOT using framer-motion's own useReducedMotion() hook here: it reads
+// window.matchMedia synchronously during render (not in an effect), so on a client whose OS has
+// reduced motion on, the very first hydration render already returns true while the server (no
+// window) always rendered the AnimatePresence-wrapped tree — a real server/client structural
+// mismatch (React hydration error #418). Starting at false and flipping post-mount matches every
+// other reduced-motion check in this codebase and guarantees the first render matches SSR.
 export default function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const reduceMotion = useReducedMotion()
+  const [reduceMotion, setReduceMotion] = useState(false)
+
+  useEffect(() => {
+    setReduceMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
 
   if (reduceMotion) return <>{children}</>
 
