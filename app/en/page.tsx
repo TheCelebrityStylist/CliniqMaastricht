@@ -10,6 +10,7 @@ import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import WebGLHero from '@/components/experience/WebGLHeroLoader'
 
 export const revalidate = 60
 
@@ -97,6 +98,7 @@ export default async function HomeEn() {
         />
 
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <WebGLHero />
         <AtmosphereFX />
         <MagneticCTAs />
 

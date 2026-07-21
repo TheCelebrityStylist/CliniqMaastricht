@@ -2,7 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; --bg:#080607; --ivory:#fff7ea; --pink:#f02688; --burgundy:#36101f; --font-inter-tight: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; --font-display: ui-sans-serif, system-ui, sans-serif; --atmo-y: 0px; }
+/* --font-inter-tight and --font-display are defined by next/font's generated classes on <html>
+   (see app/layout.tsx) — not here. Declaring a competing value in :root would win the cascade
+   (equal specificity, and :root's declaration ends up later in source order than next/font's
+   injected <style>), silently overriding the real webfont with a system-font fallback. Each
+   usage site below supplies its own fallback stack after the var(), e.g.
+   `font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;` — that already
+   degrades gracefully if the variable is ever genuinely undefined, without needing a :root value. */
+:root { color-scheme: dark; --bg:#080607; --ivory:#fff7ea; --pink:#f02688; --burgundy:#36101f; --atmo-y: 0px; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: radial-gradient(circle at 20% 0%, rgba(240,38,136,.18), transparent 28rem), #080607; color: var(--ivory); font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif; }
@@ -11,9 +18,9 @@ a { text-underline-offset: 4px; }
 .focus-ring { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta; }
 .container-premium { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
 .eyebrow { @apply text-xs font-black uppercase tracking-[0.1em] text-gold; }
-.h1 { font-family: var(--font-display); @apply text-[44px] font-black leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl; }
-.h2 { font-family: var(--font-display); @apply text-[34px] font-black leading-[1] tracking-[-0.025em] sm:text-5xl lg:text-[52px]; }
-.h3 { font-family: var(--font-display); @apply text-2xl font-extrabold tracking-[-0.015em] sm:text-3xl; }
+.h1 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[44px] font-black leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl; }
+.h2 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[34px] font-black leading-[1] tracking-[-0.025em] sm:text-5xl lg:text-[52px]; }
+.h3 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-2xl font-extrabold tracking-[-0.015em] sm:text-3xl; }
 .card { @apply border border-white/10 bg-white/5 shadow-2xl shadow-black/20 backdrop-blur; }
 .btn-primary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full bg-magenta px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:-translate-y-0.5 hover:brightness-110; }
 .btn-secondary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-magenta inline-flex items-center justify-center rounded-full border border-white/25 bg-black/35 px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 hover:brightness-110; }
@@ -92,7 +99,7 @@ details[open] { @apply border-gold/40 bg-white/[0.085]; }
 .event-card:hover .event-card-media::after { transform:translateX(120%) skewX(-18deg); }
 @keyframes hero-slow-zoom { from { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1); } to { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .hero-frame .hero-media, .hero-clean-title, .hero-clean-subline, .event-card-media::after { animation:none !important; transform:none !important; transition:none !important; opacity:1 !important; } }
-.hero-clean-title { font-family: var(--font-display); max-width:12ch; font-size:clamp(4rem, 9vw, 8.5rem); font-weight:950; line-height:.95; letter-spacing:-.035em; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; }
+.hero-clean-title { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; max-width:12ch; font-size:clamp(4rem, 9vw, 8.5rem); font-weight:950; line-height:.95; letter-spacing:-.035em; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; }
 .hero-clean-subline { margin-top:1.25rem; max-width:44rem; color:rgba(255,247,234,.86); font-size:clamp(1.35rem, 3vw, 2.4rem); font-weight:900; line-height:1.1; letter-spacing:-.02em; opacity:0; transform:translateY(18px); animation:soft-reveal .78s ease .24s both; }
 @media (max-width: 640px) { .hero-clean-title { font-size:clamp(3rem, 15vw, 4.8rem); line-height:.98; letter-spacing:-.025em; } }
 
