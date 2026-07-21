@@ -104,6 +104,7 @@ details[open] { @apply border-gold/40 bg-white/[0.085]; }
 @media (max-width: 640px) { .hero-clean-title { font-size:clamp(3rem, 15vw, 4.8rem); line-height:.98; letter-spacing:-.025em; } }
 
 /* Experience layer (components/experience/*) — additive, self-contained styles. */
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .custom-cursor-active, .custom-cursor-active a, .custom-cursor-active button, .custom-cursor-active [role="button"] { cursor: none !important; }
 .cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; margin: -3.5px; border-radius: 999px; background: #F02688; pointer-events: none; z-index: 300; will-change: transform; }
 .cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 300; will-change: transform; transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background-color .25s ease; }

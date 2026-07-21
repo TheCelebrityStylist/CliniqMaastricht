@@ -11,6 +11,7 @@ import ClosingCTA from '@/components/layout/ClosingCTA'
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import WebGLHero from '@/components/experience/WebGLHeroLoader'
+import EventTicker from '@/components/experience/EventTicker'
 
 export const revalidate = 60
 
@@ -135,6 +136,8 @@ export default async function Home() {
           </div>
         </div>
       </HeroFrame>
+
+      <EventTicker events={events.map((event) => ({ title: event.titleNl || event.title, date: event.date }))} lang="nl" />
 
       <section className="event-section py-24">
         <div className="container-premium">

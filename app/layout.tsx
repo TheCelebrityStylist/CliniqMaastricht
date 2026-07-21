@@ -13,6 +13,7 @@ import { getAgendaEvents } from '@/lib/admin/public'
 import StatusBadge from '@/components/interactive/StatusBadgeLoader'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
 import SmoothScroll from '@/components/experience/SmoothScroll'
+import ScrollChoreography from '@/components/experience/ScrollChoreographyLoader'
 import CinematicEntry from '@/components/experience/CinematicEntryLoader'
 import CustomCursor from '@/components/experience/CustomCursorLoader'
 import MobileHaptics from '@/components/experience/MobileHapticsLoader'
@@ -60,6 +61,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <ScrollChoreography />
       </SmoothScroll>
       <StatusBadge events={statusEvents} />
       <MobileActionBar />
