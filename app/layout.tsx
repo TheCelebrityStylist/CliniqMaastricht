@@ -13,6 +13,9 @@ import { getAgendaEvents } from '@/lib/admin/public'
 import StatusBadge from '@/components/interactive/StatusBadgeLoader'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
 import SmoothScroll from '@/components/experience/SmoothScroll'
+import CinematicEntry from '@/components/experience/CinematicEntryLoader'
+import CustomCursor from '@/components/experience/CustomCursorLoader'
+import MobileHaptics from '@/components/experience/MobileHapticsLoader'
 
 // Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
 // stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
@@ -52,6 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     </head>
     <body>
       <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
+      <CinematicEntry />
       <SmoothScroll>
         <Header />
         <main id="main">{children}</main>
@@ -59,6 +63,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </SmoothScroll>
       <StatusBadge events={statusEvents} />
       <MobileActionBar />
+      <CustomCursor />
+      <MobileHaptics />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`} strategy="afterInteractive" /> : null}
