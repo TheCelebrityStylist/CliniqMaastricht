@@ -17,6 +17,7 @@ import ScrollChoreography from '@/components/experience/ScrollChoreographyLoader
 import CinematicEntry from '@/components/experience/CinematicEntryLoader'
 import CustomCursor from '@/components/experience/CustomCursorLoader'
 import MobileHaptics from '@/components/experience/MobileHapticsLoader'
+import PageTransition from '@/components/experience/PageTransition'
 
 // Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
 // stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
@@ -59,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <CinematicEntry />
       <SmoothScroll>
         <Header />
-        <main id="main">{children}</main>
+        <main id="main"><PageTransition>{children}</PageTransition></main>
         <Footer />
         <ScrollChoreography />
       </SmoothScroll>
