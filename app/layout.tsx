@@ -18,6 +18,7 @@ import CinematicEntry from '@/components/experience/CinematicEntryLoader'
 import CustomCursor from '@/components/experience/CustomCursorLoader'
 import MobileHaptics from '@/components/experience/MobileHapticsLoader'
 import PageTransition from '@/components/experience/PageTransition'
+import AmbientSound from '@/components/experience/AmbientSoundLoader'
 
 // Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
 // stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
@@ -68,6 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <MobileActionBar />
       <CustomCursor />
       <MobileHaptics />
+      <AmbientSound />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`} strategy="afterInteractive" /> : null}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { AMBIENT_TOGGLE_EVENT } from '@/lib/ambientSound'
 
 // Living light-field shader — soft, moving colour blobs (brand magenta/gold) composited over the
 // existing hero photo via an alpha-blended canvas. Purely decorative: the photo underneath is the
@@ -106,10 +107,24 @@ export default function WebGLHero() {
         window.addEventListener('pointermove', onPointerMove, { passive: true })
         window.addEventListener('scroll', onScroll, { passive: true })
 
+        // Ambient-sound reactivity: when the (optional, off-by-default) ambient audio toggle is
+        // on, the light field runs slightly brighter/bolder — a subtle tie between the two
+        // decorative layers. Target lerps in smoothly rather than snapping so a toggle click
+        // never causes a visible jump.
+        const baseIntensity = isMobile ? 0.6 : 1
+        let ambientTarget = 0
+        let ambientBoost = 0
+        function onAmbientToggle(event: Event) {
+          ambientTarget = (event as CustomEvent<{ active: boolean }>).detail?.active ? 1 : 0
+        }
+        window.addEventListener(AMBIENT_TOGGLE_EVENT, onAmbientToggle)
+
         const start = performance.now()
         function update(now: number) {
           if (destroyed) return
           program.uniforms.uTime.value = (now - start) / 1000
+          ambientBoost += (ambientTarget - ambientBoost) * 0.04
+          program.uniforms.uIntensity.value = baseIntensity * (1 + ambientBoost * 0.25)
           renderer.render({ scene: mesh })
           raf = requestAnimationFrame(update)
         }
@@ -119,6 +134,7 @@ export default function WebGLHero() {
           window.removeEventListener('resize', resize)
           window.removeEventListener('pointermove', onPointerMove)
           window.removeEventListener('scroll', onScroll)
+          window.removeEventListener(AMBIENT_TOGGLE_EVENT, onAmbientToggle)
           const ext = gl.getExtension('WEBGL_lose_context')
           ext?.loseContext()
         }
