@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Script from 'next/script'
+import { Inter_Tight, Unbounded } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -11,6 +12,15 @@ import { localBusinessSchema, organizationSchema } from '@/lib/seo'
 import { getAgendaEvents } from '@/lib/admin/public'
 import StatusBadge from '@/components/interactive/StatusBadgeLoader'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
+
+// Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
+// stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
+// reference upgrades for free; Unbounded is new, opted into headings only (see globals.css
+// .h1/.h2/.hero-clean-title) for the "type as design element" look. next/font self-hosts both
+// at build time (no runtime request to Google), sets font-display: swap, and preloads
+// automatically — no extra config needed for Part B's "font display:swap + preload".
+const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tight', display: 'swap', weight: ['400', '500', '600', '700', '800', '900'] })
+const unbounded = Unbounded({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['500', '700', '800', '900'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -32,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     slug: event.slug?.current,
   }))
 
-  return <html lang="nl">
+  return <html lang="nl" className={`${interTight.variable} ${unbounded.variable}`}>
     <head>
       <link rel="preconnect" href="https://images.squarespace-cdn.com" />
       <link rel="preconnect" href="https://cdn.sanity.io" />
