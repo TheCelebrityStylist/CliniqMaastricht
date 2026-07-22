@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLang } from '@/lib/lang'
 import { COPY, SITE, HOURS } from '@/lib/content'
+import Logo from '@/components/brand/Logo'
 
 
 const InstagramIcon = () => (
@@ -78,17 +79,20 @@ export default function Footer() {
       <div className="mx-auto max-w-screen-xl px-8 pb-10 pt-20 md:px-16">
         <div className="mb-16 grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="text-[15px] font-black tracking-[0.45em] text-white transition-colors duration-300 hover:text-magenta">
-              CLINIQ
+            <Link href="/" className="focus-ring inline-flex" aria-label="Cliniq Maastricht">
+              <Logo variant="white" />
             </Link>
-            <p className="mb-6 mt-4 max-w-[220px] text-sm leading-relaxed text-white/35">
+            <p className="mb-2 mt-5 max-w-[240px] font-serif text-lg italic leading-snug text-white/55">
+              We own <span className="font-display not-italic font-bold text-white/75">the night</span>
+            </p>
+            <p className="mb-6 max-w-[220px] text-sm leading-relaxed text-white/35">
               {t.footer.tagline}
             </p>
-            <div className="flex items-center gap-4 text-white/20">
-              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="Instagram">
+            <div className="flex items-center gap-3 text-white/30">
+              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral" aria-label="Instagram">
                 <InstagramIcon />
               </a>
-              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="TikTok">
+              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral" aria-label="TikTok">
                 <TikTokIcon />
               </a>
             </div>
@@ -164,7 +168,7 @@ export default function Footer() {
           ).map((link, index, arr) => (
             <span key={link.href} className="flex items-center gap-x-4">
               <Link href={link.href} className="transition-colors duration-200 hover:text-magenta">{link.label}</Link>
-              {index < arr.length - 1 ? <span className="text-white/10">·</span> : null}
+              {index < arr.length - 1 ? <span className="text-coral/40">·</span> : null}
             </span>
           ))}
         </div>
