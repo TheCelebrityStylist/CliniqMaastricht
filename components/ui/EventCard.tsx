@@ -36,7 +36,7 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     {hasDetail ? <div className="event-card-detail">
       {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
       <div className="mt-4 flex flex-wrap items-center gap-4">
-        {event.showDetailCTA ? <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-gold hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link> : null}
+        {event.showDetailCTA ? <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-coral hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link> : null}
         {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
         {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
       </div>

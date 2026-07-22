@@ -44,7 +44,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
     <Link href="/uitgaan" className="text-white/70 hover:text-white">← Terug naar agenda</Link>
     <div className="mt-8 grid gap-10 lg:grid-cols-[.9fr_1.1fr]">
       <div className="image-frame aspect-[4/5]"><SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || title} fill priority sizes="50vw" className="object-cover brightness-[1.08]" objectPosition={event.imagePosition || 'center'} /><EventImageReveal /></div>
-      <div><p className="eyebrow">{event.date} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}</p><h1 className="h1 mt-5">{title}</h1>{subtitle ? <p className="mt-4 text-2xl text-gold">{subtitle}</p> : null}<p className="prose-premium mt-7">{description}</p>{event.ticketUrl ? <Link href={event.ticketUrl} target="_blank" className="btn-primary mt-8">Tickets / RSVP</Link> : null}
+      <div><p className="eyebrow">{event.date} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}</p><h1 className="h1 mt-5">{title}</h1>{subtitle ? <p className="mt-4 text-2xl text-coral">{subtitle}</p> : null}<p className="prose-premium mt-7">{description}</p>{event.ticketUrl ? <Link href={event.ticketUrl} target="_blank" className="btn-primary mt-8">Tickets / RSVP</Link> : null}
         <div className="mt-8">
           <EventCountdown title={`${title} bij Cliniq Maastricht`} date={event.date} startTime={event.startTime} endTime={event.endTime} description={description} location={`${site.address.street}, ${site.address.postalCode} ${site.address.city}`} />
         </div>

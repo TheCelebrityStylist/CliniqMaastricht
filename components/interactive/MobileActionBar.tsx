@@ -42,7 +42,7 @@ export default function MobileActionBar() {
         <CalendarIcon />
         {t.events}
       </Link>
-      <Link href={localizedPaths.eventSpace[lang]} className="focus-ring flex flex-col items-center justify-center gap-1 bg-magenta py-3 text-[10px] font-black uppercase tracking-[0.08em] text-white">
+      <Link href={localizedPaths.eventSpace[lang]} className="focus-ring flex flex-col items-center justify-center gap-1 bg-coral py-3 text-[10px] font-black uppercase tracking-[0.08em] text-white">
         <ArrowIcon />
         {nav.cta}
       </Link>

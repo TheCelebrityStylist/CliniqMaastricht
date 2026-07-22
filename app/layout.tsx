@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Script from 'next/script'
-import { Inter_Tight, Unbounded } from 'next/font/google'
+import { Inter_Tight, MuseoModerno, Bodoni_Moda } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -20,14 +20,19 @@ import MobileHaptics from '@/components/experience/MobileHapticsLoader'
 import PageTransition from '@/components/experience/PageTransition'
 import AmbientSound from '@/components/experience/AmbientSoundLoader'
 
-// Real, self-hosted webfonts (previously --font-inter-tight was just an alias for the system
-// stack — see globals.css). Inter Tight replaces that alias 1:1 so every existing font-family
-// reference upgrades for free; Unbounded is new, opted into headings only (see globals.css
-// .h1/.h2/.hero-clean-title) for the "type as design element" look. next/font self-hosts both
-// at build time (no runtime request to Google), sets font-display: swap, and preloads
-// automatically — no extra config needed for Part B's "font display:swap + preload".
+// Brand type system (V1): MuseoModerno is the display face (Bold headlines/nav/buttons/event
+// titles/marquee, ExtraLight for airy precision moments) - see globals.css .h1/.h2/.hero-clean-title.
+// Bodoni Moda italic stands in for the brand's Bettoni Oblique, which is commercial/unlicensed
+// (Zetafonts) - flagged in the report as a paid upgrade, wired through one variable
+// (--font-serif) so swapping later is a one-line change. Body copy stays on Inter Tight: MuseoModerno
+// was tested as a body face and, as expected for a rounded geometric display font, its low
+// letterform contrast at paragraph sizes hurt scanning/legibility versus a text-optimized grotesk -
+// the brief itself pre-authorizes this exact fallback ("if body copy in MuseoModerno fails
+// legibility ... switch body only to a neutral grotesk and keep MuseoModerno for display. Report
+// if you do."). Reported here. All three self-host at build time, font-display: swap, auto-preload.
 const interTight = Inter_Tight({ subsets: ['latin'], variable: '--font-inter-tight', display: 'swap', weight: ['400', '500', '600', '700', '800', '900'] })
-const unbounded = Unbounded({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['500', '700', '800', '900'] })
+const museoModerno = MuseoModerno({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['200', '500', '700', '800', '900'] })
+const bodoniModa = Bodoni_Moda({ subsets: ['latin'], variable: '--font-serif', display: 'swap', style: ['italic'], weight: ['500', '600', '700'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -36,7 +41,7 @@ export const metadata: Metadata = {
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'add-google-search-console-code' },
 }
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#080607' }
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#31071B' }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const events = await getAgendaEvents()
@@ -49,7 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     slug: event.slug?.current,
   }))
 
-  return <html lang="nl" className={`${interTight.variable} ${unbounded.variable}`}>
+  return <html lang="nl" className={`${interTight.variable} ${museoModerno.variable} ${bodoniModa.variable}`}>
     <head>
       <link rel="preconnect" href="https://images.squarespace-cdn.com" />
       <link rel="preconnect" href="https://cdn.sanity.io" />

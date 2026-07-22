@@ -219,8 +219,8 @@ export default async function VacaturesPage() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#31071b] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#31071b] to-transparent" />
         </div>
 
         <style>{`
@@ -238,7 +238,7 @@ export default async function VacaturesPage() {
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {process.map(([title, text], index) => (
             <article key={title} className="rounded-3xl border border-white/10 bg-white/[0.045] p-6">
-              <p className="text-4xl font-black text-gold">{index + 1}</p>
+              <p className="text-4xl font-black text-coral">{index + 1}</p>
               <h3 className="mt-4 text-xl font-black tracking-[-0.03em]">{title}</h3>
               <p className="mt-3 text-white/66">{text}</p>
             </article>

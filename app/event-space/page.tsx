@@ -240,7 +240,7 @@ export default async function EventSpacePage() {
           className="hero-media -z-10 object-cover brightness-[1.08]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-plum/10" />
         <AtmosphereFX />
         <MagneticCTAs />
 
@@ -315,18 +315,18 @@ export default async function EventSpacePage() {
                 </p>
                 <p>
                   Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
+                  <Link href="/uitgaan" className="text-coral hover:text-white">
                     nachtleven van CLINIQ Maastricht
                   </Link>
                   .
                 </p>
                 <p>
                   Vrijgezellenavond plannen? Combineer een{' '}
-                  <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+                  <Link href="/cocktail-workshop" className="text-coral hover:text-white">
                     cocktail workshop
                   </Link>{' '}
                   met{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
+                  <Link href="/uitgaan" className="text-coral hover:text-white">
                     uitgaan in Maastricht en een exclusieve clubavond
                   </Link>
                   .

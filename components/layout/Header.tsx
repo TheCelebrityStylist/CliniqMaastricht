@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { getLanguageFromPath, getSwitchPath, localizedPaths, navItems, copy } from '@/lib/i18n'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import Logo from '@/components/brand/Logo'
 
 export default function Header() {
   const pathname = usePathname()
@@ -24,7 +25,7 @@ export default function Header() {
   return <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/78 backdrop-blur-2xl transition-colors duration-300">
     <MagneticCTAs selector=".nav-link" strength={0.4} />
     <div className="container-premium flex h-20 items-center justify-between gap-6">
-      <Link href={localizedPaths.home[lang]} className="focus-ring text-lg font-black tracking-[0.42em] text-white">CLINIQ</Link>
+      <Link href={localizedPaths.home[lang]} className="focus-ring" aria-label="Cliniq Maastricht"><Logo variant="white" /></Link>
       <nav className="hidden items-center gap-7 lg:flex" aria-label={lang === 'nl' ? 'Hoofdnavigatie' : 'Main navigation'}>
         {navItems.map((item) => {
           const href = localizedPaths[item.key][lang]

@@ -197,8 +197,8 @@ export default async function Home() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#31071b] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#31071b] to-transparent" />
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
@@ -229,7 +229,7 @@ export default async function Home() {
             <>
               Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
               bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
-              <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+              <Link href="/cocktail-workshop" className="text-coral hover:text-white">
                 cocktail workshop Maastricht
               </Link>
               .
@@ -247,7 +247,7 @@ export default async function Home() {
             <>
               CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
               Meer over{' '}
-              <Link href="/event-space" className="text-gold hover:text-white">
+              <Link href="/event-space" className="text-coral hover:text-white">
                 ruimte huren Maastricht
               </Link>
               .

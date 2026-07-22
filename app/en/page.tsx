@@ -182,8 +182,8 @@ export default async function HomeEn() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#31071b] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#31071b] to-transparent" />
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
@@ -214,7 +214,7 @@ export default async function HomeEn() {
             <>
               Make cocktails with your group, guided by our bartenders. Perfect for bachelorette parties, company
               outings, birthdays and groups of friends. Discover our{' '}
-              <Link href="/en/cocktail-workshop" className="text-gold hover:text-white">
+              <Link href="/en/cocktail-workshop" className="text-coral hover:text-white">
                 cocktail workshops
               </Link>
               .
@@ -232,7 +232,7 @@ export default async function HomeEn() {
             <>
               CLINIQ is available for drinks, company parties, birthdays, bachelorette nights and private events. Learn
               more about{' '}
-              <Link href="/en/event-space" className="text-gold hover:text-white">
+              <Link href="/en/event-space" className="text-coral hover:text-white">
                 hiring the venue
               </Link>
               .

@@ -34,7 +34,7 @@ export default function StudentenavondPage() {
       <div><p className="eyebrow">Donderdagavond</p><h2 className="h2 mt-4">Vaste crowd. Volle dansvloer.</h2></div>
       <div className="prose-premium">
         <p>Geen dresscode, geen gedoe. Gewoon een volle dansvloer, wisselende muziek en een vaste crowd die weet hoe het moet. Deuren open om 22:00. Check de agenda voor deze week.</p>
-        <p>Bekijk meer over <Link href="/uitgaan" className="text-gold hover:text-white">uitgaan in Maastricht</Link>, bekijk de <Link href="/fotos" className="text-gold hover:text-white">foto&apos;s van CLINIQ</Link> of begin je avond met een <Link href="/cocktail-workshop" className="text-gold hover:text-white">cocktail workshop Maastricht</Link>.</p>
+        <p>Bekijk meer over <Link href="/uitgaan" className="text-coral hover:text-white">uitgaan in Maastricht</Link>, bekijk de <Link href="/fotos" className="text-coral hover:text-white">foto&apos;s van CLINIQ</Link> of begin je avond met een <Link href="/cocktail-workshop" className="text-coral hover:text-white">cocktail workshop Maastricht</Link>.</p>
       </div>
     </section>
 

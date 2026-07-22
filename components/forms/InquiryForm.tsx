@@ -30,7 +30,7 @@ export default function InquiryForm({ type, fields, sourcePage, lang: langProp }
       </div>)}
     </div>
     <button disabled={status === 'loading'} className="btn-primary mt-6 w-full sm:w-auto">{status === 'loading' ? t.sending : t.submit}</button>
-    {status === 'success' ? <p className="mt-4 text-gold" role="status">{t.success}</p> : null}
+    {status === 'success' ? <p className="mt-4 text-coral" role="status">{t.success}</p> : null}
     {status === 'error' ? <p className="mt-4 text-magenta" role="alert">{t.error}</p> : null}
   </form>
 }

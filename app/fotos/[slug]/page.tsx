@@ -24,6 +24,6 @@ export default async function PhotoAlbumDetailPage({ params, searchParams }: { p
   const t = ui.nl
   return <section className="container-premium pt-36 pb-24">
     <PhotoLightbox photos={album.photos} activeIndex={activeIndex} basePath={`/fotos/${album.slug}`} title={album.titleNl} backLabel={t.common.backAlbums} previousLabel={t.common.previous} nextLabel={t.common.next} />
-    <div className="mt-12 columns-2 gap-3 md:columns-3 lg:columns-4">{album.photos.map((photo, index)=><Link key={photo.id} href={`/fotos/${album.slug}?photo=${index}`} className={`image-frame mb-3 block break-inside-avoid rounded-2xl ${index===activeIndex?'ring-2 ring-gold':''}`}><div className="relative aspect-[3/4]"><SafeImage src={photo.url} fallbackSrc={images.fallbackWide} alt={photo.altNl || album.titleNl} fill sizes="25vw" className="object-cover brightness-[1.08] transition duration-500 hover:scale-105" objectPosition={photo.focalPoint || 'center'} /></div></Link>)}</div>
+    <div className="mt-12 columns-2 gap-3 md:columns-3 lg:columns-4">{album.photos.map((photo, index)=><Link key={photo.id} href={`/fotos/${album.slug}?photo=${index}`} className={`image-frame mb-3 block break-inside-avoid rounded-2xl ${index===activeIndex?'ring-2 ring-coral':''}`}><div className="relative aspect-[3/4]"><SafeImage src={photo.url} fallbackSrc={images.fallbackWide} alt={photo.altNl || album.titleNl} fill sizes="25vw" className="object-cover brightness-[1.08] transition duration-500 hover:scale-105" objectPosition={photo.focalPoint || 'center'} /></div></Link>)}</div>
   </section>
 }
