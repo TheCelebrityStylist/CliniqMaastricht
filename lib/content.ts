@@ -275,7 +275,7 @@ export const SEO_TEXT = {
 // so the existing, approved page copy above stays untouched.
 export const INTERACTIVE_COPY = {
   nl: {
-    status: { openNow: 'Open nu', closesAt: 'Sluit om', doorsOpenIn: 'Deuren open over', nextEvent: 'Volgende avond', tonight: 'Vanavond bij Cliniq', closed: 'Gesloten', viewAgenda: 'Bekijk agenda' },
+    status: { openNow: 'We zijn open', closesAt: 'tot', doorsOpenIn: 'Je dosis opent over', nextEvent: 'Volgende avond', tonight: 'Vanavond bij Cliniq', closed: 'Gesloten — tot gauw', viewAgenda: 'Bekijk agenda' },
     countdown: { title: 'Aftellen tot de deuren open gaan', started: 'De avond is begonnen', addToCalendar: 'Toevoegen aan agenda', downloadIcs: 'Download .ics', googleCalendar: 'Google Agenda', days: 'd', hours: 'u', minutes: 'm', seconds: 's' },
     cocktailTeaser: { eyebrow: 'Kies je cocktail', title: 'Welke cocktail past bij jouw avond?', cta: 'Bekijk de workshop' },
     actionBar: { route: 'Route', events: 'Events', reserve: 'Aanvragen' },
@@ -283,7 +283,7 @@ export const INTERACTIVE_COPY = {
     configurator: { eyebrow: 'Indeling', title: 'Zo past de ruimte zich aan', upTo: 'tot 400 gasten' },
   },
   en: {
-    status: { openNow: 'Open now', closesAt: 'Closes at', doorsOpenIn: 'Doors open in', nextEvent: 'Next night', tonight: 'Tonight at Cliniq', closed: 'Closed', viewAgenda: 'View agenda' },
+    status: { openNow: "We're open", closesAt: 'till', doorsOpenIn: 'Your dose opens in', nextEvent: 'Next night', tonight: 'Tonight at Cliniq', closed: 'Closed — see you soon', viewAgenda: 'View agenda' },
     countdown: { title: 'Countdown to doors opening', started: 'The night has started', addToCalendar: 'Add to calendar', downloadIcs: 'Download .ics', googleCalendar: 'Google Calendar', days: 'd', hours: 'h', minutes: 'm', seconds: 's' },
     cocktailTeaser: { eyebrow: 'Pick your cocktail', title: 'Which cocktail suits your night?', cta: 'View the workshop' },
     actionBar: { route: 'Route', events: 'Events', reserve: 'Inquire' },

@@ -14,7 +14,7 @@ import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 
 const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
 const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
-const EventSpaceConfigurator = dynamic(() => import('@/components/interactive/EventSpaceConfigurator'))
+const RoomAcrossNight = dynamic(() => import('@/components/experience/RoomAcrossNight'))
 
 export const revalidate = 60
 
@@ -366,7 +366,7 @@ export default async function EventSpacePage() {
         </GalleryLightbox>
       </section>
 
-      <EventSpaceConfigurator ctaHref="#aanvraag" />
+      <RoomAcrossNight ctaHref="#aanvraag" />
 
       <section className="container-premium pb-24">
         <h2 className="h2">{geoAnswer.question}</h2>

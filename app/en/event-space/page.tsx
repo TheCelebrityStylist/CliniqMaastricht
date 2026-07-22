@@ -13,7 +13,7 @@ import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 
 const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
 const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
-const EventSpaceConfigurator = dynamic(() => import('@/components/interactive/EventSpaceConfigurator'))
+const RoomAcrossNight = dynamic(() => import('@/components/experience/RoomAcrossNight'))
 
 export async function generateMetadata() { return cmsMetadata('eventSpace', 'en') }
 
@@ -40,7 +40,7 @@ export default function EventSpacePage(){
       </GalleryLightbox>
     </section>
 
-    <EventSpaceConfigurator ctaHref="#inquiry" />
+    <RoomAcrossNight ctaHref="#inquiry" />
     <section className="container-premium pb-24">
       <h2 className="h2">{geoAnswer.question}</h2>
       <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>

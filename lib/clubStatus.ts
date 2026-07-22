@@ -1,14 +1,7 @@
-'use client'
+import { INTERACTIVE_COPY } from './content'
+import type { Lang } from './i18n'
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { useLang } from '@/lib/lang'
-import { INTERACTIVE_COPY } from '@/lib/content'
-
-const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest']
-
-export type StatusBadgeEvent = {
+export type ClubStatusEvent = {
   title: string
   titleNl?: string
   titleEn?: string
@@ -44,7 +37,7 @@ function buildWindows(from: Date): OpenWindow[] {
   return windows.sort((a, b) => a.start.getTime() - b.start.getTime())
 }
 
-function getClubState(now: Date) {
+function getClubWindow(now: Date) {
   const windows = buildWindows(now)
   const current = windows.find((w) => now >= w.start && now < w.end)
   const next = windows.find((w) => w.start > now)
@@ -62,22 +55,13 @@ function formatCountdown(target: Date, now: Date, t: { days: string; hours: stri
   return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
-export default function StatusBadge({ events = [] }: { events?: StatusBadgeEvent[] }) {
-  const pathname = usePathname()
-  const { lang } = useLang()
+function formatTime(date: Date) {
+  return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+}
+
+export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) {
   const t = INTERACTIVE_COPY[lang]
-  const [now, setNow] = useState<Date | null>(null)
-
-  useEffect(() => {
-    setNow(new Date())
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  if (HIDDEN_PATHS.some((path) => pathname?.startsWith(path))) return null
-  if (!now) return null
-
-  const { isOpen, closesAt, nextOpen } = getClubState(now)
+  const { isOpen, closesAt, nextOpen } = getClubWindow(now)
   const upcoming = events.find((event) => {
     const eventDate = new Date(`${event.date}T${event.startTime || '22:00'}:00`)
     return eventDate.getTime() > now.getTime() - 3 * 60 * 60 * 1000
@@ -95,21 +79,5 @@ export default function StatusBadge({ events = [] }: { events?: StatusBadgeEvent
       ? `${t.status.doorsOpenIn} ${formatCountdown(eventDate, now, t.countdown)}`
       : t.status.closed
 
-  return (
-    <Link
-      href={href}
-      className="status-badge group fixed bottom-20 left-4 z-40 flex max-w-[calc(100vw-2rem)] items-center gap-2.5 rounded-full border border-white/15 bg-ink/85 py-2.5 pl-3 pr-4 text-[11px] font-black uppercase tracking-[0.08em] text-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:text-white sm:bottom-6 sm:left-6"
-      aria-label={`${t.status.tonight}: ${label}`}
-    >
-      <span className={`relative flex h-2.5 w-2.5 shrink-0 rounded-full ${isOpen ? 'bg-emerald-400' : 'bg-white/35'}`} aria-hidden="true">
-        {isOpen ? <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 motion-reduce:animate-none" /> : null}
-      </span>
-      <span className="truncate tabular-nums">{label}</span>
-      {eventTitle ? <span className="hidden truncate text-white/45 sm:inline">· {eventTitle}</span> : null}
-    </Link>
-  )
-}
-
-function formatTime(date: Date) {
-  return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+  return { label, href, isOpen, eventTitle }
 }

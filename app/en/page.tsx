@@ -12,6 +12,7 @@ import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import WebGLHero from '@/components/experience/WebGLHeroLoader'
 import EventTicker from '@/components/experience/EventTicker'
+import HeroStatus from '@/components/experience/HeroStatus'
 
 export const revalidate = 60
 
@@ -98,7 +99,7 @@ export default async function HomeEn() {
           className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
         <WebGLHero />
         <AtmosphereFX />
         <MagneticCTAs />
@@ -118,6 +119,8 @@ export default async function HomeEn() {
                 {secondaryCta}
               </Link>
             </div>
+
+            <HeroStatus events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="en" initialNow={Date.now()} />
           </div>
         </div>
       </HeroFrame>
