@@ -104,7 +104,7 @@ export default async function HomeEn() {
         <MagneticCTAs />
 
         <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl min-w-0">
             <p className="eyebrow mb-4">Platielstraat 9A</p>
             <h1 className="hero-clean-title">{heroTitle}</h1>
             <p className="hero-clean-subline">{heroSubtitle}</p>
