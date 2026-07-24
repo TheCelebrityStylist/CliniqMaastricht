@@ -3,6 +3,8 @@ import { breadcrumbSchema, eventVenueSchema, faqSchema } from '@/lib/seo'
 import { images, imageSets, site } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
+import ChoreographedContent from '@/components/ui/ChoreographedContent'
+import EventTypeCards from '@/components/ui/EventTypeCards'
 import { eventSpaceFaqsEn as faqs } from '@/lib/faqs'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import SafeImage from '@/components/ui/SafeImage'
@@ -25,15 +27,27 @@ const geoAnswer = {
 }
 
 const eventTypes = [['Corporate event','Corporate drinks or staff party? Cliniq has the space, bar and sound system. You bring the team.'],['Private party','From intimate birthdays to big celebration nights. Cliniq is yours exclusively.'],['Hen night','Workshop to open, then straight into the club. One of the most-booked hen night venues in Maastricht.'],['Drinks','For groups that want an informal setting without a standard room feel.'],['Private party','Your own night with door policy, bar and a tailored setup.'],['Student event','Suitable for larger groups with music, lighting and clear agreements.'],['Product launch','Present your brand or product in a setting people remember. Stage, screen, bar and lighting all in place.'],['Gala / private night','For a sharper evening with reception, bar and club atmosphere later on.']]
+const EVENT_TYPE_PHOTOS = [images.redRoom, images.party, images.workshopBar, images.club, images.crowd, images.bar, images.contactInterior, images.redCrowd]
 const facilities = [['Bar','A fixed bar setup with team and drinks options.'],['Light and sound','The basis for music, speeches and a full dance floor is already there.'],['DJ options','We can help with DJ, music style and timing.'],['Dance floor','The space feels like a night out, not an empty room.'],['Cocktail options','Cocktails, welcome drinks or drinks packages are possible.'],['Central location','Platielstraat 9A, in the centre of Maastricht.'],['Hospitality team','A team used to busy nights and group events.'],['Cloakroom / lockers','Locker or cloakroom arrangements can be aligned per event.']]
 
 export default function EventSpacePage(){
   const gallery = imageSets.eventSpace.map((url) => ({ url, alt: 'CLINIQ Maastricht event venue' }))
   return <>
     <section className="hero-section relative min-h-[78vh] overflow-hidden pt-36"><SafeImage src={images.redRoom} fallbackSrc={images.fallbackWide} alt="CLINIQ Maastricht event venue with bar and lighting" fill priority sizes="100vw" className="hero-media -z-10 object-cover brightness-[1.08]" /><div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-plum/10"/><AtmosphereFX /><MagneticCTAs /><div className="container-premium py-24"><p className="eyebrow mb-4">Events</p><h1 className="h1 max-w-5xl">Hire CLINIQ for your event</h1><p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">Available for private hire. Parties, corporate events and launches. Up to 400 guests.</p><a href="#inquiry" className="btn-primary mt-8">Request proposal</a></div></section>
-    <section className="container-premium py-24"><p className="eyebrow">Event types</p><h2 className="h2 mt-4">What can you hire CLINIQ for?</h2><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{eventTypes.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
+    <section className="container-premium py-24"><p className="eyebrow">Event types</p><h2 className="h2 mt-4">What can you hire CLINIQ for?</h2><div className="mt-8"><EventTypeCards cards={eventTypes.map(([title], index) => ({ title, image: EVENT_TYPE_PHOTOS[index % EVENT_TYPE_PHOTOS.length], href: '#inquiry' }))} /></div><div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{eventTypes.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
     <section className="container-premium pb-24"><div className="max-w-4xl"><p className="eyebrow">Facilities</p><h2 className="h2 mt-4">What is available?</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">CLINIQ already has the basis for a complete evening: bar, lighting, sound, dance floor and a team that is used to busy nights.</p></div><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{facilities.map(([title,text])=><InfoCard key={title} title={title} text={text} />)}</div></section>
-    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Event space and venue hire in Maastricht</h2></div><div className="prose-premium">{SEO_TEXT.eventspace.en.split('\n\n').map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div></section>
+    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Event space and venue hire in Maastricht</h2></div><div className="prose-premium"><ChoreographedContent
+      headline="Cliniq Maastricht is available for exclusive private hire on Thursday, Friday and Saturday."
+      quote="Cliniq is one of the region's most-booked spaces for birthdays and anniversaries."
+      stats={[
+        { value: '400', label: 'guests standing' },
+        { value: 'Thu · Fri · Sat', label: 'exclusive hire' },
+        { value: 'Bar, sound,\nlight, floor', label: 'fully included' },
+        { value: '24h', label: 'response time' },
+      ]}
+      moreLabel="Read the full details"
+      paragraphs={SEO_TEXT.eventspace.en.split('\n\n').map((paragraph) => <>{paragraph}</>)}
+    /></div></div></section>
     <section className="container-premium pb-24"><p className="eyebrow">Images</p><h2 className="h2 mt-4">The space</h2>
       <GalleryLightbox images={gallery.slice(0,5).map((item) => ({ src: item.url, alt: item.alt }))}>
         <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">{gallery.slice(0,5).map((item,i)=><LightboxImageButton key={`${item.url}-${i}`} index={i} label={item.alt} className={`photo-tile image-frame block w-full text-left ${i===0?'md:col-span-2 md:row-span-2':'md:col-span-2'}`}><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt} fill sizes="33vw" className="object-cover brightness-[1.08]" /></LightboxImageButton>)}</div>

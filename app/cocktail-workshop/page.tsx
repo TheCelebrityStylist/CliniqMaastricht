@@ -5,6 +5,7 @@ import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia } from '@/lib/admin/public'
 import JsonLd from '@/components/ui/JsonLd'
+import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import { workshopFaqsNl as faqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 import { breadcrumbSchema, cocktailWorkshopSchema } from '@/lib/seo'
@@ -99,7 +100,24 @@ export default async function WorkshopPage(){
 
     <section className="container-premium pb-24"><div className="max-w-3xl"><p className="eyebrow">Groepen</p><h2 className="h2 mt-4">Voor welke groepen?</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">De cocktail workshop is vooral geschikt voor groepen die iets willen doen zonder dat het formeel wordt. Denk aan vrijgezellenfeesten, bedrijfsuitjes, verjaardagen, teamavonden of vriendengroepen die de avond goed willen beginnen.</p></div><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{groupTypes.map((type)=><article key={type} className="rounded-3xl border border-white/10 bg-white/[0.045] p-6"><h3 className="text-2xl font-black tracking-[-0.03em]">{type}</h3><p className="mt-3 text-white/66">Actief, sociaal en makkelijk te combineren met borrelen of uitgaan in Maastricht.</p></article>)}</div></section>
 
-    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Cocktail workshop in Maastricht</h2></div><div className="prose-premium"><p>Een cocktail workshop organiseren in Maastricht? Dat doe je bij Cliniq op de Platielstraat. Beschikbaar op donderdag, vrijdag en zaterdag, start in overleg tussen 19:00 en 20:30. Na afloop kun je blijven voor de{' '}<Link href="/uitgaan" className="text-coral-text hover:text-white">reguliere clubavond en het nachtleven van Maastricht</Link>.</p><p>Geschikt voor groepen van minimaal 15 personen. Iedereen maakt minstens drie cocktails (€15 per cocktail), begeleid door onze bartenders. Geen voorkennis nodig.</p><p>Cocktail workshop Maastricht voor een <Link href="/vrijgezellenavond" className="text-coral-text hover:text-white">vrijgezellenavond in Maastricht</Link>? Cliniq is een van de populairste locaties in de regio voor bachelorette en vrijgezellenfeesten. Exclusief gebruik van de ruimte mogelijk, drankpakket op aanvraag.</p><p>Maastricht is goed bereikbaar vanuit Luik, Hasselt, Heerlen en Sittard. Parkeren kan in meerdere garages op loopafstand van de Platielstraat.</p><p>Ook handig als <Link href="/bedrijfsfeest" className="text-coral-text hover:text-white">bedrijfsuitje</Link> met je team.</p></div></div></section>
+    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Cocktail workshop in Maastricht</h2></div><div className="prose-premium"><ChoreographedContent
+              headline="Een cocktail workshop organiseren in Maastricht? Dat doe je bij Cliniq op de Platielstraat."
+              quote="Cliniq is een van de populairste locaties in de regio voor bachelorette en vrijgezellenfeesten."
+              stats={[
+                { value: '15+', label: 'personen minimaal' },
+                { value: '3', label: 'cocktails per persoon' },
+                { value: '€15', label: 'per cocktail' },
+                { value: 'Do · Vr · Za', label: '19:00–20:30 starttijd' },
+              ]}
+              moreLabel="Lees de volledige mogelijkheden"
+              paragraphs={[
+                <>Een cocktail workshop organiseren in Maastricht? Dat doe je bij Cliniq op de Platielstraat. Beschikbaar op donderdag, vrijdag en zaterdag, start in overleg tussen 19:00 en 20:30. Na afloop kun je blijven voor de{' '}<Link href="/uitgaan" className="text-coral-text hover:text-white">reguliere clubavond en het nachtleven van Maastricht</Link>.</>,
+                <>Geschikt voor groepen van minimaal 15 personen. Iedereen maakt minstens drie cocktails (€15 per cocktail), begeleid door onze bartenders. Geen voorkennis nodig.</>,
+                <>Cocktail workshop Maastricht voor een <Link href="/vrijgezellenavond" className="text-coral-text hover:text-white">vrijgezellenavond in Maastricht</Link>? Cliniq is een van de populairste locaties in de regio voor bachelorette en vrijgezellenfeesten. Exclusief gebruik van de ruimte mogelijk, drankpakket op aanvraag.</>,
+                <>Maastricht is goed bereikbaar vanuit Luik, Hasselt, Heerlen en Sittard. Parkeren kan in meerdere garages op loopafstand van de Platielstraat.</>,
+                <>Ook handig als <Link href="/bedrijfsfeest" className="text-coral-text hover:text-white">bedrijfsuitje</Link> met je team.</>,
+              ]}
+            /></div></div></section>
 
     <section className="container-premium pb-24"><div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]"><div><p className="eyebrow">Details</p><h2 className="h2 mt-4">Wat je vooraf wilt weten</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">De workshop is bedoeld voor groepen die iets actiefs willen doen zonder dat het stijf wordt. Je hoeft geen ervaring te hebben; onze bartenders bouwen rustig op en zorgen dat iedereen mee kan doen.</p></div><div className="space-y-5 text-lg leading-[1.7] text-white/72"><p>Meestal starten we met een korte uitleg over smaken, glaswerk, ijs, balans en techniek. Daarna gaat de groep zelf aan de slag. Je maakt meerdere cocktails, proeft tussendoor en krijgt praktische tips over shaken, stirren, garneren en serveren. Daardoor voelt het niet als een les, maar als samen achter de bar staan.</p><p>Voor vrijgezellenfeesten werkt de cocktail workshop goed omdat iedereen meteen iets te doen heeft. Voor bedrijfsuitjes en teamavonden is het juist handig dat de activiteit laagdrempelig is: niemand hoeft op een podium, maar er gebeurt wel genoeg om de groep los te maken. Ook verjaardagen, vriendinnenuitjes en groepen vrienden combineren de workshop vaak met borrelen of{' '}<Link href="/uitgaan" className="text-coral-text hover:text-white">uitgaan in Maastricht</Link>.</p><p>Stuur bij je aanvraag de gewenste datum, het aantal personen en eventuele wensen mee. Denk aan een bepaalde starttijd, allergieën, alcoholvrije opties of de wens om na de workshop te blijven hangen. Dan kunnen we gericht reageren met beschikbaarheid, prijs en een voorstel dat past bij de groep.</p></div></div></section>
 

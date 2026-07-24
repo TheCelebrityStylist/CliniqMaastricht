@@ -2,6 +2,7 @@ import { breadcrumbSchema, cocktailWorkshopSchema, faqSchema } from '@/lib/seo'
 import { images, imageSets, site } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import JsonLd from '@/components/ui/JsonLd'
+import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import { workshopFaqsEn as faqs } from '@/lib/faqs'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import SafeImage from '@/components/ui/SafeImage'
@@ -24,7 +25,18 @@ export default function WorkshopPageEn(){
     <section className="container-premium py-24"><div className="grid gap-4 md:grid-cols-4"><Fact title="€15 per cocktail" text="Including several cocktails, materials and guidance." /><Fact title="Minimum 15 guests" text="Ideal for groups that want to do something active together." /><Fact title="3 cocktails included" text="You make and taste several cocktails during the workshop." /><Fact title="Bartender guidance" text="Our bartenders help with flavour, technique and serving." /></div></section>
     <section className="container-premium grid gap-10 pb-24 lg:grid-cols-2 lg:items-center"><div><p className="eyebrow">Workshop</p><h2 className="h2 mt-4">What you do</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">Our bartenders walk you through mixing, shaking and garnishing — hands on, no slides, no theory. Every guest makes at least 3 cocktails and drinks what they make. Stay on for the club night after.</p><ul className="mt-8 grid gap-3 text-white/78"><li>• Make several cocktails</li><li>• Work with bar tools, ingredients and glassware</li><li>• Guidance from experienced bartenders</li><li>• Time to have drinks with your group</li></ul></div><div className="grid grid-cols-2 gap-4">{gallery.slice(0,4).map((item)=><div key={item.url} className="photo-tile image-frame aspect-square"><SafeImage src={item.url} fallbackSrc={images.fallbackWide} alt={item.alt} fill sizes="(min-width:1024px) 25vw, 50vw" className="object-cover brightness-[1.08]" /></div>)}</div></section>
     <section className="container-premium pb-24"><div className="max-w-3xl"><p className="eyebrow">Groups</p><h2 className="h2 mt-4">Who it is for</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">The cocktail workshop is best for groups that want to do something without making it formal. Think bachelor and bachelorette parties, company outings, birthdays, team nights or groups of friends starting the evening well.</p></div><div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{groupTypes.map((type)=><article key={type} className="rounded-3xl border border-white/10 bg-white/[0.045] p-6"><h3 className="text-2xl font-black tracking-[-0.03em]">{type}</h3><p className="mt-3 text-white/66">Active, social and easy to combine with drinks or nightlife in Maastricht.</p></article>)}</div></section>
-    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Cocktail workshop in Maastricht</h2></div><div className="prose-premium">{SEO_TEXT.workshop.en.split('\n\n').map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div></div></section>
+    <section className="container-premium pb-24"><div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Maastricht</p><h2 className="h2 mt-4">Cocktail workshop in Maastricht</h2></div><div className="prose-premium"><ChoreographedContent
+      headline="Book a cocktail workshop in Maastricht at Cliniq on Platielstraat."
+      quote="Cliniq is one of the most-booked venues in the region for hen nights."
+      stats={[
+        { value: '15+', label: 'guests minimum' },
+        { value: '3', label: 'cocktails each' },
+        { value: '€15', label: 'per cocktail' },
+        { value: 'Thu · Fri · Sat', label: '19:00–20:30 start' },
+      ]}
+      moreLabel="Read the full details"
+      paragraphs={SEO_TEXT.workshop.en.split('\n\n').map((paragraph) => <>{paragraph}</>)}
+    /></div></div></section>
     <section className="container-premium pb-24">
       <h2 className="h2">{geoAnswer.question}</h2>
       <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>

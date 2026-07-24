@@ -6,6 +6,8 @@ import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
 import JsonLd from '@/components/ui/JsonLd'
+import ChoreographedContent from '@/components/ui/ChoreographedContent'
+import EventTypeCards from '@/components/ui/EventTypeCards'
 import { eventSpaceFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -143,6 +145,8 @@ const fallbackEventTypes: EditableCard[] = [
   },
 ]
 
+const EVENT_TYPE_PHOTOS = [images.redRoom, images.party, images.workshopBar, images.club, images.crowd, images.bar, images.contactInterior, images.redCrowd]
+
 const fallbackFacilities: EditableCard[] = [
   {
     titleNl: 'Bar',
@@ -259,7 +263,17 @@ export default async function EventSpacePage() {
         <p className="eyebrow">{eventTypeEyebrow}</p>
         <h2 className="h2 mt-4">{eventTypeTitle}</h2>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8">
+          <EventTypeCards
+            cards={eventTypeCards.map((card, index) => ({
+              title: card.titleNl || 'Event type',
+              image: EVENT_TYPE_PHOTOS[index % EVENT_TYPE_PHOTOS.length],
+              href: '#aanvraag',
+            }))}
+          />
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {eventTypeCards.map((card, index) => (
             <InfoCard
               key={`${card.titleNl || 'event-type'}-${index}`}
@@ -296,42 +310,62 @@ export default async function EventSpacePage() {
           </div>
 
           <div className="prose-premium">
-            {bodyText ? (
-              <TextBlock text={bodyText} />
+            {bodyText && bodyText.split(/\n\s*\n/).filter((p) => p.trim()).length > 1 ? (
+              <ChoreographedContent
+                headline={bodyText.split(/\n\s*\n/)[0]?.trim()}
+                paragraphs={bodyText
+                  .split(/\n\s*\n/)
+                  .map((paragraph) => paragraph.trim())
+                  .filter(Boolean)}
+                moreLabel="Lees meer"
+              />
+            ) : bodyText ? (
+              <p>{bodyText}</p>
             ) : (
-              <>
-                <p>
-                  Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan
-                  tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is
-                  op aanvraag mogelijk.
-                </p>
-                <p>
-                  Feestlocatie huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte
-                  evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten.
-                </p>
-                <p>
-                  Bedrijfsfeest of borrel organiseren in Maastricht? Cliniq leent zich uitstekend voor personeelsfeesten,
-                  netwerkevenementen en productlanceringen.
-                </p>
-                <p>
-                  Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
-                  <Link href="/uitgaan" className="text-coral-text hover:text-white">
-                    nachtleven van CLINIQ Maastricht
-                  </Link>
-                  .
-                </p>
-                <p>
-                  Vrijgezellenavond plannen? Combineer een{' '}
-                  <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
-                    cocktail workshop
-                  </Link>{' '}
-                  met{' '}
-                  <Link href="/uitgaan" className="text-coral-text hover:text-white">
-                    uitgaan in Maastricht en een exclusieve clubavond
-                  </Link>
-                  .
-                </p>
-              </>
+              <ChoreographedContent
+                headline="Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag."
+                quote="Cliniq is een van de meest geboekte evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten."
+                stats={[
+                  { value: '400', label: 'gasten staand' },
+                  { value: 'Do · Vr · Za', label: 'exclusief te huren' },
+                  { value: 'Bar, licht,\ngeluid, vloer', label: 'volledig inclusief' },
+                  { value: 'Catering', label: 'op aanvraag mogelijk' },
+                ]}
+                moreLabel="Lees de volledige mogelijkheden"
+                paragraphs={[
+                  <>
+                    Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan
+                    tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is
+                    op aanvraag mogelijk.
+                  </>,
+                  <>
+                    Feestlocatie huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte
+                    evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten.
+                  </>,
+                  <>
+                    Bedrijfsfeest of borrel organiseren in Maastricht? Cliniq leent zich uitstekend voor personeelsfeesten,
+                    netwerkevenementen en productlanceringen.
+                  </>,
+                  <>
+                    Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
+                    <Link href="/uitgaan" className="text-coral-text hover:text-white">
+                      nachtleven van CLINIQ Maastricht
+                    </Link>
+                    .
+                  </>,
+                  <>
+                    Vrijgezellenavond plannen? Combineer een{' '}
+                    <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
+                      cocktail workshop
+                    </Link>{' '}
+                    met{' '}
+                    <Link href="/uitgaan" className="text-coral-text hover:text-white">
+                      uitgaan in Maastricht en een exclusieve clubavond
+                    </Link>
+                    .
+                  </>,
+                ]}
+              />
             )}
           </div>
         </div>
@@ -439,19 +473,5 @@ function InfoCard({ title, text }: { title: string; text: string }) {
       <h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3>
       <p className="mt-3 text-white/66">{text}</p>
     </article>
-  )
-}
-
-function TextBlock({ text }: { text: string }) {
-  return (
-    <>
-      {text
-        .split(/\n\s*\n/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean)
-        .map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-    </>
   )
 }

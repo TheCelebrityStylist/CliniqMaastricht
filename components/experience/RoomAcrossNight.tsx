@@ -6,12 +6,12 @@ import { images } from '@/lib/site'
 import SafeImage from '@/components/ui/SafeImage'
 
 // The event-space room photo module. Previously had a day/night cross-dissolve toggle
-// ("OVERDAG / 'S AVONDS") - removed per explicit direction: it showed a dark, crowded photo
-// labelled "daytime", which read as confusing and off-concept, and the day/night framing it was
-// built for has been dropped from the brand direction entirely. This is a clean static real
-// photo for now; the brief's scroll-driven canvas frame sequence (room filling as the user
-// scrolls) replaces this properly in a follow-up pass - see the report for why that needs new
-// photography this repo doesn't have yet, rather than being faked here.
+// ("OVERDAG / 'S AVONDS") - removed per explicit direction, and replaced by EventTypeCards
+// (components/ui/EventTypeCards.tsx, wired into the event-type section above this on the page) -
+// a booker picks their event, not a time of day. This module is now just the single "see the
+// room" photo. The brief's scroll-driven canvas frame sequence (room filling as the user scrolls)
+// replaces this properly in a follow-up pass - see the report for why that needs new photography
+// this repo doesn't have yet, rather than being faked here.
 export default function RoomAcrossNight({ ctaHref }: { ctaHref: string }) {
   const { lang } = useLang()
   const t = INTERACTIVE_COPY[lang].configurator
