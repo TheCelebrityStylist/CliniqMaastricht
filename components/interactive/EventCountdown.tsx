@@ -93,7 +93,7 @@ export default function EventCountdown({ title, date, startTime = '22:00', endTi
     <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
       <p className="eyebrow">{t.title}</p>
       {started ? (
-        <p className="mt-4 text-2xl font-black text-coral">{t.started}</p>
+        <p className="mt-4 text-2xl font-black text-coral-text">{t.started}</p>
       ) : (
         <div className="mt-4 flex items-end gap-4 tabular-nums" aria-live="polite">
           {days > 0 ? <CountdownUnit value={days} label={t.days} /> : null}

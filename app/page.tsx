@@ -10,9 +10,9 @@ import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
-import WebGLHero from '@/components/experience/WebGLHeroLoader'
 import EventTicker from '@/components/experience/EventTicker'
 import HeroStatus from '@/components/experience/HeroStatus'
+import HeroTitle from '@/components/ui/HeroTitle'
 
 export const revalidate = 60
 
@@ -115,14 +115,13 @@ export default async function Home() {
         />
 
         <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
-        <WebGLHero />
         <AtmosphereFX />
         <MagneticCTAs />
 
         <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
           <div className="max-w-4xl min-w-0">
             <p className="eyebrow mb-4">Platielstraat 9A</p>
-            <h1 className="hero-clean-title">{heroTitle}</h1>
+            <HeroTitle title={heroTitle} fillImage={heroPhoto} />
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -200,8 +199,8 @@ export default async function Home() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#31071b] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#31071b] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#12030a] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#12030a] to-transparent" />
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
@@ -232,7 +231,7 @@ export default async function Home() {
             <>
               Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
               bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
-              <Link href="/cocktail-workshop" className="text-coral hover:text-white">
+              <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
                 cocktail workshop Maastricht
               </Link>
               .
@@ -250,7 +249,7 @@ export default async function Home() {
             <>
               CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
               Meer over{' '}
-              <Link href="/event-space" className="text-coral hover:text-white">
+              <Link href="/event-space" className="text-coral-text hover:text-white">
                 ruimte huren Maastricht
               </Link>
               .

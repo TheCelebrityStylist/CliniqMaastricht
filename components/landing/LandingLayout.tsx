@@ -47,7 +47,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-ink/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-8">
           <Link href="/" className="focus-ring" aria-label="Terug naar homepage">
-            <Logo variant="white" />
+            <Logo />
           </Link>
           <div className="flex items-center gap-3">
             <a

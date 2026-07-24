@@ -113,7 +113,7 @@ export default function ClosingCTA() {
               <div className="mt-4 flex items-center gap-5">
                 <a
                   href="mailto:contact@cafecliniq.com"
-                  className="text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
+                  className="flex min-h-11 items-center text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
                 >
                   contact@cafecliniq.com
                 </a>
@@ -122,7 +122,7 @@ export default function ClosingCTA() {
                   href="https://wa.me/31612530987"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
+                  className="flex min-h-11 items-center text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
                 >
                   WhatsApp
                 </a>

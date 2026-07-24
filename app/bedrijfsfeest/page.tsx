@@ -63,7 +63,7 @@ export default function BedrijfsfeestPage() {
         <>Cliniq Maastricht is de ideale locatie voor een bedrijfsfeest, personeelsborrel of teambuilding-avond. De ruimte biedt plek aan tot 400 gasten, volledig exclusief voor jouw team.</>,
         <>Professionele AV-apparatuur, volledige bar, en de mogelijkheid voor catering maken Cliniq geschikt voor personeelsfeesten, productlanceringen, netwerkevenementen en afsluitende borrels.</>,
         <>Maastricht is centraal gelegen ten opzichte van Eindhoven, Luik, Hasselt en het Ruhrgebied. Ideaal voor bedrijven die gasten uit meerdere landen verwachten.</>,
-        <>Combineer je bedrijfsfeest eventueel met een <Link href="/cocktail-workshop" className="text-coral hover:text-white">cocktail workshop</Link>.</>,
+        <>Combineer je bedrijfsfeest eventueel met een <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">cocktail workshop</Link>.</>,
       ],
     }}
   />

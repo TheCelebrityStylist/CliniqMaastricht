@@ -48,6 +48,7 @@
   "/robots.txt/route",
   "/sitemap.xml/route",
   "/studentenavond/page",
+  "/styleguide/page",
   "/uitgaan/[slug]/page",
   "/uitgaan/page",
   "/vacatures/page",

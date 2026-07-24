@@ -4,6 +4,9 @@
 # next.js build output
 /.next/
 /out/
+
+# audit harness output (scripts/audit.mjs) - regenerated on every run
+/audit/
 tsconfig.tsbuildinfo
 next-env.d.ts
 

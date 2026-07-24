@@ -315,18 +315,18 @@ export default async function EventSpacePage() {
                 </p>
                 <p>
                   Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
-                  <Link href="/uitgaan" className="text-coral hover:text-white">
+                  <Link href="/uitgaan" className="text-coral-text hover:text-white">
                     nachtleven van CLINIQ Maastricht
                   </Link>
                   .
                 </p>
                 <p>
                   Vrijgezellenavond plannen? Combineer een{' '}
-                  <Link href="/cocktail-workshop" className="text-coral hover:text-white">
+                  <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
                     cocktail workshop
                   </Link>{' '}
                   met{' '}
-                  <Link href="/uitgaan" className="text-coral hover:text-white">
+                  <Link href="/uitgaan" className="text-coral-text hover:text-white">
                     uitgaan in Maastricht en een exclusieve clubavond
                   </Link>
                   .

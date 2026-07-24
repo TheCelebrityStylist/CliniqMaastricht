@@ -12,12 +12,12 @@
 :root { color-scheme: dark; --magenta:#dc48fe; --atmo-y: 0px; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: radial-gradient(circle at 20% 0%, rgba(220,72,254,.16), transparent 28rem), #31071b; color: #fff; font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif; }
+body { margin: 0; background: radial-gradient(circle at 20% 0%, rgba(220,72,254,.16), transparent 28rem), #12030a; color: #fff; font-family: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif; }
 a { text-underline-offset: 4px; }
 ::selection { background: #dc48fe; color: white; }
 .focus-ring { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral; }
 .container-premium { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
-.eyebrow { @apply text-xs font-black uppercase tracking-[0.1em] text-coral; }
+.eyebrow { @apply text-xs font-black uppercase tracking-[0.1em] text-coral-text; }
 .h1 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[44px] font-black leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl; }
 .h2 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[34px] font-black leading-[1] tracking-[-0.025em] sm:text-5xl lg:text-[52px]; }
 .h3 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-2xl font-extrabold tracking-[-0.015em] sm:text-3xl; }
@@ -99,9 +99,18 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card:hover .event-card-media::after { transform:translateX(120%) skewX(-18deg); }
 @keyframes hero-slow-zoom { from { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1); } to { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .hero-frame .hero-media, .hero-clean-title, .hero-clean-subline, .event-card-media::after { animation:none !important; transform:none !important; transition:none !important; opacity:1 !important; } }
-.hero-clean-title { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; max-width:12ch; font-size:clamp(4rem, 9vw, 8.5rem); font-weight:950; line-height:.95; letter-spacing:-.035em; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; overflow-wrap:break-word; word-break:break-word; }
+.hero-clean-title { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; max-width:12ch; font-size:clamp(3.6rem, 13vw, 13.5rem); font-weight:800; line-height:.82; letter-spacing:-.035em; text-transform:uppercase; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; overflow-wrap:anywhere; word-break:break-word; }
 .hero-clean-subline { margin-top:1.25rem; max-width:44rem; color:rgba(255,247,234,.86); font-size:clamp(1.35rem, 3vw, 2.4rem); font-weight:900; line-height:1.1; letter-spacing:-.02em; opacity:0; transform:translateY(18px); animation:soft-reveal .78s ease .24s both; }
-@media (max-width: 640px) { .hero-clean-title { font-size:clamp(2.4rem, 11vw, 4.8rem); line-height:1.02; letter-spacing:-.02em; } }
+@media (max-width: 640px) { .hero-clean-title { font-size:clamp(2.4rem, 15vw, 4.8rem); line-height:.86; letter-spacing:-.02em; } }
+
+/* Video-in-headline (component-kit #hero): the first word of the real, server-rendered title is
+   filled with the same real hero photo already in the DOM (the brief's kit demo itself "stands in"
+   a still for video - true <video>-in-text needs a mask/blend technique layered on top of this,
+   noted as a follow-up in the report); the rest of the title is outline-only. Both spans wrap the
+   literal, unedited heading text - this re-typesets, it doesn't rewrite. */
+.hero-fill { background-image: linear-gradient(rgba(219,51,76,.62), rgba(220,72,254,.5)), var(--hero-fill-image, none); background-size: cover; background-position: center; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; filter: saturate(1.6) contrast(1.25) brightness(1.35); }
+.hero-out { color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.55); }
+@supports not (background-clip: text) { .hero-fill { -webkit-text-fill-color: unset; background: none; color: #fff; } }
 
 /* Experience layer (components/experience/*) — additive, self-contained styles. */
 @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -109,43 +118,6 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; margin: -3.5px; border-radius: 999px; background: #DC48FE; pointer-events: none; z-index: 300; will-change: transform; }
 .cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 300; will-change: transform; transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background-color .25s ease; }
 .cursor-ring.cursor-ring-active { width: 60px; height: 60px; margin: -30px; border-color: #DC48FE; background: rgba(220,72,254,.12); }
-
-/* Dual-state system - "the waiting room" (day) vs "the treatment" (night), driven by
-   html[data-venue-state] (see lib/venueState.ts + app/layout.tsx). Night is the site's existing
-   look (ink/coral/magenta, full motion) and needs no overrides - only day-state deltas live here,
-   scoped to the homepage hero + header for this pass (the mechanism itself is sitewide-ready;
-   extending the light skin to every other section is flagged as follow-up work in the report). */
-[data-venue-state='day'] .hero-clean-title { color: #500B38; }
-[data-venue-state='day'] .hero-clean-subline { color: rgba(80,11,56,.78); }
-[data-venue-state='day'] .hero-clean .status-badge,
-[data-venue-state='day'] .hero-clean a[aria-label*='Switch to'],
-[data-venue-state='day'] .hero-clean a.focus-ring.group { border-color: rgba(80,11,56,.22); background: rgba(255,255,255,.55); color: rgba(80,11,56,.85); }
-[data-venue-state='day'] .hero-clean a.focus-ring.group:hover { border-color: rgba(80,11,56,.4); color: #500B38; }
-[data-venue-state='day'] .hero-clean a.focus-ring.group .text-white\/45 { color: rgba(80,11,56,.55); }
-[data-venue-state='day'] .hero-scrim { background: linear-gradient(90deg, rgba(255,255,255,.88), rgba(255,255,255,.55), rgba(255,255,255,.82)), linear-gradient(0deg, rgba(255,255,255,.94), transparent 46%) !important; }
-[data-venue-state='day'] .hero-clean .atmosphere-fx,
-[data-venue-state='day'] .hero-clean canvas { display: none; }
-[data-venue-state='day'] .hero-clean .btn-secondary { border-color: rgba(80,11,56,.3); background: rgba(255,255,255,.6); color: #500B38; }
-[data-venue-state='day'] .hero-clean .btn-secondary:hover { border-color: #500B38; background: #fff; }
-[data-venue-state='day'] .hero-clean a[href*='uitgaan'].focus-ring,
-[data-venue-state='day'] .hero-clean a[href*='nightlife'].focus-ring { border-color: rgba(80,11,56,.25); background: rgba(255,255,255,.55); color: #500B38; }
-[data-venue-state='day'] .hero-clean a[href*='uitgaan'].focus-ring:hover,
-[data-venue-state='day'] .hero-clean a[href*='nightlife'].focus-ring:hover { border-color: #500B38; color: #500B38; }
-[data-venue-state='day'] .site-header { background-color: rgba(255,255,255,.86); border-bottom-color: rgba(80,11,56,.12); }
-[data-venue-state='day'] .site-header .nav-link,
-[data-venue-state='day'] .site-header .text-white\/70 { color: rgba(80,11,56,.7); }
-[data-venue-state='day'] .site-header .nav-link:hover,
-[data-venue-state='day'] .site-header .text-white\/70:hover,
-[data-venue-state='day'] .site-header .text-white { color: #500B38; }
-[data-venue-state='day'] .site-header .border-white\/15 { border-color: rgba(80,11,56,.2); }
-[data-venue-state='day'] .site-header .btn-secondary,
-[data-venue-state='day'] .site-header button { color: #500B38; }
-@media (prefers-reduced-motion: no-preference) {
-  [data-venue-state='day'] .hero-clean-title,
-  [data-venue-state='day'] .hero-clean-subline,
-  [data-venue-state='day'] .hero-clean .btn-primary,
-  [data-venue-state='day'] .hero-clean .btn-secondary { transition: color .4s ease, background-color .4s ease, border-color .4s ease; }
-}
 
 /* Interactive layer (components/interactive/*) — additive, self-contained styles. */
 .atmosphere-glow { position:absolute; inset:-20%; background: radial-gradient(circle at 28% 30%, rgba(220,72,254,.16), transparent 55%), radial-gradient(circle at 75% 68%, rgba(219,51,76,.12), transparent 50%); filter: blur(60px); animation: atmosphere-drift 18s ease-in-out infinite alternate; }

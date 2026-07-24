@@ -2,9 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Script from 'next/script'
-import { cookies } from 'next/headers'
 import { Inter_Tight, MuseoModerno, Bodoni_Moda } from 'next/font/google'
-import { getVenueState, VENUE_STATE_COOKIE, type VenueState } from '@/lib/venueState'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -41,18 +39,10 @@ export const metadata: Metadata = {
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'add-google-search-console-code' },
 }
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#31071B' }
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#12030A' }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Dual-state system: the truth of the venue right now (time + opening hours), computed
-  // server-side so there's never a flash of the wrong state - a user's manual nudge (see
-  // VenueStateToggle in Header) is a short-lived cookie override, not a permanent preference,
-  // matching "default is the truth of the venue now."
-  const cookieStore = await cookies()
-  const override = cookieStore.get(VENUE_STATE_COOKIE)?.value
-  const venueState: VenueState = override === 'day' || override === 'night' ? override : getVenueState()
-
-  return <html lang="nl" data-venue-state={venueState} className={`${interTight.variable} ${museoModerno.variable} ${bodoniModa.variable}`}>
+  return <html lang="nl" className={`${interTight.variable} ${museoModerno.variable} ${bodoniModa.variable}`}>
     <head>
       <link rel="preconnect" href="https://images.squarespace-cdn.com" />
       <link rel="preconnect" href="https://cdn.sanity.io" />
@@ -63,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
       <CinematicEntry />
       <SmoothScroll>
-        <Header venueState={venueState} />
+        <Header />
         <main id="main"><PageTransition>{children}</PageTransition></main>
         <Footer />
         <ScrollChoreography />

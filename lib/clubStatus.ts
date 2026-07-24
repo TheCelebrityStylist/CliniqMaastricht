@@ -59,6 +59,9 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 }
 
+// Matches the component-kit's Countdown module shape: a small magenta doorLabel ("Deuren open
+// over"), a big tabular value (either the live countdown or "Open nu"), and a muted sub-line
+// giving the event context - composed inline in the hero, per the kit's #countdown spec.
 export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) {
   const t = INTERACTIVE_COPY[lang]
   const { isOpen, closesAt, nextOpen } = getClubWindow(now)
@@ -73,11 +76,19 @@ export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) 
     ? lang === 'nl' ? `/uitgaan/${upcoming.slug}` : `/en/nightlife/${upcoming.slug}`
     : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
 
-  const label = isOpen
-    ? `${t.status.openNow} · ${t.status.closesAt} ${closesAt ? formatTime(closesAt) : ''}`
-    : eventDate
-      ? `${t.status.doorsOpenIn} ${formatCountdown(eventDate, now, t.countdown)}`
-      : t.status.closed
+  let doorLabel: string, value: string
+  if (isOpen) {
+    doorLabel = t.status.openNow
+    value = closesAt ? `${t.status.closesAt} ${formatTime(closesAt)}` : t.status.openNow
+  } else if (eventDate) {
+    doorLabel = t.status.doorsOpenIn
+    value = formatCountdown(eventDate, now, t.countdown)
+  } else {
+    doorLabel = t.status.closed
+    value = '—'
+  }
 
-  return { label, href, isOpen, eventTitle }
+  const sub = [lang === 'nl' ? 'Vanavond' : 'Tonight', eventTitle].filter(Boolean).join(' · ')
+
+  return { doorLabel, value, sub: eventTitle ? sub : null, href, isOpen, eventTitle }
 }

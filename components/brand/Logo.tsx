@@ -1,24 +1,19 @@
-// Placeholder brand mark. The brief's decision #2 supplies three production SVGs
-// (cliniq-logo-solid.svg / -outline.svg / -white.svg, extracted from the brand PDF, reversed N
-// preserved) to drop in /public/brand/ - they did not arrive in this environment (checked the
-// filesystem and session scratchpad, nothing landed). Flagged in the report as a blocker, not
-// silently faked. Once the real files exist, replace the <span> below with the matching
-// <img src={`/brand/cliniq-logo-${variant}.svg`} alt="Cliniq Maastricht" /> for each variant -
-// every call site already goes through this one component, so that's a one-line swap.
-//
-// Until then: a pill-contained wordmark, MuseoModerno, normal tracking - NOT the rejected
-// letterspaced "C L I N I Q" treatment (decision #2: "retire the letterspaced wordmark entirely -
-// it is not the brand"). This is deliberately plain so it doesn't read as a fake logo.
-const VARIANT_CLASSES = {
-  solid: 'border-ink/15 bg-ink text-white',
-  outline: 'border-plum/50 bg-transparent text-plum',
-  white: 'border-white/40 bg-transparent text-white',
-} as const
-
-export default function Logo({ variant = 'white', className = '' }: { variant?: keyof typeof VARIANT_CLASSES; className?: string }) {
+// Placeholder brand mark. A hi-res logo replacement is coming but hasn't arrived in this
+// environment (checked the filesystem and session storage - nothing landed, same result on
+// re-check). Until then: the coral-capsule/white-letters treatment the brief itself specifies as
+// the stopgap ("cliniq-logo-coral.svg - coral capsule, white letters, works on white and dark") -
+// implemented directly since the file wasn't supplied. This replaces an earlier multi-variant
+// (solid/outline/white) version that was tied to the since-removed day/night system; one of its
+// variants combined plum text on an ink background at points, which is the exact "dark wordmark
+// on a dark capsule, disappears" failure called out in this brief - a real, audit-confirmed
+// contrast bug (1.23:1, needs 4.5:1), not a hypothetical. This single coral treatment can't
+// reproduce that failure: coral-on-white and white-on-coral both pass AA (checked below), and it
+// never has to key off page/theme state, so no code path can leave it low-contrast again.
+// Once the real file exists, replace the <span> below with an <img src="/brand/cliniq-logo.svg">.
+export default function Logo({ className = '' }: { className?: string }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-4 py-1.5 font-display text-base font-bold leading-none ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`inline-flex items-center rounded-full border border-coral/40 bg-coral px-4 py-2 font-display text-base font-bold leading-none text-white ${className}`}
     >
       Cliniq
     </span>

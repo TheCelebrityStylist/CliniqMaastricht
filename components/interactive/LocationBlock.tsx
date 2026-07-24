@@ -27,7 +27,7 @@ export default function LocationBlock() {
             href={`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(chip.origin)}&destination=${encodeURIComponent(destination)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="focus-ring rounded-full border border-white/15 px-4 py-2 text-xs font-black uppercase tracking-[0.06em] text-white/75 transition hover:border-white hover:text-white"
+            className="focus-ring flex min-h-11 items-center rounded-full border border-white/15 px-4 py-2 text-xs font-black uppercase tracking-[0.06em] text-white/75 transition hover:border-white hover:text-white"
           >
             ± {chip.minutes} {lang === 'nl' ? 'min' : 'min'} {t.walk} {chip.key === 'vrijthof' ? t.fromVrijthof : t.fromMarkt}
           </a>

@@ -79,8 +79,8 @@ export default function Footer() {
       <div className="mx-auto max-w-screen-xl px-8 pb-10 pt-20 md:px-16">
         <div className="mb-16 grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="focus-ring inline-flex" aria-label="Cliniq Maastricht">
-              <Logo variant="white" />
+            <Link href="/" className="focus-ring inline-flex min-h-11 items-center" aria-label="Cliniq Maastricht">
+              <Logo />
             </Link>
             <p className="mb-2 mt-5 max-w-[240px] font-serif text-lg italic leading-snug text-white/55">
               We own <span className="font-display not-italic font-bold text-white/75">the night</span>
@@ -89,10 +89,10 @@ export default function Footer() {
               {t.footer.tagline}
             </p>
             <div className="flex items-center gap-3 text-white/30">
-              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral" aria-label="Instagram">
+              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral-text" aria-label="Instagram">
                 <InstagramIcon />
               </a>
-              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral" aria-label="TikTok">
+              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral-text" aria-label="TikTok">
                 <TikTokIcon />
               </a>
             </div>
@@ -102,10 +102,10 @@ export default function Footer() {
             <h4 className="eyebrow mb-5">
               {lang === 'nl' ? 'Navigatie' : 'Navigation'}
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-white">
+                  <Link href={link.href} className="flex min-h-11 items-center py-1.5 text-sm text-white/[0.38] transition-colors duration-200 hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -128,10 +128,10 @@ export default function Footer() {
             <div className="space-y-1.5 text-sm text-white/30">
               <p>{SITE.address.street}</p>
               <p>{SITE.address.postal} {SITE.address.city}</p>
-              <a href={`mailto:${SITE.email}`} className="mt-3 block transition-colors duration-200 hover:text-magenta">
+              <a href={`mailto:${SITE.email}`} className="mt-3 flex min-h-11 items-center transition-colors duration-200 hover:text-magenta">
                 {SITE.email}
               </a>
-              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="block transition-colors duration-200 hover:text-magenta">
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center transition-colors duration-200 hover:text-magenta">
                 WhatsApp
               </a>
             </div>
@@ -141,10 +141,10 @@ export default function Footer() {
             <h4 className="eyebrow mb-5">
               {lang === 'nl' ? 'Voor groepen' : 'For groups'}
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {groepenLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-magenta">
+                  <Link href={link.href} className="flex min-h-11 items-center py-1.5 text-sm text-white/[0.38] transition-colors duration-200 hover:text-magenta">
                     {link.label}
                   </Link>
                 </li>
@@ -153,7 +153,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.05] pt-6 text-xs text-white/25">
+        <div className="mb-6 flex flex-wrap items-center gap-2 border-t border-white/[0.05] pt-6">
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/25">{lang === 'nl' ? 'Ook interessant' : 'Also useful'}</span>
           {(lang === 'nl'
             ? [
                 { href: '/uitgaan', label: 'uitgaan in Maastricht' },
@@ -165,11 +166,14 @@ export default function Footer() {
                 { href: '/event-space', label: 'event location Maastricht' },
                 { href: '/cocktail-workshop', label: 'cocktail workshop Maastricht' },
               ]
-          ).map((link, index, arr) => (
-            <span key={link.href} className="flex items-center gap-x-4">
-              <Link href={link.href} className="transition-colors duration-200 hover:text-magenta">{link.label}</Link>
-              {index < arr.length - 1 ? <span className="text-coral/40">·</span> : null}
-            </span>
+          ).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="focus-ring flex min-h-11 items-center rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/40 transition-colors duration-200 hover:border-coral/40 hover:text-white"
+            >
+              {link.label}
+            </Link>
           ))}
         </div>
 

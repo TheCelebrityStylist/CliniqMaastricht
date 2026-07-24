@@ -293,8 +293,8 @@ export default async function NightlifePage() {
                 </LightboxImageLink>
               ))}
             </div>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#31071b] to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#31071b] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#12030a] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#12030a] to-transparent" />
           </div>
         </GalleryLightbox>
         <div className="container-premium mt-8 flex justify-center"><Link href="/fotos" className="btn-primary">Bekijk alle foto’s</Link></div>
@@ -333,7 +333,7 @@ export default async function NightlifePage() {
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div><p className="eyebrow">{extraEyebrow}</p><h2 className="h2 mt-4">{extraTitle}</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p></div>
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
-            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-coral hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-coral hover:text-white">cocktail workshop Maastricht</Link>.</p></>}
+            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-coral-text hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">cocktail workshop Maastricht</Link>.</p></>}
           </div>
         </div>
       </section>
@@ -344,7 +344,7 @@ export default async function NightlifePage() {
           <div className="prose-premium">
             <p>CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden. Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje.</p>
             <p>Door de centrale ligging aan de Platielstraat is CLINIQ makkelijk te combineren met hotels, restaurants, bars en parkeergarages in het centrum. Dat maakt de locatie praktisch voor studenten, locals, weekendbezoekers en groepen uit Limburg, België en de Euregio.</p>
-            <p>Bekijk ook onze pagina’s over <Link href="/cocktail-workshop" className="text-coral hover:text-white">cocktail workshops in Maastricht</Link>, <Link href="/event-space" className="text-coral hover:text-white">ruimte huren in Maastricht</Link> en <Link href="/fotos" className="text-coral hover:text-white">recente foto’s van CLINIQ</Link>.</p>
+            <p>Bekijk ook onze pagina’s over <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">cocktail workshops in Maastricht</Link>, <Link href="/event-space" className="text-coral-text hover:text-white">ruimte huren in Maastricht</Link> en <Link href="/fotos" className="text-coral-text hover:text-white">recente foto’s van CLINIQ</Link>.</p>
           </div>
         </div>
       </section>
