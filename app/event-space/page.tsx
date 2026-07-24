@@ -259,7 +259,7 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium py-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">{eventTypeEyebrow}</p>
         <h2 className="h2 mt-4">{eventTypeTitle}</h2>
 
@@ -284,7 +284,7 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="max-w-4xl">
           <p className="eyebrow">{facilityEyebrow}</p>
           <h2 className="h2 mt-4">{facilityTitle}</h2>
@@ -302,7 +302,7 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div>
             <p className="eyebrow">{bodyEyebrow}</p>
@@ -371,7 +371,7 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">{galleryEyebrow}</p>
         <h2 className="h2 mt-4">{galleryTitle}</h2>
 
@@ -402,12 +402,12 @@ export default async function EventSpacePage() {
 
       <RoomAcrossNight ctaHref="#aanvraag" />
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <h2 className="h2">{geoAnswer.question}</h2>
         <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">FAQ</p>
         <h2 className="h2 mt-4">Veelgestelde vragen</h2>
 

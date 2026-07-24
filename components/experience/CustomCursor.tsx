@@ -25,16 +25,25 @@ export default function CustomCursor() {
 
     document.documentElement.classList.add('custom-cursor-active')
 
-    let mouseX = window.innerWidth / 2
-    let mouseY = window.innerHeight / 2
+    // Start off-screen and invisible: initializing to the viewport centre made the ring visibly
+    // "parked" mid-screen (its rAF loop runs from mount, before any real pointer input) - reading
+    // as a stuck loading indicator in a screenshot or on first paint before the mouse moves.
+    let mouseX = -100
+    let mouseY = -100
     let ringX = mouseX
     let ringY = mouseY
     let raf = 0
+    let hasMoved = false
 
     function onMove(event: PointerEvent) {
       mouseX = event.clientX
       mouseY = event.clientY
       dot!.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`
+      if (!hasMoved) {
+        hasMoved = true
+        dot!.style.opacity = '1'
+        ring!.style.opacity = '1'
+      }
     }
 
     function onOver(event: PointerEvent) {
@@ -66,8 +75,8 @@ export default function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef} aria-hidden="true" className="cursor-dot" />
-      <div ref={ringRef} aria-hidden="true" className="cursor-ring" />
+      <div ref={dotRef} aria-hidden="true" className="cursor-dot" style={{ opacity: 0 }} />
+      <div ref={ringRef} aria-hidden="true" className="cursor-ring" style={{ opacity: 0 }} />
     </>
   )
 }

@@ -12,7 +12,6 @@ import { localBusinessSchema, organizationSchema } from '@/lib/seo'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
 import SmoothScroll from '@/components/experience/SmoothScroll'
 import ScrollChoreography from '@/components/experience/ScrollChoreographyLoader'
-import CinematicEntry from '@/components/experience/CinematicEntryLoader'
 import CustomCursor from '@/components/experience/CustomCursorLoader'
 import MobileHaptics from '@/components/experience/MobileHapticsLoader'
 import PageTransition from '@/components/experience/PageTransition'
@@ -51,7 +50,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     </head>
     <body>
       <a href="#main" className="sr-only focus:not-sr-only focus-ring fixed left-4 top-4 z-[100] rounded-full bg-white px-4 py-2 text-ink">Naar inhoud / Skip to content</a>
-      <CinematicEntry />
       <SmoothScroll>
         <Header />
         <main id="main"><PageTransition>{children}</PageTransition></main>

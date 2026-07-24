@@ -9,9 +9,8 @@ import { useEffect, useState, type ReactNode } from 'react'
 // wrap document.startViewTransition() around its own client-side navigation on React 18 either —
 // so this is the Framer Motion fallback the brief calls for, and on this stack it's the primary
 // mechanism, not a degraded one. `initial={false}` means the very first page load is never
-// animated (avoids double-animating against CinematicEntry, and matches "content is there
-// immediately" for SSR/no-JS — this wrapper only ever affects client-side route changes, the
-// underlying content is identical either way).
+// animated, matching "content is there immediately" for SSR/no-JS — this wrapper only ever
+// affects client-side route changes, the underlying content is identical either way.
 //
 // Deliberately NOT using framer-motion's own useReducedMotion() hook here: it reads
 // window.matchMedia synchronously during render (not in an effect), so on a client whose OS has

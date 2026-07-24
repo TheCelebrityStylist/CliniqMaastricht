@@ -8,7 +8,7 @@ export default function StatStrip({ stats }: { stats: { value: ReactNode; label:
   return (
     <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
       {stats.map((stat, index) => (
-        <div key={index} className="rounded-2xl border border-white/10 bg-white/[0.03] p-[18px]">
+        <div key={index} className="rounded-[18px] border border-white/10 bg-white/[0.03] p-[18px]">
           <div className="font-display text-[clamp(28px,4vw,44px)] font-extrabold leading-none tracking-[-0.03em] text-coral">{stat.value}</div>
           <div className="mt-2 text-[13px] leading-[1.4] text-white/72">{stat.label}</div>
         </div>

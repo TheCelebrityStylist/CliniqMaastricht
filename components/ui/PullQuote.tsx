@@ -1,10 +1,15 @@
 import type { ReactNode } from 'react'
 
-// Component-kit spec #05 `.quote`: the single sharpest EXISTING sentence of a content block,
-// blown up on a coral-to-magenta panel. Verbatim text only - never hand-authored marketing copy.
+// Component-kit spec #05 `.quote`: the single sharpest EXISTING sentence of a content block, as a
+// deep-gradient accent panel beside the headline column. Verbatim text only - never hand-authored
+// marketing copy. White-on-deep-gradient at a moderate size keeps it a readable accent, not the
+// loudest element in its section - a bright coral/magenta panel with near-black text was shouting.
 export default function PullQuote({ children }: { children: ReactNode }) {
   return (
-    <p className="rounded-[18px] bg-[linear-gradient(120deg,#DB334C,#DC48FE)] p-[clamp(18px,3vw,30px)] font-display text-[clamp(20px,3.2vw,36px)] font-extrabold leading-[1.05] tracking-[-0.02em] text-ink">
+    <p
+      className="rounded-[18px] p-[clamp(16px,2.4vw,26px)] font-display text-[clamp(18px,2.3vw,27px)] font-extrabold leading-[1.14] tracking-[-0.02em] text-white"
+      style={{ background: 'linear-gradient(120deg, rgba(80,11,56,.94), rgba(219,51,76,.88))' }}
+    >
       {children}
     </p>
   )

@@ -67,7 +67,11 @@ export default function AmbientSound() {
       onClick={toggle}
       aria-label={label}
       aria-pressed={playing}
-      className="focus-ring fixed bottom-20 right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-ink/85 text-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:text-white sm:bottom-6 sm:right-6"
+      // Docked in the same bottom-anchored floating stack as MobileActionBar (the 3-column bar
+      // that appears on mobile after scrolling): offset by the bar's own height plus a safe-area
+      // and clearance margin, so this round toggle can never sit on top of it. Desktop never
+      // shows MobileActionBar at all, so it reverts to a simple corner inset there.
+      className="focus-ring fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom)+1rem)] right-4 z-40 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-ink/85 text-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-all duration-300 hover:border-white/30 hover:text-white sm:bottom-6 sm:right-6"
     >
       {playing ? <SoundOnIcon /> : <SoundOffIcon />}
     </button>

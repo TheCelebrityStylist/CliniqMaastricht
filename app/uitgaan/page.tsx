@@ -268,7 +268,7 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="mb-8">
           <p className="eyebrow">Uitgaan Maastricht gids</p>
           <h2 className="h2 mt-3">Waar ga je uit in Maastricht?</h2>
@@ -281,7 +281,7 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="overflow-hidden pb-24">
+      <section className="overflow-hidden section-y">
         <div className="container-premium">
           <SectionIntro eyebrow="Sfeer" title="Zo voelt een avond uit bij CLINIQ" text="Een indruk van recente clubnachten, events en avonden in Maastricht." />
         </div>
@@ -302,12 +302,12 @@ export default async function NightlifePage() {
         <style>{`@keyframes photoMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="mb-8"><p className="eyebrow">Fotoalbums</p><h2 className="h2 mt-3">Recente avonden in de club</h2></div>
         <AlbumGrid albums={albums.slice(0, 3)} />
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">Praktisch</p>
         <h2 className="h2 mt-4">Goed om te weten voor je gaat stappen</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -315,13 +315,13 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">Route</p>
         <h2 className="h2 mt-4">Zo kom je bij CLINIQ</h2>
         <div className="mt-8 max-w-3xl"><LocationBlock /></div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div><p className="eyebrow">{bodyEyebrow}</p><h2 className="h2 mt-4">{bodyTitle}</h2></div>
           <div className="prose-premium">
@@ -330,7 +330,7 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div><p className="eyebrow">{extraEyebrow}</p><h2 className="h2 mt-4">{extraTitle}</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p></div>
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
@@ -339,13 +339,19 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.75fr_1.25fr]">
           <div><p className="eyebrow">Waarom CLINIQ?</p><h2 className="h2 mt-4">Meer dan alleen een club in Maastricht</h2></div>
           <div className="prose-premium">
             <ChoreographedContent
               headline="CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden."
               quote="Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje."
+              stats={[
+                { value: 'Platielstraat 9A', label: 'centrum Maastricht' },
+                { value: 'Do · Vr · Za', label: 'open' },
+                { value: 'Vrijthof · Markt', label: 'om de hoek' },
+                { value: '18+ · 21+', label: 'leeftijd per avond' },
+              ]}
               moreLabel="Lees meer"
               paragraphs={[
                 <>CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden. Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje.</>,
@@ -357,7 +363,7 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">FAQ</p>
         <h2 className="h2 mt-4">Veelgestelde vragen over uitgaan in Maastricht</h2>
         <div className="faq-grid mt-8 grid gap-4 lg:grid-cols-2">

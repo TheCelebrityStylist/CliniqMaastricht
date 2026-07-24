@@ -17,6 +17,11 @@ a { text-underline-offset: 4px; }
 ::selection { background: #dc48fe; color: white; }
 .focus-ring { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral; }
 .container-premium { @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8; }
+/* Standard vertical rhythm for every top-level page section - generous, even space so sections
+   read as separate, calm compositions instead of butting together. Applies both top and bottom;
+   deliberately more than the old bottom-only pb-24 pattern gave (sections previously had no top
+   padding of their own at all, relying solely on the previous section's bottom padding). */
+.section-y { padding-top: clamp(3.5rem, 8vh, 7rem); padding-bottom: clamp(3.5rem, 8vh, 7rem); }
 .eyebrow { @apply text-xs font-black uppercase tracking-[0.1em] text-coral-text; }
 .h1 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[44px] font-black leading-[0.96] tracking-[-0.03em] sm:text-6xl lg:text-7xl; }
 .h2 { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; @apply text-[34px] font-black leading-[1] tracking-[-0.025em] sm:text-5xl lg:text-[52px]; }
@@ -26,7 +31,7 @@ a { text-underline-offset: 4px; }
 .btn-secondary { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral inline-flex items-center justify-center rounded-full border border-white/25 bg-black/35 px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 hover:brightness-110; }
 .input { @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-base text-white placeholder:text-white/30; }
 .label { @apply mb-2 block text-xs font-black uppercase tracking-[0.1em] text-white/70; }
-.prose-premium { @apply text-lg leading-[1.65] text-white/70 md:text-xl; }
+.prose-premium { @apply text-lg leading-[1.65] text-white/70 md:text-xl; max-width: 66ch; }
 .prose-premium p { @apply mb-5; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 .section-lift { @apply relative overflow-hidden; }
@@ -59,7 +64,10 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .btn-primary, .btn-secondary { will-change: transform, filter; }
 .btn-primary:active, .btn-secondary:active { transform: translateY(0) scale(.98); }
  .event-section { position:relative; overflow:hidden; }
-.event-section::before { content:""; position:absolute; inset:4rem auto auto 6%; width:34rem; height:34rem; border-radius:999px; pointer-events:none; background:radial-gradient(circle, rgba(220,72,254,.16), transparent 66%); filter:blur(10px); }
+/* One subtle coral glow per section, not two competing ones - a second magenta glow here
+   previously fought this one for attention (see the polish-pass spec's "reduce competing
+   glows" note; this codebase's tokens never had the gold accent that spec references, but the
+   same "one glow only" principle applies). */
 .event-section::after { content:""; position:absolute; right:2%; bottom:8rem; width:28rem; height:28rem; border-radius:999px; pointer-events:none; background:radial-gradient(circle, rgba(219,51,76,.12), transparent 66%); filter:blur(12px); }
 .event-grid { display:grid; gap:32px; align-items:start; position:relative; z-index:1; }
 .event-grid-1 { max-width:460px; grid-template-columns:1fr; margin-inline:auto; }
@@ -99,24 +107,24 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card:hover .event-card-media::after { transform:translateX(120%) skewX(-18deg); }
 @keyframes hero-slow-zoom { from { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1); } to { transform:translate3d(var(--hero-x), calc(var(--hero-y) + var(--atmo-y, 0px)), 0) scale(1.05); } }
 @media (prefers-reduced-motion: reduce) { .hero-frame .hero-media, .hero-clean-title, .hero-clean-subline, .event-card-media::after { animation:none !important; transform:none !important; transition:none !important; opacity:1 !important; } }
-.hero-clean-title { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; max-width:12ch; font-size:clamp(3.6rem, 13vw, 13.5rem); font-weight:800; line-height:.82; letter-spacing:-.035em; text-transform:uppercase; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; overflow-wrap:anywhere; word-break:break-word; }
-.hero-clean-subline { margin-top:1.25rem; max-width:44rem; color:rgba(255,247,234,.86); font-size:clamp(1.35rem, 3vw, 2.4rem); font-weight:900; line-height:1.1; letter-spacing:-.02em; opacity:0; transform:translateY(18px); animation:soft-reveal .78s ease .24s both; }
-@media (max-width: 640px) { .hero-clean-title { font-size:clamp(2.4rem, 15vw, 4.8rem); line-height:.86; letter-spacing:-.02em; } }
+.hero-clean-title { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; max-width:14ch; font-size:clamp(3rem, 8.5vw, 8rem); font-weight:800; line-height:.86; letter-spacing:-.03em; text-transform:uppercase; opacity:0; transform:translateY(24px); animation:soft-reveal .78s ease .12s both; overflow-wrap:anywhere; word-break:break-word; }
+.hero-clean-subline { margin-top:1rem; max-width:38rem; color:rgba(255,247,234,.68); font-size:clamp(1rem, 1.35vw, 1.25rem); font-weight:500; line-height:1.45; letter-spacing:-.005em; opacity:0; transform:translateY(18px); animation:soft-reveal .78s ease .24s both; }
+@media (max-width: 640px) { .hero-clean-title { font-size:clamp(2.2rem, 11vw, 3.8rem); line-height:.9; letter-spacing:-.02em; } }
 
 /* Video-in-headline (component-kit #hero): the first word of the real, server-rendered title is
    filled with the same real hero photo already in the DOM (the brief's kit demo itself "stands in"
    a still for video - true <video>-in-text needs a mask/blend technique layered on top of this,
    noted as a follow-up in the report); the rest of the title is outline-only. Both spans wrap the
    literal, unedited heading text - this re-typesets, it doesn't rewrite. */
-.hero-fill { background-image: linear-gradient(rgba(219,51,76,.62), rgba(220,72,254,.5)), var(--hero-fill-image, none); background-size: cover; background-position: center; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; filter: saturate(1.6) contrast(1.25) brightness(1.35); }
+.hero-fill { background-image: linear-gradient(rgba(219,51,76,.5), rgba(220,72,254,.42)), var(--hero-fill-image, none); background-size: cover; background-position: center; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; filter: saturate(1.4) contrast(1.12) brightness(1.1); }
 .hero-out { color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.55); }
 @supports not (background-clip: text) { .hero-fill { -webkit-text-fill-color: unset; background: none; color: #fff; } }
 
 /* Experience layer (components/experience/*) — additive, self-contained styles. */
 @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .custom-cursor-active, .custom-cursor-active a, .custom-cursor-active button, .custom-cursor-active [role="button"] { cursor: none !important; }
-.cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; margin: -3.5px; border-radius: 999px; background: #DC48FE; pointer-events: none; z-index: 300; will-change: transform; }
-.cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 300; will-change: transform; transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background-color .25s ease; }
+.cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; margin: -3.5px; border-radius: 999px; background: #DC48FE; pointer-events: none; z-index: 300; will-change: transform; transition: opacity .2s ease; }
+.cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 300; will-change: transform; transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background-color .25s ease, opacity .2s ease; }
 .cursor-ring.cursor-ring-active { width: 60px; height: 60px; margin: -30px; border-color: #DC48FE; background: rgba(220,72,254,.12); }
 
 /* Interactive layer (components/interactive/*) — additive, self-contained styles. */

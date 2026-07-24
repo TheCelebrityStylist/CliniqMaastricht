@@ -111,20 +111,20 @@ export default async function Home() {
           fill
           priority
           sizes="100vw"
-          className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]"
+          className="hero-media -z-10 object-cover brightness-[.72] contrast-[1.1] saturate-[1.05]"
         />
 
-        <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
         <AtmosphereFX />
         <MagneticCTAs />
 
-        <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
+        <div className="container-premium flex min-h-[calc(100svh-4.5rem)] flex-col justify-center py-14">
           <div className="max-w-4xl min-w-0">
-            <p className="eyebrow mb-4">Platielstraat 9A</p>
+            <p className="eyebrow mb-3">Platielstraat 9A</p>
             <HeroTitle title={heroTitle} fillImage={heroPhoto} />
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link data-track="cta_click" className="btn-primary" href="/uitgaan">
                 {primaryCta}
               </Link>
@@ -141,7 +141,7 @@ export default async function Home() {
 
       <EventTicker events={events.map((event) => ({ title: event.titleNl || event.title, date: event.date }))} lang="nl" />
 
-      <section className="event-section py-24">
+      <section className="event-section section-y">
         <div className="container-premium">
           <SectionIntro
             eyebrow="Agenda"
@@ -174,7 +174,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="overflow-hidden pb-24">
+      <section className="overflow-hidden section-y">
         <div className="container-premium">
           <SectionIntro eyebrow="Foto’s" title="Foto’s" text="Recente avonden bij CLINIQ." />
         </div>
@@ -221,7 +221,7 @@ export default async function Home() {
         `}</style>
       </section>
 
-      <section className="container-premium space-y-8 pb-24">
+      <section className="container-premium section-y space-y-8">
         <ServiceRow
           href="/cocktail-workshop"
           image={images.workshopBar}
@@ -260,7 +260,7 @@ export default async function Home() {
         />
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <p className="eyebrow">Maastricht</p>
