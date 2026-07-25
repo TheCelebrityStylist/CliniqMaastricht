@@ -44,10 +44,10 @@ export default async function NightlifePageEn() {
       headline="Cliniq Maastricht is the go-to nightlife venue in the city centre."
       quote="Cliniq is also available for private hire and exclusive group bookings."
       stats={[
-        { value: '18+', label: 'Thursday nights' },
-        { value: '21+', label: 'Friday & Saturday' },
-        { value: 'Thu · Fri · Sat', label: 'open nights' },
-        { value: 'ID', label: 'always required' },
+        { value: 'Thu·Fri·Sat', label: 'open in the centre' },
+        { value: 'till 03:00', label: 'closing time' },
+        { value: '18+ / 21+', label: 'age per night' },
+        { value: '9A', label: 'Platielstraat, by Vrijthof' },
       ]}
       moreLabel="Read the full details"
       paragraphs={[

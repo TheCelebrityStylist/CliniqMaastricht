@@ -347,10 +347,10 @@ export default async function NightlifePage() {
               headline="CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden."
               quote="Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje."
               stats={[
-                { value: 'Platielstraat 9A', label: 'centrum Maastricht' },
-                { value: 'Do · Vr · Za', label: 'open' },
-                { value: 'Vrijthof · Markt', label: 'om de hoek' },
-                { value: '18+ · 21+', label: 'leeftijd per avond' },
+                { value: 'Do·Vr·Za', label: 'open in het centrum' },
+                { value: 'tot 03:00', label: 'sluitingstijd' },
+                { value: '18+ / 21+', label: 'leeftijd per avond' },
+                { value: '9A', label: 'Platielstraat, bij het Vrijthof' },
               ]}
               moreLabel="Lees meer"
               paragraphs={[

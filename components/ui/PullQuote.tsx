@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 export default function PullQuote({ children }: { children: ReactNode }) {
   return (
     <p
-      className="rounded-[18px] p-[clamp(16px,2.4vw,26px)] font-display text-[clamp(18px,2.3vw,27px)] font-extrabold leading-[1.14] tracking-[-0.02em] text-white"
+      className="rounded-[18px] p-[clamp(14px,2vw,22px)] font-display text-[clamp(17px,2vw,24px)] font-extrabold leading-[1.14] tracking-[-0.02em] text-white"
       style={{ background: 'linear-gradient(120deg, rgba(80,11,56,.94), rgba(219,51,76,.88))' }}
     >
       {children}

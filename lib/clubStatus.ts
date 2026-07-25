@@ -13,7 +13,7 @@ export type ClubStatusEvent = {
 type OpenWindow = { start: Date; end: Date }
 
 const OPEN_DAYS: Record<number, { close: string }> = {
-  4: { close: '02:00' }, // Thursday
+  4: { close: '03:00' }, // Thursday - CONFIRM WITH OWNER: some venues run a shorter Thursday
   5: { close: '03:00' }, // Friday
   6: { close: '03:00' }, // Saturday
 }
@@ -41,7 +41,16 @@ function getClubWindow(now: Date) {
   const windows = buildWindows(now)
   const current = windows.find((w) => now >= w.start && now < w.end)
   const next = windows.find((w) => w.start > now)
-  return { isOpen: Boolean(current), closesAt: current?.end, nextOpen: next?.start }
+  return { isOpen: Boolean(current), closesAt: current?.end, opensAt: current?.start, nextOpen: next?.start }
+}
+
+// Local (not UTC) YYYY-MM-DD key, matching how `event.date` strings represent a calendar day and
+// how buildWindows already constructs its own day boundaries with local Date methods.
+function toDateKey(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
 }
 
 function formatCountdown(target: Date, now: Date, t: { days: string; hours: string }) {
@@ -59,36 +68,54 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 }
 
-// Matches the component-kit's Countdown module shape: a small magenta doorLabel ("Deuren open
-// over"), a big tabular value (either the live countdown or "Open nu"), and a muted sub-line
-// giving the event context - composed inline in the hero, per the kit's #countdown spec.
+// Matches the component-kit's Countdown module shape: a small magenta doorLabel, a big tabular
+// value, and a muted sub-line - composed inline in the hero, per the kit's #countdown spec.
+// While OPEN this now counts DOWN to closing time (live, ticking) instead of a static "tot
+// 03:00" - a static value read as disconnected from the "it's happening now" moment the open
+// state should convey. While CLOSED it still counts down to the next opening, unchanged.
 export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) {
   const t = INTERACTIVE_COPY[lang]
-  const { isOpen, closesAt, nextOpen } = getClubWindow(now)
-  const upcoming = events.find((event) => {
-    const eventDate = new Date(`${event.date}T${event.startTime || '22:00'}:00`)
-    return eventDate.getTime() > now.getTime() - 3 * 60 * 60 * 1000
-  })
+  const { isOpen, closesAt, opensAt, nextOpen } = getClubWindow(now)
 
-  const eventDate = upcoming ? new Date(`${upcoming.date}T${upcoming.startTime || '22:00'}:00`) : nextOpen
-  const eventTitle = upcoming ? (lang === 'nl' ? upcoming.titleNl || upcoming.title : upcoming.titleEn || upcoming.title) : null
-  const href = upcoming?.slug
-    ? lang === 'nl' ? `/uitgaan/${upcoming.slug}` : `/en/nightlife/${upcoming.slug}`
-    : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
+  let doorLabel: string, value: string, sub: string | null, eventTitle: string | null, href: string
 
-  let doorLabel: string, value: string
   if (isOpen) {
+    // Only ever attach tonight's actual event to the open state - the 3h grace window used for
+    // the closed/upcoming case exists to bridge the gap before doors open, but while already
+    // open it could otherwise resolve to a stale/adjacent night's DJ. No match = no DJ name.
+    const windowDateKey = opensAt ? toDateKey(opensAt) : null
+    const tonight = windowDateKey ? events.find((event) => event.date === windowDateKey) : undefined
+
     doorLabel = t.status.openNow
-    value = closesAt ? `${t.status.closesAt} ${formatTime(closesAt)}` : t.status.openNow
-  } else if (eventDate) {
-    doorLabel = t.status.doorsOpenIn
-    value = formatCountdown(eventDate, now, t.countdown)
+    value = closesAt ? formatCountdown(closesAt, now, t.countdown) : t.status.openNow
+    eventTitle = tonight ? (lang === 'nl' ? tonight.titleNl || tonight.title : tonight.titleEn || tonight.title) : null
+    const closeLabel = closesAt ? `${t.status.closesAt} ${formatTime(closesAt)}` : null
+    sub = [closeLabel, eventTitle].filter(Boolean).join(' · ') || null
+    href = tonight?.slug
+      ? lang === 'nl' ? `/uitgaan/${tonight.slug}` : `/en/nightlife/${tonight.slug}`
+      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
   } else {
-    doorLabel = t.status.closed
-    value = '—'
+    const upcoming = events.find((event) => {
+      const eventDate = new Date(`${event.date}T${event.startTime || '22:00'}:00`)
+      return eventDate.getTime() > now.getTime() - 3 * 60 * 60 * 1000
+    })
+    const eventDate = upcoming ? new Date(`${upcoming.date}T${upcoming.startTime || '22:00'}:00`) : nextOpen
+    eventTitle = upcoming ? (lang === 'nl' ? upcoming.titleNl || upcoming.title : upcoming.titleEn || upcoming.title) : null
+
+    if (eventDate) {
+      doorLabel = t.status.doorsOpenIn
+      value = formatCountdown(eventDate, now, t.countdown)
+    } else {
+      doorLabel = t.status.closed
+      value = '—'
+    }
+
+    const subLabel = [lang === 'nl' ? 'Vanavond' : 'Tonight', eventTitle].filter(Boolean).join(' · ')
+    sub = eventTitle ? subLabel : null
+    href = upcoming?.slug
+      ? lang === 'nl' ? `/uitgaan/${upcoming.slug}` : `/en/nightlife/${upcoming.slug}`
+      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
   }
 
-  const sub = [lang === 'nl' ? 'Vanavond' : 'Tonight', eventTitle].filter(Boolean).join(' · ')
-
-  return { doorLabel, value, sub: eventTitle ? sub : null, href, isOpen, eventTitle }
+  return { doorLabel, value, sub, href, isOpen, eventTitle }
 }
