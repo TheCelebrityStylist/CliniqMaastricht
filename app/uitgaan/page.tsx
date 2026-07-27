@@ -8,6 +8,8 @@ import { EventCard } from '@/components/ui/EventCard'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
+import PhotoPile from '@/components/experience/PhotoPile'
+import { getPilePhotos } from '@/lib/photoPile'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -184,6 +186,7 @@ export default async function NightlifePage() {
     .map((photo) => photo.url)
     .filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
+  const pilePhotos = getPilePhotos('nl')
   const heroImage = pageContent?.imageUrl || images.redCrowd
   const heroTitle = pageContent?.heroTitleNl || 'Uitgaan in Maastricht.'
   const heroSubtitle =
@@ -268,6 +271,14 @@ export default async function NightlifePage() {
         </div>
       </section>
 
+      {pilePhotos.length ? (
+        <section className="container-premium section-y">
+          <p className="eyebrow">Laatste zaterdag</p>
+          <h2 className="h2 mt-4">Sleep de foto's</h2>
+          <div className="mt-8"><PhotoPile photos={pilePhotos} lang="nl" /></div>
+        </section>
+      ) : null}
+
       <section className="container-premium section-y">
         <div className="mb-8">
           <p className="eyebrow">Uitgaan Maastricht gids</p>
@@ -325,7 +336,33 @@ export default async function NightlifePage() {
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div><p className="eyebrow">{bodyEyebrow}</p><h2 className="h2 mt-4">{bodyTitle}</h2></div>
           <div className="prose-premium">
-            {seoBody ? <TextBlock text={seoBody} /> : <><p>CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. Elke donderdag, vrijdag en zaterdag open. Donderdag is studentenavond. Vrijdag en zaterdag draaien wisselende DJ&apos;s tot sluitingstijd. Check altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinfo.</p></>}
+            {seoBody && seoBody.split(/\n\s*\n/).filter((p) => p.trim()).length > 1 ? (
+              <ChoreographedContent
+                headline={seoBody.split(/\n\s*\n/)[0]?.trim()}
+                paragraphs={seoBody
+                  .split(/\n\s*\n/)
+                  .map((paragraph) => paragraph.trim())
+                  .filter(Boolean)}
+                moreLabel="Lees meer"
+              />
+            ) : seoBody ? (
+              <p>{seoBody}</p>
+            ) : (
+              <ChoreographedContent
+                headline="CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt."
+                quote="Vrijdag en zaterdag draaien wisselende DJ's tot sluitingstijd."
+                stats={[
+                  { value: 'Do·Vr·Za', label: 'open in het centrum' },
+                  { value: 'tot 03:00', label: 'sluitingstijd' },
+                  { value: '18+ / 21+', label: 'leeftijd per avond' },
+                  { value: '9A', label: 'Platielstraat, bij het Vrijthof' },
+                ]}
+                moreLabel="Lees meer"
+                paragraphs={[
+                  <>CLINIQ ligt midden in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. Elke donderdag, vrijdag en zaterdag open. Donderdag is studentenavond. Vrijdag en zaterdag draaien wisselende DJ&apos;s tot sluitingstijd. Check altijd de agenda voor actuele tijden, leeftijdsindicatie en eventuele ticketinfo.</>,
+                ]}
+              />
+            )}
           </div>
         </div>
       </section>
@@ -334,7 +371,26 @@ export default async function NightlifePage() {
         <div className="grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
           <div><p className="eyebrow">{extraEyebrow}</p><h2 className="h2 mt-4">{extraTitle}</h2><p className="mt-6 text-lg leading-[1.65] text-white/72 md:text-xl">{extraIntro}</p></div>
           <div className="space-y-5 text-lg leading-[1.7] text-white/72">
-            {extraBody ? <TextBlock text={extraBody} /> : <><p>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-coral-text hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">cocktail workshop Maastricht</Link>.</p></>}
+            {extraBody && extraBody.split(/\n\s*\n/).filter((p) => p.trim()).length > 1 ? (
+              <ChoreographedContent
+                headline={extraBody.split(/\n\s*\n/)[0]?.trim()}
+                paragraphs={extraBody
+                  .split(/\n\s*\n/)
+                  .map((paragraph) => paragraph.trim())
+                  .filter(Boolean)}
+                moreLabel="Lees meer"
+              />
+            ) : extraBody ? (
+              <p>{extraBody}</p>
+            ) : (
+              <ChoreographedContent
+                headline="Een avond uit in Maastricht begint vaak in het centrum."
+                moreLabel="Lees meer"
+                paragraphs={[
+                  <>Een avond uit in Maastricht begint vaak in het centrum. CLINIQ zit precies waar je wilt zijn — geen taxi nodig, geen gedoe. Geschikt voor spontane avonden, verjaardagen, vrijgezellenfeesten en groepen die later willen aansluiten. Wil je iets organiseren voor een grotere groep? Bekijk de mogelijkheden voor <Link href="/event-space" className="text-coral-text hover:text-white">ruimte huren in Maastricht</Link> of combineer je avond met een <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">cocktail workshop Maastricht</Link>.</>,
+                ]}
+              />
+            )}
           </div>
         </div>
       </section>
@@ -346,12 +402,6 @@ export default async function NightlifePage() {
             <ChoreographedContent
               headline="CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden."
               quote="Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje."
-              stats={[
-                { value: 'Do·Vr·Za', label: 'open in het centrum' },
-                { value: 'tot 03:00', label: 'sluitingstijd' },
-                { value: '18+ / 21+', label: 'leeftijd per avond' },
-                { value: '9A', label: 'Platielstraat, bij het Vrijthof' },
-              ]}
               moreLabel="Lees meer"
               paragraphs={[
                 <>CLINIQ is interessant voor bezoekers die zoeken naar het nachtleven van Maastricht, maar ook voor groepen die hun avond willen uitbreiden. Je kunt starten met een diner of borrel in de binnenstad, doorgaan naar CLINIQ voor een clubnacht of vooraf een cocktail workshop boeken voor een verjaardag, vrijgezellenfeest of bedrijfsuitje.</>,
@@ -391,8 +441,4 @@ function Practical({ title, text }: { title: string; text: string }) {
 
 function InfoCard({ title, text }: { title: string; text: string }) {
   return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-6"><h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3><p className="mt-4 text-white/66">{text}</p></article>
-}
-
-function TextBlock({ text }: { text: string }) {
-  return <>{text.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</>
 }

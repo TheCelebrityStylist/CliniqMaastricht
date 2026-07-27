@@ -11,7 +11,9 @@
     "constraints:check": "node scripts/constraint-check/verify.mjs",
     "constraints:baseline": "node scripts/constraint-check/capture-baseline.mjs",
     "audit": "node scripts/audit.mjs",
+    "media": "node scripts/media.mjs",
     "preinstall": "node scripts/validate-package.js",
+    "prebuild": "node scripts/media.mjs",
     "preflight": "node scripts/preflight.js"
   },
   "dependencies": {
@@ -41,6 +43,7 @@
     "eslint-config-next": "15.5.16",
     "playwright-core": "^1.61.1",
     "postcss": "^8.4.49",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2"
   },

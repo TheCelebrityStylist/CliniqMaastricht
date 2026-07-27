@@ -13,6 +13,8 @@ import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import EventTicker from '@/components/experience/EventTicker'
 import HeroStatus from '@/components/experience/HeroStatus'
 import HeroTitle from '@/components/ui/HeroTitle'
+import PhotoPile from '@/components/experience/PhotoPile'
+import { getPilePhotos } from '@/lib/photoPile'
 
 export const revalidate = 60
 
@@ -76,6 +78,7 @@ export default async function HomeEn() {
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
+  const pilePhotos = getPilePhotos('en')
 
   const heroTitle = pageContent?.heroTitleEn || pageContent?.heroTitleNl || 'Maastricht After Dark.'
   const heroSubtitle =
@@ -158,6 +161,14 @@ export default async function HomeEn() {
           )}
         </div>
       </section>
+
+      {pilePhotos.length ? (
+        <section className="container-premium section-y">
+          <p className="eyebrow">Last Saturday</p>
+          <h2 className="h2 mt-4">Drag the photos</h2>
+          <div className="mt-8"><PhotoPile photos={pilePhotos} lang="en" /></div>
+        </section>
+      ) : null}
 
       <section className="overflow-hidden section-y">
         <div className="container-premium">

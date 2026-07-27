@@ -1,4 +1,4 @@
-import { INTERACTIVE_COPY } from './content'
+import { HOURS, INTERACTIVE_COPY } from './content'
 import type { Lang } from './i18n'
 
 export type ClubStatusEvent = {
@@ -68,53 +68,80 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 }
 
+// getDay() (0=Sun..6=Sat) -> index into HOURS (which only lists the three real club nights),
+// reusing the exact weekday abbreviations already shown in the ticker/opening-hours copy instead
+// of a second hand-rolled day-name table.
+const HOURS_INDEX_BY_WEEKDAY: Record<number, number> = { 4: 0, 5: 1, 6: 2 }
+
+// Short weekday + date, e.g. "Za 2 aug" / "Sat 2 Aug" - used for a night that's a future day, so
+// it never renders as a bare countdown of days.
+function formatShortDate(date: Date, lang: Lang) {
+  const hoursEntry = HOURS[HOURS_INDEX_BY_WEEKDAY[date.getDay()]]
+  const weekday = hoursEntry ? hoursEntry.abbr[lang] : ''
+  const month = date.toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-GB', { month: 'short' })
+  return `${weekday} ${date.getDate()} ${month}`.trim()
+}
+
+const DOORS_GRACE_MS = 3 * 60 * 60 * 1000
+
 // Matches the component-kit's Countdown module shape: a small magenta doorLabel, a big tabular
 // value, and a muted sub-line - composed inline in the hero, per the kit's #countdown spec.
-// While OPEN this now counts DOWN to closing time (live, ticking) instead of a static "tot
-// 03:00" - a static value read as disconnected from the "it's happening now" moment the open
-// state should convey. While CLOSED it still counts down to the next opening, unchanged.
+// Three distinct states, never a days-counter and never a mislabeled "Vanavond" on a night that
+// isn't today (the bug this replaces: "Deuren open over 4d 5u · Vanavond · DJ Hadless" - a
+// nightclub counting down days is inherently uncool, and the label contradicted the value):
+//  - OPEN: live countdown to close, sub = close time (+ tonight's DJ if known).
+//  - a night is TODAY but doors aren't open yet: static "Deuren HH:MM" until the final ~3h
+//    before doors, then switches to a live per-second countdown ("Deuren open over").
+//  - the next night is a future day: no countdown at all - just which day, plainly.
 export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) {
   const t = INTERACTIVE_COPY[lang]
   const { isOpen, closesAt, opensAt, nextOpen } = getClubWindow(now)
 
+  const eventFor = (dateKey: string) => events.find((event) => event.date === dateKey)
+  const titleOf = (event: ClubStatusEvent) => (lang === 'nl' ? event.titleNl || event.title : event.titleEn || event.title)
+  const hrefFor = (event?: ClubStatusEvent) =>
+    event?.slug
+      ? lang === 'nl' ? `/uitgaan/${event.slug}` : `/en/nightlife/${event.slug}`
+      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
+
   let doorLabel: string, value: string, sub: string | null, eventTitle: string | null, href: string
 
   if (isOpen) {
-    // Only ever attach tonight's actual event to the open state - the 3h grace window used for
-    // the closed/upcoming case exists to bridge the gap before doors open, but while already
-    // open it could otherwise resolve to a stale/adjacent night's DJ. No match = no DJ name.
-    const windowDateKey = opensAt ? toDateKey(opensAt) : null
-    const tonight = windowDateKey ? events.find((event) => event.date === windowDateKey) : undefined
+    const tonight = opensAt ? eventFor(toDateKey(opensAt)) : undefined
+    eventTitle = tonight ? titleOf(tonight) : null
 
     doorLabel = t.status.openNow
     value = closesAt ? formatCountdown(closesAt, now, t.countdown) : t.status.openNow
-    eventTitle = tonight ? (lang === 'nl' ? tonight.titleNl || tonight.title : tonight.titleEn || tonight.title) : null
-    const closeLabel = closesAt ? `${t.status.closesAt} ${formatTime(closesAt)}` : null
+    const closeLabel = closesAt ? `${t.status.closes} ${formatTime(closesAt)}` : null
     sub = [closeLabel, eventTitle].filter(Boolean).join(' · ') || null
-    href = tonight?.slug
-      ? lang === 'nl' ? `/uitgaan/${tonight.slug}` : `/en/nightlife/${tonight.slug}`
-      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
-  } else {
-    const upcoming = events.find((event) => {
-      const eventDate = new Date(`${event.date}T${event.startTime || '22:00'}:00`)
-      return eventDate.getTime() > now.getTime() - 3 * 60 * 60 * 1000
-    })
-    const eventDate = upcoming ? new Date(`${upcoming.date}T${upcoming.startTime || '22:00'}:00`) : nextOpen
-    eventTitle = upcoming ? (lang === 'nl' ? upcoming.titleNl || upcoming.title : upcoming.titleEn || upcoming.title) : null
+    href = hrefFor(tonight)
+  } else if (nextOpen) {
+    const isTonight = toDateKey(nextOpen) === toDateKey(now)
+    const upcoming = eventFor(toDateKey(nextOpen))
+    eventTitle = upcoming ? titleOf(upcoming) : null
+    href = hrefFor(upcoming)
 
-    if (eventDate) {
-      doorLabel = t.status.doorsOpenIn
-      value = formatCountdown(eventDate, now, t.countdown)
+    if (isTonight) {
+      const msToDoors = nextOpen.getTime() - now.getTime()
+      if (msToDoors <= DOORS_GRACE_MS) {
+        doorLabel = t.status.doorsOpenIn
+        value = formatCountdown(nextOpen, now, t.countdown)
+      } else {
+        doorLabel = t.status.tonightShort
+        value = `${t.status.doorsAt} ${formatTime(nextOpen)}`
+      }
+      sub = eventTitle
     } else {
-      doorLabel = t.status.closed
-      value = '—'
+      doorLabel = t.status.nextEvent
+      value = formatShortDate(nextOpen, lang)
+      sub = eventTitle
     }
-
-    const subLabel = [lang === 'nl' ? 'Vanavond' : 'Tonight', eventTitle].filter(Boolean).join(' · ')
-    sub = eventTitle ? subLabel : null
-    href = upcoming?.slug
-      ? lang === 'nl' ? `/uitgaan/${upcoming.slug}` : `/en/nightlife/${upcoming.slug}`
-      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
+  } else {
+    doorLabel = t.status.closed
+    value = '—'
+    sub = null
+    eventTitle = null
+    href = lang === 'nl' ? '/uitgaan' : '/en/nightlife'
   }
 
   return { doorLabel, value, sub, href, isOpen, eventTitle }
