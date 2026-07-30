@@ -269,18 +269,9 @@ export default async function EventSpacePage() {
               title: card.titleNl || 'Event type',
               image: EVENT_TYPE_PHOTOS[index % EVENT_TYPE_PHOTOS.length],
               href: '#aanvraag',
+              description: card.textNl,
             }))}
           />
-        </div>
-
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {eventTypeCards.map((card, index) => (
-            <InfoCard
-              key={`${card.titleNl || 'event-type'}-${index}`}
-              title={card.titleNl || 'Event type'}
-              text={card.textNl || ''}
-            />
-          ))}
         </div>
       </section>
 

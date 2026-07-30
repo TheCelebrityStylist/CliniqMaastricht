@@ -11,7 +11,7 @@ import ClosingCTA from '@/components/layout/ClosingCTA'
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import EventTicker from '@/components/experience/EventTicker'
-import HeroStatus from '@/components/experience/HeroStatus'
+import NextNightLine from '@/components/experience/NextNightLine'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
@@ -112,17 +112,15 @@ export default async function HomeEn() {
             <HeroTitle title={heroTitle} fillImage={heroPhoto} />
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link data-track="cta_click" className="btn-primary" href="/en/nightlife">
                 {primaryCta}
               </Link>
 
-              <Link data-track="cta_click" className="btn-secondary" href="/en/photos">
+              <Link data-track="cta_click" className="focus-ring inline-flex min-h-11 items-center text-white/70 underline-offset-4 transition hover:text-white hover:underline" href="/en/photos">
                 {secondaryCta}
               </Link>
             </div>
-
-            <HeroStatus events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="en" initialNow={Date.now()} />
           </div>
         </div>
       </HeroFrame>
@@ -131,6 +129,8 @@ export default async function HomeEn() {
 
       <section className="event-section section-y">
         <div className="container-premium">
+          <NextNightLine events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="en" initialNow={Date.now()} />
+
           <SectionIntro
             eyebrow="Agenda"
             title={t.home.eventsTitle}
