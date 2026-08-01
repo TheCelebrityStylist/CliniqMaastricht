@@ -146,3 +146,33 @@ export function getClubStatus(now: Date, events: ClubStatusEvent[], lang: Lang) 
 
   return { doorLabel, value, sub, href, isOpen, eventTitle }
 }
+
+// Static (non-ticking) variant for the plain agenda-header line: "Volgende avond · Do 30 jul ·
+// DJ Hadless" or, for a night that's already today, "Vanavond · DJ Hadless" - never a live
+// countdown. A live per-second counter belongs to a single flagged/next FEATURED event (where
+// counting down to one specific date is legitimate hype), not to this generic, always-present
+// line, which renders once per request with no client JS at all.
+export function getNextNightLine(now: Date, events: ClubStatusEvent[], lang: Lang) {
+  const t = INTERACTIVE_COPY[lang]
+  const { isOpen, opensAt, nextOpen } = getClubWindow(now)
+  const target = isOpen ? opensAt : nextOpen
+  if (!target) return null
+
+  const eventFor = (dateKey: string) => events.find((event) => event.date === dateKey)
+  const titleOf = (event: ClubStatusEvent) => (lang === 'nl' ? event.titleNl || event.title : event.titleEn || event.title)
+  const hrefFor = (event?: ClubStatusEvent) =>
+    event?.slug
+      ? lang === 'nl' ? `/uitgaan/${event.slug}` : `/en/nightlife/${event.slug}`
+      : lang === 'nl' ? '/uitgaan' : '/en/nightlife'
+
+  const isTonight = toDateKey(target) === toDateKey(now)
+  const event = eventFor(toDateKey(target))
+  const eventTitle = event ? titleOf(event) : null
+
+  return {
+    label: isTonight ? t.status.tonightShort : t.status.nextEvent,
+    value: isTonight ? null : formatShortDate(target, lang),
+    sub: eventTitle,
+    href: hrefFor(event),
+  }
+}

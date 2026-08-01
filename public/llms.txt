@@ -16,8 +16,8 @@
 
 ## Key pages
 
-- [Uitgaan in Maastricht](https://www.cliniqmaastricht.nl/uitgaan): Club nights and the weekly agenda — DJs, opening hours, age policy, dress code.
-- [Nightlife in Maastricht](https://www.cliniqmaastricht.nl/en/nightlife): English version of the above.
+- [Uitgaan in Maastricht](https://www.cliniqmaastricht.nl/uitgaan): Club nights and the weekly agenda — DJs, opening hours, age policy, dress code. Each upcoming night also has its own dated event page (`/uitgaan/[slug]`) with Event schema, doors/close times and lineup.
+- [Nightlife in Maastricht](https://www.cliniqmaastricht.nl/en/nightlife): English version of the above, with matching per-event pages at `/en/nightlife/[slug]`.
 - [Cocktail workshop Maastricht](https://www.cliniqmaastricht.nl/cocktail-workshop): Cocktail workshops for groups of 15+, popular for hen parties and corporate outings.
 - [Event location Maastricht](https://www.cliniqmaastricht.nl/event-space): Exclusive private hire for parties, corporate events and launches, up to 400 guests.
 - [Photos](https://www.cliniqmaastricht.nl/fotos): Photo albums from club nights, events and workshops.

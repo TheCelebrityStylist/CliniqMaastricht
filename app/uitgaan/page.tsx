@@ -10,6 +10,8 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
+import FeaturedEvent from '@/components/experience/FeaturedEvent'
+import { pickFeaturedEvent, weekendAnswerNl } from '@/lib/eventCopy'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -187,6 +189,8 @@ export default async function NightlifePage() {
     .filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const pilePhotos = getPilePhotos('nl')
+  const featuredEvent = pickFeaturedEvent(events)
+  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
   const heroImage = pageContent?.imageUrl || images.redCrowd
   const heroTitle = pageContent?.heroTitleNl || 'Uitgaan in Maastricht.'
   const heroSubtitle =
@@ -212,6 +216,12 @@ export default async function NightlifePage() {
     if (!allFaqs.some((item) => item.question.toLowerCase() === faq.question.toLowerCase())) allFaqs.push(faq)
   })
 
+  // GEO answer block: "wat is er dit weekend te doen in Maastricht" - the one freshness-driven
+  // block that references the actual upcoming events, not a static claim. NEW copy (generated,
+  // listed for approval). Rendered as its own standalone section (like the matching blocks on
+  // /nachtclub-maastricht and /cocktail-workshop) and mirrored into the FAQPage schema.
+  const weekendGeo = { question: 'Wat is er dit weekend te doen in Maastricht?', answer: weekendAnswerNl(events) }
+
   const eventSchemas = events.map((event) => ({
     '@type': 'Event',
     '@id': `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}#event`,
@@ -232,6 +242,7 @@ export default async function NightlifePage() {
       },
     },
     organizer: { '@type': 'Organization', name: 'Cliniq Maastricht', url: 'https://www.cliniqmaastricht.nl' },
+    performer: { '@type': 'PerformingGroup', name: event.titleNl || event.title },
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     image: event.imageUrl ? [event.imageUrl] : undefined,
@@ -258,17 +269,24 @@ export default async function NightlifePage() {
         </div>
       </section>
 
+      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
+
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
           <SectionIntro eyebrow="Agenda" title="Agenda: uitgaan bij CLINIQ Maastricht" text="Bekijk de eerstvolgende clubnachten, DJ-avonden en events aan de Platielstraat." />
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}
+          {remainingEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
+              {remainingEvents.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />)}
             </div>
-          ) : (
+          ) : !events.length ? (
             <div className="mt-10 rounded-[2rem] border border-white/10 p-8 text-white/70">Nieuwe events worden binnenkort toegevoegd.</div>
-          )}
+          ) : null}
         </div>
+      </section>
+
+      <section className="container-premium section-y">
+        <h2 className="h2">{weekendGeo.question}</h2>
+        <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{weekendGeo.answer}</p>
       </section>
 
       {pilePhotos.length ? (
@@ -421,7 +439,7 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      <JsonLd data={faqSchema(allFaqs)} />
+      <JsonLd data={faqSchema([weekendGeo, ...allFaqs])} />
       <JsonLd data={{ '@context': 'https://schema.org', '@graph': eventSchemas }} />
       <JsonLd data={breadcrumbSchema([
         { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },

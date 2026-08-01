@@ -12,9 +12,11 @@ import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import EventTicker from '@/components/experience/EventTicker'
 import NextNightLine from '@/components/experience/NextNightLine'
+import FeaturedEvent from '@/components/experience/FeaturedEvent'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
+import { pickFeaturedEvent } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
@@ -104,6 +106,9 @@ export default async function Home() {
   const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
   const seoBodyNl = pageContent?.bodyNl
 
+  const featuredEvent = pickFeaturedEvent(events)
+  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
+
   return (
     <>
       <HeroFrame className="hero-clean">
@@ -132,19 +137,21 @@ export default async function Home() {
                 {primaryCta}
               </Link>
 
-              <Link data-track="cta_click" className="focus-ring inline-flex min-h-11 items-center text-white/70 underline-offset-4 transition hover:text-white hover:underline" href="/fotos">
-                {secondaryCta}
+              <Link data-track="cta_click" className="focus-ring inline-flex min-h-11 items-center text-white/70 underline-offset-4 transition hover:text-white hover:underline" href="/event-space#aanvraag">
+                Aanvragen voor feesten
               </Link>
             </div>
           </div>
         </div>
       </HeroFrame>
 
+      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
+
       <EventTicker events={events.map((event) => ({ title: event.titleNl || event.title, date: event.date }))} lang="nl" />
 
       <section className="event-section section-y">
         <div className="container-premium">
-          <NextNightLine events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="nl" initialNow={Date.now()} />
+          <NextNightLine events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="nl" />
 
           <SectionIntro
             eyebrow="Agenda"
@@ -154,13 +161,13 @@ export default async function Home() {
             ctaLabel={t.common.allEvents}
           />
 
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0} />
+          {remainingEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
+              {remainingEvents.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />
               ))}
             </div>
-          ) : (
+          ) : !events.length ? (
             <div className="image-frame mt-10 min-h-[360px] p-8">
               <SafeImage
                 src={images.club}
@@ -173,7 +180,7 @@ export default async function Home() {
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
               <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
