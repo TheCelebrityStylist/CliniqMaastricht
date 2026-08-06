@@ -75,15 +75,54 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     </div>
   </div>
 
-  return <article data-image-source={event.source || event.imageSource || 'unknown'} className={`event-card group ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
-    <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link>
-    {hasDetail ? <div className="event-card-detail">
-      {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
-      <div className="mt-4 flex flex-wrap items-center gap-4">
-        <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-coral-text hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link>
-        {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
-        {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
+  // Below md, a compact scannable row instead of the full media card: a wall of 15+ full-height
+  // hero cards was the previous overcorrection (fixing the hidden horizontal carousel by stacking
+  // every card at full size instead of only fixing the discoverability problem). One tappable row,
+  // ~76px tall, date block + name/time + age/chevron - several fit on screen at once. The full
+  // card still renders (hidden on mobile, shown from md up) so desktop is untouched.
+  const weekdayShort = !Number.isNaN(parsedDate.getTime())
+    ? parsedDate.toLocaleDateString(lang === 'en' ? 'en-GB' : 'nl-NL', { weekday: 'short' }).slice(0, 2).toUpperCase()
+    : ''
+
+  return <>
+    <Link
+      href={href}
+      data-track="agenda_card_click"
+      aria-label={`${title} ${time}`}
+      className="focus-ring group flex min-h-[76px] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.035] px-3 py-2.5 transition-colors hover:border-white/25 md:hidden"
+    >
+      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-white/5 text-center leading-none">
+        <span className="text-[10px] font-black uppercase tracking-wider text-magenta">{weekdayShort}</span>
+        <span className="mt-0.5 text-xl font-black text-white">{parsedDate.getDate()}</span>
       </div>
-    </div> : null}
-  </article>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[15px] font-black leading-tight text-white">{title}</p>
+        {time ? <p className="mt-0.5 truncate text-xs font-bold text-white/55">{time}</p> : null}
+      </div>
+      <div className="flex shrink-0 items-center gap-2 text-white/50">
+        <span className="text-[11px] font-bold uppercase tracking-wide">{event.ageLimit || '21+'}</span>
+        <ChevronIcon />
+      </div>
+    </Link>
+
+    <article data-image-source={event.source || event.imageSource || 'unknown'} className={`event-card group hidden md:block ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
+      <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link>
+      {hasDetail ? <div className="event-card-detail">
+        {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-coral-text hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link>
+          {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
+          {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
+        </div>
+      </div> : null}
+    </article>
+  </>
+}
+
+function ChevronIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0" aria-hidden="true">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  )
 }

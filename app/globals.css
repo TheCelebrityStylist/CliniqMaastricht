@@ -134,11 +134,12 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 @media (max-width: 767px) { .atmosphere-glow { animation-duration: 24s; filter: blur(40px); } }
 @media (prefers-reduced-motion: reduce) { .atmosphere-glow { animation: none !important; } }
 
-/* Mobile agenda: no tiny three-column cards, and NOT a hidden horizontal swipe either - a
-   carousel here meant off-screen events were invisible with no affordance that more existed
-   ("hidden events = lost conversions" on the site's highest-traffic mobile page). Single-column
-   vertical stack instead: full-width cards, one under the other, natural scroll, nothing to
-   discover by swiping. */
+/* Mobile agenda: no tiny three-column cards, no hidden horizontal swipe, and (this rule's third
+   revision) no wall of 15+ full-height hero cards either. EventCard itself renders a compact
+   ~76px tappable row below md and hides its full media card there (shown from md up) - see
+   components/ui/EventCard.tsx. The one exception is the featured event, which keeps its own
+   `.event-card` full-bleed treatment on every breakpoint (deliberately "one standout", not
+   compact) - the `.event-card` mobile sizing below still applies to that card specifically. */
 @media (max-width: 767px) {
   .event-grid,
   .event-grid-1,
@@ -146,8 +147,9 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
   .event-grid-3 {
     display: flex !important;
     flex-direction: column !important;
+    align-items: stretch !important;
     grid-template-columns: none !important;
-    gap: 18px;
+    gap: 10px;
     max-width: none;
     overflow-x: visible;
   }
@@ -156,39 +158,6 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
     border-radius: 24px;
     width: 100%;
     max-width: none;
-  }
-
-  .event-card-media {
-    aspect-ratio: 4 / 5;
-    min-height: auto;
-  }
-
-  .event-card .event-card-title,
-  .event-card-title {
-    font-size: clamp(2.35rem, 11vw, 3.75rem) !important;
-    letter-spacing: -0.055em;
-    line-height: 0.86;
-    max-width: 100%;
-    overflow-wrap: break-word;
-  }
-
-  .event-title-block {
-    gap: 10px;
-    padding: 20px !important;
-  }
-
-  .event-card-time {
-    color: rgba(255, 255, 255, 0.76) !important;
-    display: block !important;
-    font-size: 1.2rem !important;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    line-height: 1.1;
-  }
-
-  .event-chip {
-    min-height: 34px;
-    padding: 9px 12px !important;
   }
 
   .hero-title,

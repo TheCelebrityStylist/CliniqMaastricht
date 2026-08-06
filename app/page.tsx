@@ -176,6 +176,12 @@ export default async function Home() {
               <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
             </div>
           )}
+
+          {events.length > 3 ? (
+            <Link href="/uitgaan" className="focus-ring mt-4 inline-flex min-h-11 items-center text-sm font-black uppercase tracking-[0.1em] text-coral-text hover:text-white md:hidden">
+              {t.common.allEvents} →
+            </Link>
+          ) : null}
         </div>
       </section>
 
