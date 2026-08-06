@@ -12,11 +12,10 @@ import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import EventTicker from '@/components/experience/EventTicker'
 import NextNightLine from '@/components/experience/NextNightLine'
-import FeaturedEvent from '@/components/experience/FeaturedEvent'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { pickFeaturedEvent } from '@/lib/eventCopy'
+import { sortFeaturedFirst } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
@@ -63,7 +62,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomeEn() {
   const t = ui.en
 
-  const [events, pageContent, homepagePhotos] = await Promise.all([
+  const [rawEvents, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
     getPageContent('home', 'en'),
     getSectionPhotoMedia('homepage', [
@@ -75,6 +74,7 @@ export default async function HomeEn() {
       images.hero,
     ]),
   ])
+  const events = sortFeaturedFirst(rawEvents)
 
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
@@ -90,9 +90,6 @@ export default async function HomeEn() {
   const primaryCta = pageContent?.primaryCtaEn || t.common.viewAgenda
   const secondaryCta = pageContent?.secondaryCtaEn || t.home.heroCta2
   const seoBody = pageContent?.bodyEn || pageContent?.bodyNl
-
-  const featuredEvent = pickFeaturedEvent(events)
-  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
 
   return (
     <>
@@ -130,8 +127,6 @@ export default async function HomeEn() {
         </div>
       </HeroFrame>
 
-      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="en" /> : null}
-
       <EventTicker events={events.map((event) => ({ title: event.titleEn || event.title, date: event.date }))} lang="en" />
 
       <section className="event-section section-y">
@@ -146,13 +141,13 @@ export default async function HomeEn() {
             ctaLabel={t.common.allEvents}
           />
 
-          {remainingEvents.length ? (
-            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
-              {remainingEvents.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />
+          {events.length ? (
+            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
+              {events.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0} />
               ))}
             </div>
-          ) : !events.length ? (
+          ) : (
             <div className="image-frame mt-10 min-h-[360px] p-8">
               <SafeImage
                 src={images.club}
@@ -165,7 +160,7 @@ export default async function HomeEn() {
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
               <h3 className="h2 absolute bottom-8 left-8 right-8">New events coming soon.</h3>
             </div>
-          ) : null}
+          )}
         </div>
       </section>
 

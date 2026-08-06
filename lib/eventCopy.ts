@@ -3,6 +3,14 @@ import type { Lang } from './i18n'
 
 type EventLike = AgendaEvent & { relatedAlbumSlug?: string }
 
+// Stable-sorts so a Sanity-flagged featured event always renders first in the agenda grid,
+// regardless of its chronological position - "featured" only reads as "unmistakably the hero of
+// the grid" (and, on mobile, "first at the top of the stack") if it's actually first, not
+// wherever its date happens to fall among the other upcoming nights.
+export function sortFeaturedFirst<T extends { featured?: boolean }>(events: T[]): T[] {
+  return [...events].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+}
+
 // "Dit weekend" is only ever true when the event's calendar date actually falls on the
 // Friday/Saturday of the current (or, late in the week, upcoming) weekend relative to `now` —
 // never inferred from a countdown or hardcoded. No spot-count/capacity field exists anywhere in
@@ -26,32 +34,6 @@ export function isThisWeekend(dateStr: string, now = new Date()): boolean {
   mondayAfter.setDate(mondayAfter.getDate() + 3) // through end of Sunday
 
   return date >= friday && date < mondayAfter
-}
-
-// Picks the card that gets the full-bleed FeaturedEvent treatment: an explicit Sanity/admin
-// `featured` flag wins if one exists among the upcoming events; otherwise the next chronological
-// night is featured by default (the brief's own wording: "the next (or flagged) big night").
-export function pickFeaturedEvent<T extends { date: string; featured?: boolean }>(events: T[]): T | null {
-  if (!events.length) return null
-  return events.find((event) => event.featured) || events[0]
-}
-
-const MONTHS_NL = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const WEEKDAYS_NL = ['ZO', 'MA', 'DI', 'WO', 'DO', 'VR', 'ZA']
-const WEEKDAYS_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-
-// Big oversized date block for FeaturedEvent, e.g. { weekday: 'ZA', day: '17', month: 'AUG' }.
-export function formatBigDate(dateStr: string, lang: Lang) {
-  const date = new Date(`${dateStr}T00:00:00`)
-  if (Number.isNaN(date.getTime())) return { weekday: '', day: '', month: '' }
-  const months = lang === 'nl' ? MONTHS_NL : MONTHS_EN
-  const weekdays = lang === 'nl' ? WEEKDAYS_NL : WEEKDAYS_EN
-  return {
-    weekday: weekdays[date.getDay()],
-    day: String(date.getDate()),
-    month: months[date.getMonth()].toUpperCase(),
-  }
 }
 
 function weekdayLong(dateStr: string, lang: Lang) {

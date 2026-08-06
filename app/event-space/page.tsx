@@ -13,6 +13,7 @@ import SafeImage from '@/components/ui/SafeImage'
 
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import StickyRequestCTA from '@/components/experience/StickyRequestCTALoader'
 
 const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
 const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
@@ -126,10 +127,6 @@ const fallbackEventTypes: EditableCard[] = [
   {
     titleNl: 'Borrel',
     textNl: 'Voor groepen die informeel willen samenkomen met bar en muziek dichtbij.',
-  },
-  {
-    titleNl: 'Private party',
-    textNl: 'Een eigen avond met deurbeleid, bar en invulling op maat.',
   },
   {
     titleNl: 'Studentenfeest',
@@ -447,6 +444,8 @@ export default async function EventSpacePage() {
           ]}
         />
       </section>
+
+      <StickyRequestCTA formId="aanvraag" label="Aanvragen" />
 
       <JsonLd data={faqSchema([geoAnswer, ...pageFaqs])} />
       <JsonLd data={eventVenueSchema()} />

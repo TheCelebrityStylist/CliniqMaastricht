@@ -12,6 +12,7 @@ import { SEO_TEXT } from '@/lib/content'
 
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import StickyRequestCTA from '@/components/experience/StickyRequestCTALoader'
 
 const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
 const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
@@ -26,7 +27,7 @@ const geoAnswer = {
     'Cliniq on Platielstraat 9A is an event location in central Maastricht, within walking distance of the Vrijthof and the Markt. The space is available for exclusive private hire on Thursday, Friday and Saturday for up to 400 guests, with bar, lighting, sound and dancefloor already in place — suitable for corporate events, drinks and private parties.',
 }
 
-const eventTypes = [['Corporate event','Corporate drinks or staff party? Cliniq has the space, bar and sound system. You bring the team.'],['Private party','From intimate birthdays to big celebration nights. Cliniq is yours exclusively.'],['Hen night','Workshop to open, then straight into the club. One of the most-booked hen night venues in Maastricht.'],['Drinks','For groups that want an informal setting without a standard room feel.'],['Private party','Your own night with door policy, bar and a tailored setup.'],['Student event','Suitable for larger groups with music, lighting and clear agreements.'],['Product launch','Present your brand or product in a setting people remember. Stage, screen, bar and lighting all in place.'],['Gala / private night','For a sharper evening with reception, bar and club atmosphere later on.']]
+const eventTypes = [['Corporate event','Corporate drinks or staff party? Cliniq has the space, bar and sound system. You bring the team.'],['Private party','From intimate birthdays to big celebration nights. Cliniq is yours exclusively.'],['Hen night','Workshop to open, then straight into the club. One of the most-booked hen night venues in Maastricht.'],['Drinks','For groups that want an informal setting without a standard room feel.'],['Student event','Suitable for larger groups with music, lighting and clear agreements.'],['Product launch','Present your brand or product in a setting people remember. Stage, screen, bar and lighting all in place.'],['Gala / private night','For a sharper evening with reception, bar and club atmosphere later on.']]
 const EVENT_TYPE_PHOTOS = [images.redRoom, images.party, images.workshopBar, images.club, images.crowd, images.bar, images.contactInterior, images.redCrowd]
 const facilities = [['Bar','A fixed bar setup with team and drinks options.'],['Light and sound','The basis for music, speeches and a full dance floor is already there.'],['DJ options','We can help with DJ, music style and timing.'],['Dance floor','The space feels like a night out, not an empty room.'],['Cocktail options','Cocktails, welcome drinks or drinks packages are possible.'],['Central location','Platielstraat 9A, in the centre of Maastricht.'],['Hospitality team','A team used to busy nights and group events.'],['Cloakroom / lockers','Locker or cloakroom arrangements can be aligned per event.']]
 
@@ -63,6 +64,7 @@ export default function EventSpacePage(){
     <section id="inquiry" className="container-premium grid gap-8 pb-24 lg:grid-cols-[.8fr_1.2fr]"><div><p className="eyebrow">Inquiry</p><h2 className="h2 mt-4">Request proposal</h2><p className="mt-6 text-lg leading-[1.65] text-white/72">Tell us your date, group size and type of event. We will think with you about availability, layout and options.</p></div><InquiryForm type="event-space" sourcePage="/en/event-space" fields={[{name:'name',label:'Name',required:true},{name:'email',label:'Email',type:'email',required:true},{name:'phone',label:'Phone'},{name:'eventType',label:'Event type',options:['Corporate event','Birthday','Bachelorette party','Gala','Student party','Private party','Drinks','Product launch']},{name:'preferredDate',label:'Preferred date',type:'date'},{name:'guests',label:'Guests',type:'number'},{name:'message',label:'Message',required:true}]} /></section><JsonLd data={faqSchema([geoAnswer, ...faqs])} />
     <JsonLd data={eventVenueSchema()} />
     <JsonLd data={breadcrumbSchema([{ name: 'Home', url: `${site.url}/en` }, { name: 'Event Space Maastricht', url: `${site.url}/en/event-space` }])} />
+    <StickyRequestCTA formId="inquiry" label="Request proposal" />
   </>
 }
 function InfoCard({ title, text }: { title: string; text: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"><h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3><p className="mt-3 text-white/66">{text}</p></article> }

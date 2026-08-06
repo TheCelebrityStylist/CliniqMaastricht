@@ -10,8 +10,7 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import FeaturedEvent from '@/components/experience/FeaturedEvent'
-import { pickFeaturedEvent, weekendAnswerNl } from '@/lib/eventCopy'
+import { weekendAnswerNl, sortFeaturedFirst } from '@/lib/eventCopy'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -169,7 +168,7 @@ const nightlifeOptions = [
 ]
 
 export default async function NightlifePage() {
-  const [events, albums, rawPageContent, sectionPhotos] = await Promise.all([
+  const [rawEvents, albums, rawPageContent, sectionPhotos] = await Promise.all([
     getAgendaEvents(),
     getPhotoAlbums(),
     getPageContent('nightlife', 'nl'),
@@ -182,6 +181,7 @@ export default async function NightlifePage() {
       images.bar,
     ]),
   ])
+  const events = sortFeaturedFirst(rawEvents)
 
   const pageContent = rawPageContent as ExtendedPageContent
   const photos = (pageContent?.gallery?.length ? pageContent.gallery : sectionPhotos)
@@ -189,8 +189,6 @@ export default async function NightlifePage() {
     .filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const pilePhotos = getPilePhotos('nl')
-  const featuredEvent = pickFeaturedEvent(events)
-  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
   const heroImage = pageContent?.imageUrl || images.redCrowd
   const heroTitle = pageContent?.heroTitleNl || 'Uitgaan in Maastricht.'
   const heroSubtitle =
@@ -269,18 +267,16 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
-
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
           <SectionIntro eyebrow="Agenda" title="Agenda: uitgaan bij CLINIQ Maastricht" text="Bekijk de eerstvolgende clubnachten, DJ-avonden en events aan de Platielstraat." />
-          {remainingEvents.length ? (
-            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
-              {remainingEvents.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />)}
+          {events.length ? (
+            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
+              {events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}
             </div>
-          ) : !events.length ? (
+          ) : (
             <div className="mt-10 rounded-[2rem] border border-white/10 p-8 text-white/70">Nieuwe events worden binnenkort toegevoegd.</div>
-          ) : null}
+          )}
         </div>
       </section>
 

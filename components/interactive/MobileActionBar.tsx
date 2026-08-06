@@ -28,6 +28,10 @@ export default function MobileActionBar() {
   const t = INTERACTIVE_COPY[lang].actionBar
   const nav = copy[lang]
   const mapsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${site.address.street}, ${site.address.postalCode} ${site.address.city}`)}`
+  // On the event-space page itself, a same-path Link is a no-op (no navigation, no scroll) -
+  // point straight at the request-proposal form instead so this still does something useful.
+  const onEventSpacePage = pathname === localizedPaths.eventSpace[lang]
+  const eventSpaceHref = onEventSpacePage ? `${localizedPaths.eventSpace[lang]}#${lang === 'nl' ? 'aanvraag' : 'inquiry'}` : localizedPaths.eventSpace[lang]
 
   return (
     <div
@@ -42,7 +46,7 @@ export default function MobileActionBar() {
         <CalendarIcon />
         {t.events}
       </Link>
-      <Link href={localizedPaths.eventSpace[lang]} className="focus-ring flex flex-col items-center justify-center gap-1 bg-coral py-3 text-[10px] font-black uppercase tracking-[0.08em] text-white">
+      <Link href={eventSpaceHref} className="focus-ring flex flex-col items-center justify-center gap-1 bg-coral py-3 text-[10px] font-black uppercase tracking-[0.08em] text-white">
         <ArrowIcon />
         {nav.cta}
       </Link>

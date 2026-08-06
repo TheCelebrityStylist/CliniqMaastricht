@@ -45,7 +45,140 @@ const agendaPlan: Array<{ date: string; dj: string }> = [
 
 const eventImages = [images.redCrowd, images.club, images.party, images.hero]
 
-export const defaultAgendaEvents: AgendaEvent[] = agendaPlan.map(({ date, dj }, index) => {
+// Real owner-supplied Inkom-week (student welcome week) events, wired directly rather than
+// through the generic agendaPlan/defaultAgendaEvents pipeline: that pipeline assumes a uniform
+// Thu/Fri/Sat weekly night (age-by-weekday, one generic subtitle/description). These are
+// individually authored, one-off nights on Mon/Tue/Wed/Sun - outside the venue's normal open
+// days - each with its own promo copy. Doors/close default to 22:00-03:00 (matching every other
+// night) and age defaults to 18+ (student-audience events) since Sanity has no exact per-event
+// times/age to pull from in this environment; both are flagged for owner confirmation in the
+// report, same as the spelling of "Amphitryon" and the Aug 26 weekday (the brief says "Di 26
+// aug"/Tuesday, but 26 Aug 2026 is actually a Wednesday - used the explicit date, corrected the
+// weekday text). 17 Aug (soonest) is marked featured per "set the nearest upcoming as featured."
+const inkomWeekEvents: AgendaEvent[] = [
+  {
+    _id: 'agenda-2026-08-17-amphitryon-inkom-party',
+    title: 'Amphitryon Inkom Party',
+    titleNl: 'Amphitryon Inkom Party',
+    titleEn: 'Amphitryon Inkom Party',
+    subtitleNl: 'Opening van de Inkomweek',
+    subtitleEn: 'Opening night of Inkom week',
+    slug: { current: '2026-08-17-amphitryon-inkom-party' },
+    date: '2026-08-17',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      "Maandag 17 augustus barst de Inkom los bij CLINIQ. De Amphitryon-party aan de Platielstraat — dé opening van jouw studentenjaar in Maastricht. Wees erbij. Deuren 22:00 · open tot 03:00 · 18+.",
+    fullDescriptionEn:
+      'Monday 17 August, Inkom kicks off at CLINIQ. The Amphitryon party on Platielstraat — the opening night of your student year in Maastricht. Be there. Doors 22:00 · open until 03:00 · 18+.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.party,
+    imageAlt: 'Amphitryon Inkom Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-18-inkom-pubcrawl-koko',
+    title: 'Inkom Pubcrawl × Koko',
+    titleNl: 'Inkom Pubcrawl × Koko',
+    titleEn: 'Inkom Pubcrawl × Koko',
+    subtitleNl: 'Van kroeg naar dansvloer',
+    subtitleEn: 'From bars to dancefloor',
+    slug: { current: '2026-08-18-inkom-pubcrawl-koko' },
+    date: '2026-08-18',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Dinsdag 18 augustus strandt de Inkom pubcrawl bij CLINIQ, samen met Koko. Van de kroeg recht de dansvloer op — hier eindigt de avond. Uitgaan in Maastricht begint hier. Deuren 22:00 · open tot 03:00 · 18+.',
+    fullDescriptionEn:
+      'Tuesday 18 August, the Inkom pub crawl lands at CLINIQ, together with Koko. Straight from the bars onto the dancefloor — this is where the night ends. Nightlife in Maastricht starts here. Doors 22:00 · open until 03:00 · 18+.',
+    featured: false,
+    eventType: 'regular',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.club,
+    imageAlt: 'Inkom Pubcrawl x Koko bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-19-stennis-inkom-party',
+    title: 'Stennis Inkom Party',
+    titleNl: 'Stennis Inkom Party',
+    titleEn: 'Stennis Inkom Party',
+    subtitleNl: 'Midweek Inkomfeest',
+    subtitleEn: 'Midweek Inkom night',
+    slug: { current: '2026-08-19-stennis-inkom-party' },
+    date: '2026-08-19',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Woensdag 19 augustus knalt de Stennis Inkom-party door de Platielstraat. De week van je leven, de club die niet stilstaat. Deuren 22:00 · open tot 03:00 · 18+.',
+    fullDescriptionEn:
+      'Wednesday 19 August, the Stennis Inkom party takes over Platielstraat. The week of your life, the club that never stops. Doors 22:00 · open until 03:00 · 18+.',
+    featured: false,
+    eventType: 'regular',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.redCrowd,
+    imageAlt: 'Stennis Inkom Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-26-esn-party',
+    title: 'ESN Party',
+    titleNl: 'ESN Party',
+    titleEn: 'ESN Party',
+    subtitleNl: 'Internationale studentenavond',
+    subtitleEn: 'International student night',
+    slug: { current: '2026-08-26-esn-party' },
+    date: '2026-08-26',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Woensdag 26 augustus neemt ESN CLINIQ over. Internationale studenten, één dansvloer, Maastricht bij nacht. Wees erbij. Deuren 22:00 · open tot 03:00 · 18+.',
+    fullDescriptionEn:
+      'Wednesday 26 August, ESN takes over CLINIQ. International students, one dancefloor, Maastricht by night. Be there. Doors 22:00 · open until 03:00 · 18+.',
+    featured: false,
+    eventType: 'regular',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.hero,
+    imageAlt: 'ESN Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-30-after-preuve-john-tana',
+    title: 'After Preuve × John Tana',
+    titleNl: 'After Preuve × John Tana',
+    titleEn: 'After Preuve × John Tana',
+    subtitleNl: 'De afsluiter van Preuve',
+    subtitleEn: 'The Preuve closer',
+    slug: { current: '2026-08-30-after-preuve-john-tana' },
+    date: '2026-08-30',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Zondag 30 augustus trek je na Preuve door naar CLINIQ. After Preuve met John Tana — de afsluiter aan de Platielstraat. Deuren 22:00 · open tot 03:00 · 18+.',
+    fullDescriptionEn:
+      'Sunday 30 August, head to CLINIQ after Preuve. After Preuve with John Tana — the closer on Platielstraat. Doors 22:00 · open until 03:00 · 18+.',
+    featured: false,
+    eventType: 'regular',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.crowd,
+    imageAlt: 'After Preuve x John Tana bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+]
+
+export const defaultAgendaEvents: AgendaEvent[] = [...agendaPlan.map(({ date, dj }, index): AgendaEvent => {
   const day = new Date(`${date}T00:00:00`).getUTCDay()
   const isThursday = day === 4
   const startTime = '22:00'
@@ -73,7 +206,7 @@ export const defaultAgendaEvents: AgendaEvent[] = agendaPlan.map(({ date, dj }, 
     imageAlt: `${dj} bij CLINIQ Maastricht`,
     imagePosition: 'center',
   }
-})
+}), ...inkomWeekEvents]
 
 export const defaultStore: AdminStore = {
   media: [
