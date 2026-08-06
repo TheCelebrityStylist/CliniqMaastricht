@@ -10,7 +10,7 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { weekendAnswerNl, sortFeaturedFirst } from '@/lib/eventCopy'
+import { weekendAnswerNl } from '@/lib/eventCopy'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -168,7 +168,7 @@ const nightlifeOptions = [
 ]
 
 export default async function NightlifePage() {
-  const [rawEvents, albums, rawPageContent, sectionPhotos] = await Promise.all([
+  const [events, albums, rawPageContent, sectionPhotos] = await Promise.all([
     getAgendaEvents(),
     getPhotoAlbums(),
     getPageContent('nightlife', 'nl'),
@@ -181,7 +181,6 @@ export default async function NightlifePage() {
       images.bar,
     ]),
   ])
-  const events = sortFeaturedFirst(rawEvents)
 
   const pageContent = rawPageContent as ExtendedPageContent
   const photos = (pageContent?.gallery?.length ? pageContent.gallery : sectionPhotos)

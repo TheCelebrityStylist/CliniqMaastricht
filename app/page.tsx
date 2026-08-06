@@ -15,7 +15,6 @@ import NextNightLine from '@/components/experience/NextNightLine'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { sortFeaturedFirst } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
@@ -80,7 +79,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const t = ui.nl
 
-  const [rawEvents, pageContent, homepagePhotos] = await Promise.all([
+  // Events render in plain chronological order (getAgendaEvents already sorts by date) -
+  // featured nights are signaled by style, not by being reordered to the top.
+  const [events, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
     getPageContent('home'),
     getSectionPhotoMedia('homepage', [
@@ -92,7 +93,6 @@ export default async function Home() {
       images.hero,
     ]),
   ])
-  const events = sortFeaturedFirst(rawEvents)
 
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)

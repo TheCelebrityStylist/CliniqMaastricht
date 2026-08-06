@@ -84,6 +84,11 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card-detail { padding:1.25rem; padding-top:1rem; }
 .event-chip { display:inline-flex; align-items:center; min-height:2.2rem; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.45); padding:10px 16px; color:rgba(255,247,234,.92); font-size:clamp(.78rem, .9vw, .9rem); font-weight:800; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(12px); }
 .event-chip-age { padding-inline:14px; }
+/* Featured event: signals importance in place (natural date position, not reordered to the top)
+   via a coral accent border on the card and a magenta-tinted chip replacing the plain date chip. */
+.event-card-spotlight { border-color:rgba(219,51,76,.55); }
+.event-card-spotlight:hover { border-color:rgba(219,51,76,.8); }
+.event-chip-featured { border-color:rgba(220,72,254,.5); background:rgba(80,11,56,.55); color:#fff; }
 @media (max-width:640px) { .event-chip-row { left:14px; right:14px; top:14px; } .event-chip { min-height:1.9rem; padding:8px 12px; font-size:.72rem; } .event-title-block { padding:22px; } }
 .cta-arrow { display:inline-flex; align-items:center; min-height:2.75rem; }
 .cta-arrow span { display:inline-block; transition:transform .25s ease; }

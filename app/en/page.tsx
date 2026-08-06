@@ -15,7 +15,6 @@ import NextNightLine from '@/components/experience/NextNightLine'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { sortFeaturedFirst } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
@@ -62,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomeEn() {
   const t = ui.en
 
-  const [rawEvents, pageContent, homepagePhotos] = await Promise.all([
+  const [events, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
     getPageContent('home', 'en'),
     getSectionPhotoMedia('homepage', [
@@ -74,7 +73,6 @@ export default async function HomeEn() {
       images.hero,
     ]),
   ])
-  const events = sortFeaturedFirst(rawEvents)
 
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)

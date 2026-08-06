@@ -6,11 +6,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
   const events = await getAgendaEvents()
 
-  const eventEntries = events.flatMap((event) => {
+  // Only featured events get a real detail page (see the redirect guard on the [slug] routes),
+  // so only those 5 belong in the sitemap. lastModified uses each event's own date rather than
+  // `now` for every entry - a truthful per-page signal instead of a blanket "changed today".
+  const eventEntries = events.filter((event) => event.featured).flatMap((event) => {
     const slug = event.slug?.current || event._id
+    const eventDate = new Date(`${event.date}T00:00:00`)
+    const lastModified = Number.isNaN(eventDate.getTime()) ? now : eventDate
     return [
-      { url: `${base}/uitgaan/${slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7 },
-      { url: `${base}/en/nightlife/${slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.6 },
+      { url: `${base}/uitgaan/${slug}`, lastModified, changeFrequency: 'weekly' as const, priority: 0.7 },
+      { url: `${base}/en/nightlife/${slug}`, lastModified, changeFrequency: 'weekly' as const, priority: 0.6 },
     ]
   })
 

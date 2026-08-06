@@ -3,14 +3,6 @@ import type { Lang } from './i18n'
 
 type EventLike = AgendaEvent & { relatedAlbumSlug?: string }
 
-// Stable-sorts so a Sanity-flagged featured event always renders first in the agenda grid,
-// regardless of its chronological position - "featured" only reads as "unmistakably the hero of
-// the grid" (and, on mobile, "first at the top of the stack") if it's actually first, not
-// wherever its date happens to fall among the other upcoming nights.
-export function sortFeaturedFirst<T extends { featured?: boolean }>(events: T[]): T[] {
-  return [...events].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
-}
-
 // "Dit weekend" is only ever true when the event's calendar date actually falls on the
 // Friday/Saturday of the current (or, late in the week, upcoming) weekend relative to `now` —
 // never inferred from a countdown or hardcoded. No spot-count/capacity field exists anywhere in

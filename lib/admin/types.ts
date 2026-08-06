@@ -40,6 +40,15 @@ export type AgendaEvent = {
   ticketUrl?: string
   featured?: boolean
   eventType?: 'regular' | 'featured' | 'special' | 'private'
+  // Per-event overrides for the 5 featured detail pages - each night gets its own eyebrow tag
+  // (e.g. "INKOM", "INTERNATIONAL"), title/meta copy, and body already carries the unique angle
+  // via fullDescriptionNl/En above. These are optional: non-featured events never set them.
+  categoryTagNl?: string
+  categoryTagEn?: string
+  metaTitleNl?: string
+  metaTitleEn?: string
+  metaDescriptionNl?: string
+  metaDescriptionEn?: string
   showDetailCTA?: boolean
   published?: boolean
   imageId?: string
