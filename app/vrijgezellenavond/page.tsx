@@ -62,7 +62,7 @@ export default function VrijgezellenavondPage() {
         <>Op zoek naar een originele vrijgezellenavond in Maastricht? Bij Cliniq combineer je een cocktail workshop met een exclusieve clubavond. Jullie groep heeft de bar voor zichzelf tijdens de workshop, daarna gaat de avond gewoon door.</>,
         <>Cliniq op de Platielstraat 9A is een van de meest geboekte locaties voor vrijgezellenfeesten in Maastricht en de regio. Goed bereikbaar vanuit Luik, Hasselt, Eindhoven en Heerlen.</>,
         <>Minimaal 15 personen, €15 per cocktail. Totaalpakketten en exclusief gebruik zijn bespreekbaar.</>,
-        <>Meer weten over <Link href="/event-space" className="text-gold hover:text-white">ruimte huren</Link> bij Cliniq?</>,
+        <>Meer weten over <Link href="/event-space" className="text-coral-text hover:text-white">ruimte huren</Link> bij Cliniq?</>,
       ],
     }}
   />

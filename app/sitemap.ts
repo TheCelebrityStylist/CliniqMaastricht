@@ -1,8 +1,18 @@
 import type { MetadataRoute } from 'next'
+import { getAgendaEvents } from '@/lib/admin/public'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://www.cliniqmaastricht.nl'
   const now = new Date()
+  const events = await getAgendaEvents()
+
+  const eventEntries = events.flatMap((event) => {
+    const slug = event.slug?.current || event._id
+    return [
+      { url: `${base}/uitgaan/${slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7 },
+      { url: `${base}/en/nightlife/${slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.6 },
+    ]
+  })
 
   return [
     { url: base,                                        lastModified: now, changeFrequency: 'weekly',  priority: 1.0 },
@@ -23,5 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/en/nightlife`,                      lastModified: now, changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${base}/en/cocktail-workshop`,              lastModified: now, changeFrequency: 'monthly', priority: 0.78 },
     { url: `${base}/en/event-space`,                    lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    ...eventEntries,
   ]
 }

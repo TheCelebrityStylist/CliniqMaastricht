@@ -8,15 +8,25 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import EventTicker from '@/components/experience/EventTicker'
+import NextNightLine from '@/components/experience/NextNightLine'
+import FeaturedEvent from '@/components/experience/FeaturedEvent'
+import HeroTitle from '@/components/ui/HeroTitle'
+import PhotoPile from '@/components/experience/PhotoPile'
+import { getPilePhotos } from '@/lib/photoPile'
+import { pickFeaturedEvent } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
+// Mirrors the NL homepage rewrite — brand stays first (branded queries already rank well).
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'en')
-  const title = seo?.seoTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
+  const title = seo?.seoTitle || 'Cliniq Maastricht — Nightlife, Cocktails & Events on Platielstraat'
   const description =
     seo?.metaDescription ||
-    'Going out in Maastricht? CLINIQ is open every Thursday, Friday and Saturday at Platielstraat 9A. Club nights, private events and cocktail workshops in the city centre.'
+    'Cliniq Maastricht on Platielstraat 9A: club nights, cocktail workshops and an event space for up to 400 guests. Open Thu, Fri & Sat until 03:00. Check the agenda.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
@@ -70,6 +80,7 @@ export default async function HomeEn() {
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
+  const pilePhotos = getPilePhotos('en')
 
   const heroTitle = pageContent?.heroTitleEn || pageContent?.heroTitleNl || 'Maastricht After Dark.'
   const heroSubtitle =
@@ -79,6 +90,9 @@ export default async function HomeEn() {
   const primaryCta = pageContent?.primaryCtaEn || t.common.viewAgenda
   const secondaryCta = pageContent?.secondaryCtaEn || t.home.heroCta2
   const seoBody = pageContent?.bodyEn || pageContent?.bodyNl
+
+  const featuredEvent = pickFeaturedEvent(events)
+  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
 
   return (
     <>
@@ -90,32 +104,40 @@ export default async function HomeEn() {
           fill
           priority
           sizes="100vw"
-          className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]"
+          className="hero-media -z-10 object-cover brightness-[.72] contrast-[1.1] saturate-[1.05]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
-        <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
-          <div className="max-w-4xl">
-            <p className="eyebrow mb-4">Platielstraat 9A</p>
-            <h1 className="hero-clean-title">{heroTitle}</h1>
+        <div className="container-premium flex min-h-[calc(100svh-4.5rem)] flex-col justify-center py-14">
+          <div className="max-w-4xl min-w-0">
+            <p className="eyebrow mb-3">Platielstraat 9A</p>
+            <HeroTitle title={heroTitle} fillImage={heroPhoto} />
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link data-track="cta_click" className="btn-primary" href="/en/nightlife">
                 {primaryCta}
               </Link>
 
-              <Link data-track="cta_click" className="btn-secondary" href="/en/photos">
-                {secondaryCta}
+              <Link data-track="cta_click" className="focus-ring inline-flex min-h-11 items-center text-white/70 underline-offset-4 transition hover:text-white hover:underline" href="/en/event-space#inquiry">
+                Enquire about private events
               </Link>
             </div>
           </div>
         </div>
       </HeroFrame>
 
-      <section className="event-section py-24">
+      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="en" /> : null}
+
+      <EventTicker events={events.map((event) => ({ title: event.titleEn || event.title, date: event.date }))} lang="en" />
+
+      <section className="event-section section-y">
         <div className="container-premium">
+          <NextNightLine events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="en" />
+
           <SectionIntro
             eyebrow="Agenda"
             title={t.home.eventsTitle}
@@ -124,13 +146,13 @@ export default async function HomeEn() {
             ctaLabel={t.common.allEvents}
           />
 
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0} />
+          {remainingEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
+              {remainingEvents.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />
               ))}
             </div>
-          ) : (
+          ) : !events.length ? (
             <div className="image-frame mt-10 min-h-[360px] p-8">
               <SafeImage
                 src={images.club}
@@ -143,11 +165,19 @@ export default async function HomeEn() {
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
               <h3 className="h2 absolute bottom-8 left-8 right-8">New events coming soon.</h3>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
-      <section className="overflow-hidden pb-24">
+      {pilePhotos.length ? (
+        <section className="container-premium section-y">
+          <p className="eyebrow">Last Saturday</p>
+          <h2 className="h2 mt-4">Drag the photos</h2>
+          <div className="mt-8"><PhotoPile photos={pilePhotos} lang="en" /></div>
+        </section>
+      ) : null}
+
+      <section className="overflow-hidden section-y">
         <div className="container-premium">
           <SectionIntro eyebrow="Photos" title="Photos" text="Recent nights at CLINIQ." />
         </div>
@@ -172,8 +202,8 @@ export default async function HomeEn() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#12030a] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#12030a] to-transparent" />
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
@@ -194,7 +224,7 @@ export default async function HomeEn() {
         `}</style>
       </section>
 
-      <section className="container-premium space-y-8 pb-24">
+      <section className="container-premium section-y space-y-8">
         <ServiceRow
           href="/en/cocktail-workshop"
           image={images.workshopBar}
@@ -204,7 +234,7 @@ export default async function HomeEn() {
             <>
               Make cocktails with your group, guided by our bartenders. Perfect for bachelorette parties, company
               outings, birthdays and groups of friends. Discover our{' '}
-              <Link href="/en/cocktail-workshop" className="text-gold hover:text-white">
+              <Link href="/en/cocktail-workshop" className="text-coral-text hover:text-white">
                 cocktail workshops
               </Link>
               .
@@ -222,7 +252,7 @@ export default async function HomeEn() {
             <>
               CLINIQ is available for drinks, company parties, birthdays, bachelorette nights and private events. Learn
               more about{' '}
-              <Link href="/en/event-space" className="text-gold hover:text-white">
+              <Link href="/en/event-space" className="text-coral-text hover:text-white">
                 hiring the venue
               </Link>
               .
@@ -233,7 +263,7 @@ export default async function HomeEn() {
         />
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <p className="eyebrow">Maastricht</p>

@@ -105,7 +105,7 @@ export default function ClosingCTA() {
             <div className="reveal-up flex flex-col gap-2">
               <Link
                 href="/event-space"
-                className="group inline-flex items-center gap-2.5 self-start bg-magenta px-8 py-4 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
+                className="group inline-flex items-center gap-2.5 self-start bg-coral px-8 py-4 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
               >
                 {lang === 'nl' ? 'Alle opties bekijken' : 'See all options'}
                 <ArrowRightIcon className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -113,7 +113,7 @@ export default function ClosingCTA() {
               <div className="mt-4 flex items-center gap-5">
                 <a
                   href="mailto:contact@cafecliniq.com"
-                  className="text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
+                  className="flex min-h-11 items-center text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
                 >
                   contact@cafecliniq.com
                 </a>
@@ -122,7 +122,7 @@ export default function ClosingCTA() {
                   href="https://wa.me/31612530987"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
+                  className="flex min-h-11 items-center text-xs tracking-wide text-white/[0.22] transition-colors duration-200 hover:text-white/[0.55]"
                 >
                   WhatsApp
                 </a>

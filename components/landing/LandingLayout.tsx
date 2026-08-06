@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { PHOTOS, SITE } from '@/lib/content'
+import Logo from '@/components/brand/Logo'
 
 
 const ArrowRightIcon = ({ className = '' }: { className?: string }) => (
@@ -45,13 +46,13 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
     <div className="min-h-screen bg-ink text-white" aria-label={meta.title}>
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-ink/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-8">
-          <Link href="/" className="text-[14px] font-black tracking-[0.45em] text-white transition-colors hover:text-magenta" aria-label="Terug naar homepage">
-            CLINIQ
+          <Link href="/" className="focus-ring" aria-label="Terug naar homepage">
+            <Logo />
           </Link>
           <div className="flex items-center gap-3">
             <a
               href={ctaPrimary.href}
-              className="bg-magenta px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
+              className="bg-coral px-5 py-2.5 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
               {...externalProps(ctaPrimary.href)}
             >
               {ctaPrimary.label}
@@ -72,7 +73,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
           <p className="mt-7 max-w-lg text-lg leading-relaxed text-white/60 md:text-xl">{hero.sub}</p>
           <a
             href={hero.ctaHref}
-            className="group mt-9 inline-flex items-center gap-3 bg-magenta px-8 py-4 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
+            className="group mt-9 inline-flex items-center gap-3 bg-coral px-8 py-4 text-[10px] font-black uppercase tracking-[0.22em] text-white transition-all duration-300 hover:bg-white hover:text-ink"
             {...externalProps(hero.ctaHref)}
           >
             {hero.ctaLabel}
@@ -81,7 +82,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
         </div>
       </section>
 
-      <section className="bg-smoke py-24">
+      <section className="bg-ink py-24">
         <div className="mx-auto max-w-screen-xl px-8 md:px-16">
           <p className="eyebrow mb-5">Wat zit erbij</p>
           <div className="grid gap-8 md:grid-cols-2">
@@ -119,7 +120,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
         </blockquote>
       </section>
 
-      <section className="bg-smoke py-24">
+      <section className="bg-ink py-24">
         <div className="mx-auto grid max-w-screen-xl gap-10 px-8 md:px-16 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="eyebrow mb-5">Praktisch</p>
@@ -152,7 +153,7 @@ export default function LandingLayout({ meta, hero, features, steps, practical, 
         <div className="relative z-10 mx-auto max-w-4xl px-8">
           <h2 className="font-black leading-[0.92] tracking-[-0.04em]" style={{ fontSize: 'clamp(2.8rem, 7vw, 7rem)' }}>{hero.h1}</h2>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a href={ctaPrimary.href} className="bg-magenta px-8 py-4 text-[10px] font-black uppercase tracking-[0.22em] text-white transition hover:bg-white hover:text-ink" {...externalProps(ctaPrimary.href)}>{ctaPrimary.label}</a>
+            <a href={ctaPrimary.href} className="bg-coral px-8 py-4 text-[10px] font-black uppercase tracking-[0.22em] text-white transition hover:bg-white hover:text-ink" {...externalProps(ctaPrimary.href)}>{ctaPrimary.label}</a>
             <a href={ctaSecondary.href} className="border border-white/20 px-8 py-4 text-[10px] font-black uppercase tracking-[0.22em] text-white transition hover:border-white hover:bg-white hover:text-ink" {...externalProps(ctaSecondary.href)}>{ctaSecondary.label}</a>
           </div>
         </div>

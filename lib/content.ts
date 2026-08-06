@@ -270,3 +270,24 @@ export const SEO_TEXT = {
   workshop: { nl: COPY.nl.workshop.seoText, en: COPY.en.workshop.seoText },
   eventspace: { nl: COPY.nl.eventspace.seoText, en: COPY.en.eventspace.seoText },
 } as const
+
+// Copy for the additive interactive layer (components/interactive/*). Kept separate from COPY
+// so the existing, approved page copy above stays untouched.
+export const INTERACTIVE_COPY = {
+  nl: {
+    status: { openNow: 'Nu open', closesAt: 'tot', closes: 'Sluit', doorsAt: 'Deuren', tonightShort: 'Vanavond', doorsOpenIn: 'Deuren open over', nextEvent: 'Volgende avond', tonight: 'Vanavond bij Cliniq', closed: 'Gesloten — tot snel', viewAgenda: 'Bekijk agenda' },
+    countdown: { title: 'Aftellen tot de deuren open gaan', started: 'De avond is begonnen', addToCalendar: 'Toevoegen aan agenda', downloadIcs: 'Download .ics', googleCalendar: 'Google Agenda', days: 'd', hours: 'u', minutes: 'm', seconds: 's' },
+    cocktailTeaser: { eyebrow: 'Kies je cocktail', title: 'Welke cocktail past bij jouw avond?', cta: 'Bekijk de workshop' },
+    actionBar: { route: 'Route', events: 'Events', reserve: 'Aanvragen' },
+    location: { activateMap: 'Bekijk de kaart', fromVrijthof: 'vanaf het Vrijthof', fromMarkt: 'vanaf de Markt', walk: 'lopen' },
+    configurator: { eyebrow: 'Indeling', title: 'Zo past de ruimte zich aan', upTo: 'tot 400 gasten' },
+  },
+  en: {
+    status: { openNow: 'Open now', closesAt: 'till', closes: 'Closes', doorsAt: 'Doors', tonightShort: 'Tonight', doorsOpenIn: 'Doors open in', nextEvent: 'Next night', tonight: 'Tonight at Cliniq', closed: 'Closed — see you soon', viewAgenda: 'View agenda' },
+    countdown: { title: 'Countdown to doors opening', started: 'The night has started', addToCalendar: 'Add to calendar', downloadIcs: 'Download .ics', googleCalendar: 'Google Calendar', days: 'd', hours: 'h', minutes: 'm', seconds: 's' },
+    cocktailTeaser: { eyebrow: 'Pick your cocktail', title: 'Which cocktail suits your night?', cta: 'View the workshop' },
+    actionBar: { route: 'Route', events: 'Events', reserve: 'Inquire' },
+    location: { activateMap: 'View the map', fromVrijthof: 'from Vrijthof', fromMarkt: 'from the Markt', walk: 'walk' },
+    configurator: { eyebrow: 'Layout', title: 'The space adapts to your event', upTo: 'up to 400 guests' },
+  },
+} as const

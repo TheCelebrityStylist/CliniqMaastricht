@@ -1,31 +1,60 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { breadcrumbSchema, faqSchema } from '@/lib/seo'
+import dynamic from 'next/dynamic'
+import { breadcrumbSchema, eventVenueSchema, faqSchema } from '@/lib/seo'
 import { images, imageSets } from '@/lib/site'
 import InquiryForm from '@/components/forms/InquiryForm'
 import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
 import JsonLd from '@/components/ui/JsonLd'
+import ChoreographedContent from '@/components/ui/ChoreographedContent'
+import EventTypeCards from '@/components/ui/EventTypeCards'
 import { eventSpaceFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+
+const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
+const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
+const RoomAcrossNight = dynamic(() => import('@/components/experience/RoomAcrossNight'))
+
 export const revalidate = 60
 
+// Targets "eventlocatie maastricht" / "zakelijk evenement maastricht" — position ~11, CTR < 0.4%.
+// Also the canonical target for the /business-event-space-maastricht redirect (still ranking on Google).
+//
+// Title variants tested:
+// A (shipped) — capacity + centre-of-town hook:
+//   "Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen"
+// B — zakelijk-evenement angle:
+//   "Zakelijk Evenement Maastricht | Cliniq — Eventlocatie Platielstraat"
+// C — venue-hire angle, broadest match:
+//   "Ruimte Huren Maastricht | Cliniq Eventlocatie — Bedrijfsfeest & Privéfeest"
+//
+// Description variants tested:
+// A (shipped):
+//   "Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden."
+// B — zakelijk-evenement led:
+//   "Zakelijk evenement organiseren in Maastricht? Cliniq is een eventlocatie in het centrum met bar, licht, geluid en dansvloer al aanwezig. Tot 400 personen, Platielstraat 9A."
+// C — quote/quality hook:
+//   "Feestlocatie of eventlocatie huren in Maastricht? Cliniq biedt exclusieve zaalverhuur tot 400 personen aan de Platielstraat, midden in het centrum. Vraag vrijblijvend een offerte aan."
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('event-space', 'nl')
 
-  const title = seo?.seoTitle || 'Ruimte Huren Maastricht | Feestzaal & Eventlocatie Cliniq — Tot 400 pers.'
+  const title = seo?.seoTitle || 'Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen'
   const description =
     seo?.metaDescription ||
-    'Feestlocatie of eventruimte huren in Maastricht? Cliniq biedt exclusieve zaalverhuur voor tot 400 personen. Voor privéfeesten, bedrijfsfeesten en vrijgezellenavonden. Platielstraat 9A.'
+    'Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
-  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : undefined
+  const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : [{ url: images.redRoom, width: 1200, height: 1500 }]
 
   return {
     title,
     description,
     alternates: {
       canonical: 'https://www.cliniqmaastricht.nl/event-space',
+      languages: { 'nl-NL': 'https://www.cliniqmaastricht.nl/event-space', en: 'https://www.cliniqmaastricht.nl/en/event-space', 'x-default': 'https://www.cliniqmaastricht.nl/event-space' },
     },
     openGraph: {
       title: ogTitle,
@@ -40,7 +69,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      images: seo?.socialImageUrl ? [seo.socialImageUrl] : undefined,
+      images: seo?.socialImageUrl ? [seo.socialImageUrl] : [images.redRoom],
     },
   }
 }
@@ -50,6 +79,14 @@ type EditableCard = {
   titleEn?: string
   textNl?: string
   textEn?: string
+}
+
+// GEO answer block: standalone factual paragraph for "eventlocatie maastricht centrum" —
+// mirrored in the FAQPage schema. New copy, not an edit of any existing sentence.
+const geoAnswer = {
+  question: 'Wat is een goede eventlocatie in het centrum van Maastricht?',
+  answer:
+    'Cliniq aan de Platielstraat 9A is een eventlocatie in het centrum van Maastricht, op loopafstand van het Vrijthof en de Markt. De ruimte is exclusief te huren op donderdag, vrijdag en zaterdag voor tot 400 gasten, met bar, licht, geluid en dansvloer al aanwezig — geschikt voor bedrijfsfeesten, borrels en privéfeesten.',
 }
 
 type ExtendedPageContent = Awaited<ReturnType<typeof getPageContent>> & {
@@ -107,6 +144,8 @@ const fallbackEventTypes: EditableCard[] = [
     textNl: 'Voor een nettere avond met ontvangst, bar en clubgevoel later op de avond.',
   },
 ]
+
+const EVENT_TYPE_PHOTOS = [images.redRoom, images.party, images.workshopBar, images.club, images.crowd, images.bar, images.contactInterior, images.redCrowd]
 
 const fallbackFacilities: EditableCard[] = [
   {
@@ -205,7 +244,9 @@ export default async function EventSpacePage() {
           className="hero-media -z-10 object-cover brightness-[1.08]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-burgundy/10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/62 to-plum/10" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
         <div className="container-premium py-24">
           <p className="eyebrow mb-4">Events</p>
@@ -218,22 +259,23 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium py-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">{eventTypeEyebrow}</p>
         <h2 className="h2 mt-4">{eventTypeTitle}</h2>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {eventTypeCards.map((card, index) => (
-            <InfoCard
-              key={`${card.titleNl || 'event-type'}-${index}`}
-              title={card.titleNl || 'Event type'}
-              text={card.textNl || ''}
-            />
-          ))}
+        <div className="mt-8">
+          <EventTypeCards
+            cards={eventTypeCards.map((card, index) => ({
+              title: card.titleNl || 'Event type',
+              image: EVENT_TYPE_PHOTOS[index % EVENT_TYPE_PHOTOS.length],
+              href: '#aanvraag',
+              description: card.textNl,
+            }))}
+          />
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="max-w-4xl">
           <p className="eyebrow">{facilityEyebrow}</p>
           <h2 className="h2 mt-4">{facilityTitle}</h2>
@@ -251,7 +293,7 @@ export default async function EventSpacePage() {
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.8fr_1.2fr]">
           <div>
             <p className="eyebrow">{bodyEyebrow}</p>
@@ -259,73 +301,104 @@ export default async function EventSpacePage() {
           </div>
 
           <div className="prose-premium">
-            {bodyText ? (
-              <TextBlock text={bodyText} />
+            {bodyText && bodyText.split(/\n\s*\n/).filter((p) => p.trim()).length > 1 ? (
+              <ChoreographedContent
+                headline={bodyText.split(/\n\s*\n/)[0]?.trim()}
+                paragraphs={bodyText
+                  .split(/\n\s*\n/)
+                  .map((paragraph) => paragraph.trim())
+                  .filter(Boolean)}
+                moreLabel="Lees meer"
+              />
+            ) : bodyText ? (
+              <p>{bodyText}</p>
             ) : (
-              <>
-                <p>
-                  Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan
-                  tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is
-                  op aanvraag mogelijk.
-                </p>
-                <p>
-                  Feestlocatie huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte
-                  evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten.
-                </p>
-                <p>
-                  Bedrijfsfeest of borrel organiseren in Maastricht? Cliniq leent zich uitstekend voor personeelsfeesten,
-                  netwerkevenementen en productlanceringen.
-                </p>
-                <p>
-                  Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
-                    nachtleven van CLINIQ Maastricht
-                  </Link>
-                  .
-                </p>
-                <p>
-                  Vrijgezellenavond plannen? Combineer een{' '}
-                  <Link href="/cocktail-workshop" className="text-gold hover:text-white">
-                    cocktail workshop
-                  </Link>{' '}
-                  met{' '}
-                  <Link href="/uitgaan" className="text-gold hover:text-white">
-                    uitgaan in Maastricht en een exclusieve clubavond
-                  </Link>
-                  .
-                </p>
-              </>
+              <ChoreographedContent
+                headline="Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag."
+                quote="Cliniq is een van de meest geboekte evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten."
+                stats={[
+                  { value: '400', label: 'gasten staand' },
+                  { value: 'Do · Vr · Za', label: 'exclusief te huren' },
+                  { value: 'Bar, licht,\ngeluid, vloer', label: 'volledig inclusief' },
+                  { value: 'Catering', label: 'op aanvraag mogelijk' },
+                ]}
+                moreLabel="Lees de volledige mogelijkheden"
+                paragraphs={[
+                  <>
+                    Cliniq Maastricht is exclusief te huren op donderdag, vrijdag en zaterdag. De ruimte biedt plek aan
+                    tot 400 gasten staand, volledig inclusief bar, professioneel geluid, licht en dansvloer. Catering is
+                    op aanvraag mogelijk.
+                  </>,
+                  <>
+                    Feestlocatie huren in Maastricht voor een privéfeest? Cliniq is een van de meest geboekte
+                    evenementenlocaties in de regio voor verjaardagen, jubilea en bedrijfsfeesten.
+                  </>,
+                  <>
+                    Bedrijfsfeest of borrel organiseren in Maastricht? Cliniq leent zich uitstekend voor personeelsfeesten,
+                    netwerkevenementen en productlanceringen.
+                  </>,
+                  <>
+                    Na een besloten event kunnen gasten, afhankelijk van de planning, door naar het reguliere{' '}
+                    <Link href="/uitgaan" className="text-coral-text hover:text-white">
+                      nachtleven van CLINIQ Maastricht
+                    </Link>
+                    .
+                  </>,
+                  <>
+                    Vrijgezellenavond plannen? Combineer een{' '}
+                    <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
+                      cocktail workshop
+                    </Link>{' '}
+                    met{' '}
+                    <Link href="/uitgaan" className="text-coral-text hover:text-white">
+                      uitgaan in Maastricht en een exclusieve clubavond
+                    </Link>
+                    .
+                  </>,
+                ]}
+              />
             )}
           </div>
         </div>
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <p className="eyebrow">{galleryEyebrow}</p>
         <h2 className="h2 mt-4">{galleryTitle}</h2>
 
-        <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">
-          {gallery.slice(0, 5).map((item, index) => (
-            <div
-              key={`${item.url}-${index}`}
-              className={`photo-tile image-frame ${
-                index === 0 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'
-              }`}
-            >
-              <SafeImage
-                src={item.url}
-                fallbackSrc={images.fallbackWide}
-                alt={item.alt}
-                fill
-                sizes="33vw"
-                className="object-cover brightness-[1.08]"
-              />
-            </div>
-          ))}
-        </div>
+        <GalleryLightbox images={gallery.slice(0, 5).map((item) => ({ src: item.url, alt: item.alt }))}>
+          <div className="mt-8 grid auto-rows-[190px] gap-4 md:grid-cols-6 md:auto-rows-[230px]">
+            {gallery.slice(0, 5).map((item, index) => (
+              <LightboxImageButton
+                key={`${item.url}-${index}`}
+                index={index}
+                label={item.alt}
+                className={`photo-tile image-frame block w-full text-left ${
+                  index === 0 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-2'
+                }`}
+              >
+                <SafeImage
+                  src={item.url}
+                  fallbackSrc={images.fallbackWide}
+                  alt={item.alt}
+                  fill
+                  sizes="33vw"
+                  className="object-cover brightness-[1.08]"
+                />
+              </LightboxImageButton>
+            ))}
+          </div>
+        </GalleryLightbox>
       </section>
 
-      <section className="container-premium pb-24">
+      <RoomAcrossNight ctaHref="#aanvraag" />
+
+      <section className="container-premium section-y">
+        <h2 className="h2">{geoAnswer.question}</h2>
+        <p className="mt-5 max-w-3xl text-lg leading-[1.65] text-white/72 md:text-xl">{geoAnswer.answer}</p>
+      </section>
+
+      <section className="container-premium section-y">
         <p className="eyebrow">FAQ</p>
         <h2 className="h2 mt-4">Veelgestelde vragen</h2>
 
@@ -375,7 +448,8 @@ export default async function EventSpacePage() {
         />
       </section>
 
-      <JsonLd data={faqSchema(pageFaqs)} />
+      <JsonLd data={faqSchema([geoAnswer, ...pageFaqs])} />
+      <JsonLd data={eventVenueSchema()} />
       <JsonLd data={breadcrumbSchema([
         { name: 'Home', url: 'https://www.cliniqmaastricht.nl' },
         { name: 'Ruimte Huren Maastricht', url: 'https://www.cliniqmaastricht.nl/event-space' },
@@ -390,19 +464,5 @@ function InfoCard({ title, text }: { title: string; text: string }) {
       <h3 className="text-2xl font-black tracking-[-0.035em]">{title}</h3>
       <p className="mt-3 text-white/66">{text}</p>
     </article>
-  )
-}
-
-function TextBlock({ text }: { text: string }) {
-  return (
-    <>
-      {text
-        .split(/\n\s*\n/)
-        .map((paragraph) => paragraph.trim())
-        .filter(Boolean)
-        .map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-    </>
   )
 }

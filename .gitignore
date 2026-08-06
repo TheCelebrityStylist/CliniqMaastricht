@@ -1,0 +1,28 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next/
+/out/
+
+# audit harness output (scripts/audit.mjs) - regenerated on every run
+/audit/
+
+# duotone photo pile output (scripts/media.mjs) - generated from public/photos/nights/*.jpg at
+# build time (runs in "prebuild"), never hand-edited. The source photos themselves ARE committed.
+/public/photos/nights/graded/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# lockfile (not previously versioned in this repo)
+package-lock.json
+
+# misc
+.DS_Store
+*.pem
+
+# env files
+.env*.local
+
+# vercel
+.vercel

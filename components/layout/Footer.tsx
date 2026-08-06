@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLang } from '@/lib/lang'
 import { COPY, SITE, HOURS } from '@/lib/content'
+import Logo from '@/components/brand/Logo'
 
 
 const InstagramIcon = () => (
@@ -78,17 +79,20 @@ export default function Footer() {
       <div className="mx-auto max-w-screen-xl px-8 pb-10 pt-20 md:px-16">
         <div className="mb-16 grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="text-[15px] font-black tracking-[0.45em] text-white transition-colors duration-300 hover:text-magenta">
-              CLINIQ
+            <Link href="/" className="focus-ring inline-flex min-h-11 items-center" aria-label="Cliniq Maastricht">
+              <Logo />
             </Link>
-            <p className="mb-6 mt-4 max-w-[220px] text-sm leading-relaxed text-white/35">
+            <p className="mb-2 mt-5 max-w-[240px] font-serif text-lg italic leading-snug text-white/55">
+              We own <span className="font-display not-italic font-bold text-white/75">the night</span>
+            </p>
+            <p className="mb-6 max-w-[220px] text-sm leading-relaxed text-white/35">
               {t.footer.tagline}
             </p>
-            <div className="flex items-center gap-4 text-white/20">
-              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="Instagram">
+            <div className="flex items-center gap-3 text-white/30">
+              <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral-text" aria-label="Instagram">
                 <InstagramIcon />
               </a>
-              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 hover:text-magenta" aria-label="TikTok">
+              <a href={SITE.tiktok} target="_blank" rel="noopener noreferrer" className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/10 transition-colors duration-200 hover:border-coral/50 hover:text-coral-text" aria-label="TikTok">
                 <TikTokIcon />
               </a>
             </div>
@@ -98,10 +102,10 @@ export default function Footer() {
             <h4 className="eyebrow mb-5">
               {lang === 'nl' ? 'Navigatie' : 'Navigation'}
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-white">
+                  <Link href={link.href} className="flex min-h-11 items-center py-1.5 text-sm text-white/[0.38] transition-colors duration-200 hover:text-white">
                     {link.label}
                   </Link>
                 </li>
@@ -124,10 +128,10 @@ export default function Footer() {
             <div className="space-y-1.5 text-sm text-white/30">
               <p>{SITE.address.street}</p>
               <p>{SITE.address.postal} {SITE.address.city}</p>
-              <a href={`mailto:${SITE.email}`} className="mt-3 block transition-colors duration-200 hover:text-magenta">
+              <a href={`mailto:${SITE.email}`} className="mt-3 flex min-h-11 items-center transition-colors duration-200 hover:text-magenta">
                 {SITE.email}
               </a>
-              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="block transition-colors duration-200 hover:text-magenta">
+              <a href={SITE.whatsapp} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center transition-colors duration-200 hover:text-magenta">
                 WhatsApp
               </a>
             </div>
@@ -137,16 +141,40 @@ export default function Footer() {
             <h4 className="eyebrow mb-5">
               {lang === 'nl' ? 'Voor groepen' : 'For groups'}
             </h4>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1">
               {groepenLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-white/[0.38] transition-colors duration-200 hover:text-magenta">
+                  <Link href={link.href} className="flex min-h-11 items-center py-1.5 text-sm text-white/[0.38] transition-colors duration-200 hover:text-magenta">
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
+        </div>
+
+        <div className="mb-6 flex flex-wrap items-center gap-2 border-t border-white/[0.05] pt-6">
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/25">{lang === 'nl' ? 'Ook interessant' : 'Also useful'}</span>
+          {(lang === 'nl'
+            ? [
+                { href: '/uitgaan', label: 'uitgaan in Maastricht' },
+                { href: '/event-space', label: 'eventlocatie Maastricht' },
+                { href: '/cocktail-workshop', label: 'cocktail workshop Maastricht' },
+              ]
+            : [
+                { href: '/uitgaan', label: 'nightlife in Maastricht' },
+                { href: '/event-space', label: 'event location Maastricht' },
+                { href: '/cocktail-workshop', label: 'cocktail workshop Maastricht' },
+              ]
+          ).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="focus-ring flex min-h-11 items-center rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/40 transition-colors duration-200 hover:border-coral/40 hover:text-white"
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/[0.05] pt-6 md:flex-row">

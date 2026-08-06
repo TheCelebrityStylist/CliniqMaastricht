@@ -1,0 +1,170 @@
+{
+  "home-nl": [
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "home-en": [
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "uitgaan": [
+    "BreadcrumbList",
+    "Event",
+    "Event",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "nightlife-en": [
+    "BreadcrumbList",
+    "Event",
+    "Event",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "cocktail-workshop": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization",
+    "Service"
+  ],
+  "cocktail-workshop-en": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization",
+    "Service"
+  ],
+  "event-space": [
+    "BreadcrumbList",
+    "EventVenue",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "event-space-en": [
+    "BreadcrumbList",
+    "EventVenue",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "contact": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "contact-en": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "fotos": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "photos-en": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "vacatures": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "house-rules": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "house-rules-en": [
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "jobs-en": [
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "nachtclub-maastricht": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "discotheek-maastricht": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "vrijgezellenavond": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "bedrijfsfeest": [
+    "BreadcrumbList",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "privefeest": [
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "studentenavond": [
+    "BreadcrumbList",
+    "EventVenue",
+    "FAQPage",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ]
+}

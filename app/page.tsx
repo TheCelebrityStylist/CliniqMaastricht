@@ -8,15 +8,41 @@ import SafeImage from '@/components/ui/SafeImage'
 import HeroFrame from '@/components/ui/HeroFrame'
 import { ui } from '@/lib/i18n'
 import ClosingCTA from '@/components/layout/ClosingCTA'
+import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
+import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import EventTicker from '@/components/experience/EventTicker'
+import NextNightLine from '@/components/experience/NextNightLine'
+import FeaturedEvent from '@/components/experience/FeaturedEvent'
+import HeroTitle from '@/components/ui/HeroTitle'
+import PhotoPile from '@/components/experience/PhotoPile'
+import { getPilePhotos } from '@/lib/photoPile'
+import { pickFeaturedEvent } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
+// Homepage title keeps the brand first — branded queries ("cliniq maastricht") already rank ~#2, don't touch what works.
+//
+// Title variants tested:
+// A (shipped) — brand + three core offers, matches task-specified pattern:
+//   "Cliniq Maastricht — Uitgaan, Cocktails & Events aan de Platielstraat"
+// B — brand + days open, practical hook:
+//   "Cliniq Maastricht — Club aan de Platielstraat | Open Do, Vr & Za"
+// C — brand + broader positioning:
+//   "Cliniq Maastricht — Nachtclub, Cocktail Workshops & Feestlocatie"
+//
+// Description variants tested:
+// A (shipped):
+//   "Cliniq Maastricht aan de Platielstraat 9A: club, cocktail workshops en feestlocatie tot 400 personen. Open do, vr & za tot 03:00. Bekijk de agenda."
+// B — hook on the three services with CTA:
+//   "Uitgaan, cocktails of een feest vieren in Maastricht? Cliniq zit aan de Platielstraat 9A en is open do, vr & za. Bekijk wat er deze week speelt."
+// C — short and brand-forward:
+//   "Cliniq Maastricht — dé club aan de Platielstraat. Clubavonden, cocktail workshops en ruimte voor besloten feesten. Open do, vr & za."
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('home', 'nl')
-  const title = seo?.seoTitle || 'Uitgaan Maastricht — CLINIQ | Nachtclub Platielstraat 9A'
+  const title = seo?.seoTitle || 'Cliniq Maastricht — Uitgaan, Cocktails & Events aan de Platielstraat'
   const description =
     seo?.metaDescription ||
-    'Uitgaan in Maastricht? CLINIQ is open elke do, vr & za op de Platielstraat. Clubavonden, cocktail workshops en private events in het centrum. Check de agenda.'
+    'Cliniq Maastricht aan de Platielstraat 9A: club, cocktail workshops en feestlocatie tot 400 personen. Open do, vr & za tot 03:00. Bekijk de agenda.'
   const ogTitle = seo?.ogTitle || 'CLINIQ Maastricht — Club, Events & Workshops'
   const ogDescription =
     seo?.ogDescription ||
@@ -72,12 +98,16 @@ export default async function Home() {
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const heroPhoto = pageContent?.imageUrl || homepagePhotos[0]?.url || images.hero
+  const pilePhotos = getPilePhotos('nl')
 
   const heroTitle = pageContent?.heroTitleNl || 'Maastricht After Dark.'
   const heroSubtitle = pageContent?.heroSubtitleNl || 'Uitgaan, events en workshops aan de Platielstraat.'
   const primaryCta = pageContent?.primaryCtaNl || t.common.viewAgenda
   const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
   const seoBodyNl = pageContent?.bodyNl
+
+  const featuredEvent = pickFeaturedEvent(events)
+  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
 
   return (
     <>
@@ -89,32 +119,40 @@ export default async function Home() {
           fill
           priority
           sizes="100vw"
-          className="hero-media -z-10 object-cover brightness-[1.08] contrast-[1.04]"
+          className="hero-media -z-10 object-cover brightness-[.72] contrast-[1.1] saturate-[1.05]"
         />
 
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.78),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <div className="hero-scrim absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.20),rgba(0,0,0,.54)),linear-gradient(0deg,rgba(8,6,7,.92),transparent_46%)]" />
+        <AtmosphereFX />
+        <MagneticCTAs />
 
-        <div className="container-premium flex min-h-[calc(100vh-7rem)] items-end pb-20">
-          <div className="max-w-4xl">
-            <p className="eyebrow mb-4">Platielstraat 9A</p>
-            <h1 className="hero-clean-title">{heroTitle}</h1>
+        <div className="container-premium flex min-h-[calc(100svh-4.5rem)] flex-col justify-center py-14">
+          <div className="max-w-4xl min-w-0">
+            <p className="eyebrow mb-3">Platielstraat 9A</p>
+            <HeroTitle title={heroTitle} fillImage={heroPhoto} />
             <p className="hero-clean-subline">{heroSubtitle}</p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link data-track="cta_click" className="btn-primary" href="/uitgaan">
                 {primaryCta}
               </Link>
 
-              <Link data-track="cta_click" className="btn-secondary" href="/fotos">
-                {secondaryCta}
+              <Link data-track="cta_click" className="focus-ring inline-flex min-h-11 items-center text-white/70 underline-offset-4 transition hover:text-white hover:underline" href="/event-space#aanvraag">
+                Aanvragen voor feesten
               </Link>
             </div>
           </div>
         </div>
       </HeroFrame>
 
-      <section className="event-section py-24">
+      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
+
+      <EventTicker events={events.map((event) => ({ title: event.titleNl || event.title, date: event.date }))} lang="nl" />
+
+      <section className="event-section section-y">
         <div className="container-premium">
+          <NextNightLine events={events.map((event) => ({ title: event.title, titleNl: event.titleNl, titleEn: event.titleEn, date: event.date, startTime: event.startTime, slug: event.slug?.current }))} lang="nl" />
+
           <SectionIntro
             eyebrow="Agenda"
             title={t.home.eventsTitle}
@@ -123,13 +161,13 @@ export default async function Home() {
             ctaLabel={t.common.allEvents}
           />
 
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0} />
+          {remainingEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
+              {remainingEvents.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />
               ))}
             </div>
-          ) : (
+          ) : !events.length ? (
             <div className="image-frame mt-10 min-h-[360px] p-8">
               <SafeImage
                 src={images.club}
@@ -142,11 +180,19 @@ export default async function Home() {
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
               <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
-      <section className="overflow-hidden pb-24">
+      {pilePhotos.length ? (
+        <section className="container-premium section-y">
+          <p className="eyebrow">Laatste zaterdag</p>
+          <h2 className="h2 mt-4">Sleep de foto's</h2>
+          <div className="mt-8"><PhotoPile photos={pilePhotos} lang="nl" /></div>
+        </section>
+      ) : null}
+
+      <section className="overflow-hidden section-y">
         <div className="container-premium">
           <SectionIntro eyebrow="Foto’s" title="Foto’s" text="Recente avonden bij CLINIQ." />
         </div>
@@ -171,8 +217,8 @@ export default async function Home() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#080607] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#080607] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#12030a] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-[#12030a] to-transparent" />
         </div>
 
         <div className="container-premium mt-8 flex justify-center">
@@ -193,7 +239,7 @@ export default async function Home() {
         `}</style>
       </section>
 
-      <section className="container-premium space-y-8 pb-24">
+      <section className="container-premium section-y space-y-8">
         <ServiceRow
           href="/cocktail-workshop"
           image={images.workshopBar}
@@ -203,7 +249,7 @@ export default async function Home() {
             <>
               Cocktails maken met je groep, onder begeleiding van onze bartenders. Geschikt voor vrijgezellenfeesten,
               bedrijfsuitjes, verjaardagen en vriendengroepen. Bekijk de{' '}
-              <Link href="/cocktail-workshop" className="text-gold hover:text-white">
+              <Link href="/cocktail-workshop" className="text-coral-text hover:text-white">
                 cocktail workshop Maastricht
               </Link>
               .
@@ -221,7 +267,7 @@ export default async function Home() {
             <>
               CLINIQ is beschikbaar voor borrels, bedrijfsfeesten, verjaardagen, vrijgezellenavonden en private events.
               Meer over{' '}
-              <Link href="/event-space" className="text-gold hover:text-white">
+              <Link href="/event-space" className="text-coral-text hover:text-white">
                 ruimte huren Maastricht
               </Link>
               .
@@ -232,7 +278,7 @@ export default async function Home() {
         />
       </section>
 
-      <section className="container-premium pb-24">
+      <section className="container-premium section-y">
         <div className="seo-panel grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-7 md:p-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <p className="eyebrow">Maastricht</p>

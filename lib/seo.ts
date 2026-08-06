@@ -117,6 +117,35 @@ export function cocktailWorkshopSchema() {
 }
 
 
+export function eventVenueSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'EventVenue',
+    '@id': 'https://www.cliniqmaastricht.nl/event-space#venue',
+    name: 'Cliniq Maastricht — Eventlocatie',
+    url: 'https://www.cliniqmaastricht.nl/event-space',
+    description: 'Exclusieve eventlocatie in het centrum van Maastricht met bar, licht, geluid en dansvloer voor tot 400 gasten.',
+    image: ['https://www.cliniqmaastricht.nl/og-image.jpg'],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.address.street,
+      addressLocality: site.address.city,
+      addressRegion: 'Limburg',
+      postalCode: site.address.postalCode,
+      addressCountry: 'NL',
+    },
+    geo: { '@type': 'GeoCoordinates', latitude: 50.8489, longitude: 5.7025 },
+    maximumAttendeeCapacity: 400,
+    amenityFeature: [
+      { '@type': 'LocationFeatureSpecification', name: 'Bar', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Dancefloor', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Sound system', value: true },
+      { '@type': 'LocationFeatureSpecification', name: 'Lighting rig', value: true },
+    ],
+    containedInPlace: { '@id': 'https://www.cliniqmaastricht.nl/#business' },
+  }
+}
+
 export function faqSchema(items: { question: string; answer: string }[]) {
   return { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })) }
 }

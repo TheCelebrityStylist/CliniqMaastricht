@@ -11,15 +11,21 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
   const dateLooksSaturday = !Number.isNaN(parsedDate.getTime()) && parsedDate.getDay() === 6
   const fallbackTitle = lang === 'en' ? (dateLooksSaturday ? 'Saturday at CLINIQ' : 'Friday at CLINIQ') : (dateLooksSaturday ? 'CLINIQ Saturday' : 'CLINIQ Friday')
   const title = (lang === 'en' ? event.titleEn || event.title : event.titleNl || event.title) || fallbackTitle
-  const description = lang === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription
+  // Falls back to the event's subtitle (already-existing copy, e.g. "Clubavond bij CLINIQ") when
+  // there's no shortDescription - every card gets a one-line teaser without inventing new text.
+  const description =
+    (lang === 'en' ? event.shortDescriptionEn || event.shortDescription : event.shortDescriptionNl || event.shortDescription) ||
+    (lang === 'en' ? event.subtitleEn || event.subtitle : event.subtitleNl || event.subtitle)
+  // Every event now has a real NL/EN detail route (see /agenda/[slug], /en/nightlife/[slug]), so
+  // every card links there and gets its teaser line - not just events explicitly flagged
+  // featured/special. `hasDetail` gates the bottom info panel (nothing to show if there's truly
+  // nothing to say), it no longer requires an eventType flag to unlock.
   const href = lang === 'en' ? `/en/nightlife/${event.slug?.current || event._id}` : `/uitgaan/${event.slug?.current || event._id}`
   const time = [event.startTime, event.endTime].filter(Boolean).join('–')
-  const detailEligible = event.eventType === 'featured' || event.eventType === 'special' || event.featured
-  const hasDetail = Boolean(detailEligible && (description || event.showDetailCTA || event.ticketUrl))
-  const shouldLinkDetail = Boolean(detailEligible && (event.showDetailCTA || event.ticketUrl))
+  const hasDetail = Boolean(description || event.relatedAlbumSlug || event.ticketUrl)
 
   const media = <div className="event-card-media">
-    <SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || `${title} bij CLINIQ Maastricht`} fill priority={priority} sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.06] contrast-[1.02] transition duration-700 group-hover:scale-105" objectPosition={event.imagePosition || 'center'} />
+    <SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || `${title} bij CLINIQ Maastricht`} fill priority={priority} sizes="(min-width:1024px) 33vw, 100vw" className="object-cover brightness-[1.06] contrast-[1.02] transition duration-700 ease-out group-hover:scale-105 group-hover:brightness-[1.14]" objectPosition={event.imagePosition || 'center'} />
     <div className="event-card-overlay" />
     <div className="event-chip-row">
       <span className="event-chip">{formatDate(event.date, lang)}</span>
@@ -32,11 +38,11 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
   </div>
 
   return <article data-image-source={event.source || event.imageSource || 'unknown'} className={`event-card group ${hasDetail ? 'event-card-featured' : 'event-card-regular'}`}>
-    {shouldLinkDetail ? <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link> : media}
+    <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link>
     {hasDetail ? <div className="event-card-detail">
       {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
       <div className="mt-4 flex flex-wrap items-center gap-4">
-        {event.showDetailCTA ? <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-gold hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link> : null}
+        <Link href={href} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-coral-text hover:text-white">{lang === 'en' ? 'View event' : 'Bekijk event'} <span>→</span></Link>
         {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
         {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
       </div>
