@@ -142,7 +142,7 @@ export default async function HomeEn() {
           {events.length ? (
             <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
               {events.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0} />
+                <EventCard key={event._id} event={event} lang="en" priority={index === 0} />
               ))}
             </div>
           ) : (

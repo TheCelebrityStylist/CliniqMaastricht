@@ -28,6 +28,24 @@ export function isThisWeekend(dateStr: string, now = new Date()): boolean {
   return date >= friday && date < mondayAfter
 }
 
+// Event JSON-LD start/end datetimes. Nights close at 02:00-03:00, i.e. after midnight - the end
+// date is the day AFTER the event's calendar date, not the same date (matching the day-rollover
+// already used by the club-open-window calculation in clubStatus.ts). Using the same date for
+// both, as every Event JSON-LD block in this codebase did before, produces an endDate that's
+// earlier in the day than startDate on the same date - an invalid Event where it ends before it
+// starts.
+export function eventJsonLdDates(event: { date: string; startTime?: string; endTime?: string }, utcOffset = '+02:00') {
+  const startTime = event.startTime || '22:00'
+  const endTime = event.endTime || '03:00'
+  const endDate = new Date(`${event.date}T00:00:00`)
+  endDate.setDate(endDate.getDate() + 1)
+  const endDateStr = Number.isNaN(endDate.getTime()) ? event.date : endDate.toISOString().slice(0, 10)
+  return {
+    startDate: `${event.date}T${startTime}:00${utcOffset}`,
+    endDate: `${endDateStr}T${endTime}:00${utcOffset}`,
+  }
+}
+
 function weekdayLong(dateStr: string, lang: Lang) {
   const date = new Date(`${dateStr}T00:00:00`)
   if (Number.isNaN(date.getTime())) return ''

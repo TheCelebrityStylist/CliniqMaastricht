@@ -8,6 +8,7 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
+import { eventJsonLdDates } from '@/lib/eventCopy'
 import { nightlifeFaqsEn as faqs } from '@/lib/faqs'
 import { cmsMetadata } from '@/lib/pageMetadata'
 import SafeImage from '@/components/ui/SafeImage'
@@ -23,8 +24,7 @@ export default async function NightlifePageEn() {
     '@type': 'Event',
     '@id': `${site.url}/en/nightlife/${event.slug?.current || event._id}#event`,
     name: event.titleEn || event.title,
-    startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
-    endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
+    ...eventJsonLdDates(event),
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     image: event.imageUrl ? [event.imageUrl] : undefined,

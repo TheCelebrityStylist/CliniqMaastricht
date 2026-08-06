@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getAgendaEventBySlug } from '@/lib/admin/public'
 import { images, site } from '@/lib/site'
 import { breadcrumbSchema } from '@/lib/seo'
-import { generateEventPromoNl, isThisWeekend } from '@/lib/eventCopy'
+import { eventJsonLdDates, generateEventPromoNl, isThisWeekend } from '@/lib/eventCopy'
 import SafeImage from '@/components/ui/SafeImage'
 import JsonLd from '@/components/ui/JsonLd'
 import EventCountdown from '@/components/interactive/EventCountdownLoader'
@@ -93,8 +93,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       '@context': 'https://schema.org',
       '@type': 'Event',
       name: title,
-      startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
-      endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
+      ...eventJsonLdDates(event),
       eventStatus: 'https://schema.org/EventScheduled',
       eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
       location: { '@type': 'Place', name: site.name, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: 'NL' } },

@@ -10,7 +10,7 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { weekendAnswerNl } from '@/lib/eventCopy'
+import { eventJsonLdDates, weekendAnswerNl } from '@/lib/eventCopy'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -223,8 +223,7 @@ export default async function NightlifePage() {
     '@type': 'Event',
     '@id': `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}#event`,
     name: `${event.titleNl || event.title} bij Cliniq Maastricht`,
-    startDate: `${event.date}T${event.startTime || '22:00'}:00+01:00`,
-    endDate: `${event.date}T${event.endTime || '03:00'}:00+01:00`,
+    ...eventJsonLdDates(event),
     description: event.shortDescriptionNl || event.shortDescription || `${event.titleNl || event.title} bij Cliniq Maastricht, Platielstraat 9A.`,
     url: `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}`,
     location: {
