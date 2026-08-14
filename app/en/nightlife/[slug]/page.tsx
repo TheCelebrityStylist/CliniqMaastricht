@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getAgendaEventBySlug } from '@/lib/admin/public'
 import { images, site } from '@/lib/site'
 import { breadcrumbSchema } from '@/lib/seo'
-import { eventJsonLdDates, generateEventPromoEn, isThisWeekend } from '@/lib/eventCopy'
+import { eventJsonLdDates, factualEventLineEn, isThisWeekend } from '@/lib/eventCopy'
 import JsonLd from '@/components/ui/JsonLd'
 import SafeImage from '@/components/ui/SafeImage'
 import EventCountdown from '@/components/interactive/EventCountdownLoader'
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
   const title = event.metaTitleEn || `${event.titleEn || event.title} — ${formatDateEn(event.date)} | Nightlife Maastricht CLINIQ`
-  const description = event.metaDescriptionEn || event.shortDescriptionEn || event.shortDescription || generateEventPromoEn(event).slice(0, 155)
+  const description = event.metaDescriptionEn || event.shortDescriptionEn || event.shortDescription || factualEventLineEn(event)
   return {
     title,
     description,
@@ -53,7 +53,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   const title = event.titleEn || event.title
   const subtitle = event.subtitleEn || event.subtitle
-  const description = event.fullDescriptionEn || event.fullDescription || event.shortDescriptionEn || event.shortDescription || generateEventPromoEn(event)
+  // Only featured events reach this page (see the redirect guard above), so this NEVER falls back
+  // to the "{act} on the decks" template - real hand-written copy (Sanity `promoEn`, mapped to
+  // fullDescriptionEn) always wins; with nothing written yet, this shows a plain factual line.
+  const description = event.fullDescriptionEn || event.fullDescription || event.shortDescriptionEn || event.shortDescription || factualEventLineEn(event)
   const isPast = event.date < new Date().toISOString().slice(0, 10)
 
   return <section className="container-premium pt-36 pb-24">

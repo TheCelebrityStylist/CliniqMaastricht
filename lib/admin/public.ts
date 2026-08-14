@@ -27,6 +27,8 @@ type SanityEvent = {
   showDetailPage?: boolean
   descriptionNl?: string
   descriptionEn?: string
+  promoNl?: string
+  promoEn?: string
   ticketUrl?: string
   albumSlug?: string
 }
@@ -308,6 +310,8 @@ async function getSanityEvents(includePast = false) {
       showDetailPage,
       descriptionNl,
       descriptionEn,
+      promoNl,
+      promoEn,
       ticketUrl,
       "albumSlug": album->slug.current
     }`,
@@ -349,6 +353,12 @@ async function getSanityEvents(includePast = false) {
         shortDescription: event.descriptionNl || event.descriptionEn,
         shortDescriptionNl: event.descriptionNl,
         shortDescriptionEn: event.descriptionEn,
+        // Long-form hand-written promo copy for the event's own detail page (Sanity fields
+        // `promoNl`/`promoEn`) - kept separate from the short card-teaser description above.
+        // Never auto-generated: an empty value here is a deliberate "nothing written yet" signal
+        // the detail page must respect, not something to paper over with a template sentence.
+        fullDescriptionNl: event.promoNl || undefined,
+        fullDescriptionEn: event.promoEn || undefined,
         ticketUrl: event.ticketUrl,
         featured: Boolean(event.featured),
         eventType: event.eventType || 'regular',

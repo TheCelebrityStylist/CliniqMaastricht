@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getAgendaEventBySlug } from '@/lib/admin/public'
 import { images, site } from '@/lib/site'
 import { breadcrumbSchema } from '@/lib/seo'
-import { eventJsonLdDates, generateEventPromoNl, isThisWeekend } from '@/lib/eventCopy'
+import { eventJsonLdDates, factualEventLineNl, isThisWeekend } from '@/lib/eventCopy'
 import SafeImage from '@/components/ui/SafeImage'
 import JsonLd from '@/components/ui/JsonLd'
 import EventCountdown from '@/components/interactive/EventCountdownLoader'
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
   }
   const title = event.metaTitleNl || `${event.titleNl || event.title} — ${formatDateNl(event.date)} | Uitgaan Maastricht CLINIQ`
-  const description = event.metaDescriptionNl || event.shortDescriptionNl || event.shortDescription || generateEventPromoNl(event).slice(0, 155)
+  const description = event.metaDescriptionNl || event.shortDescriptionNl || event.shortDescription || factualEventLineNl(event)
   return {
     title,
     description,
@@ -53,10 +53,12 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
   const title = event.titleNl || event.title
   const subtitle = event.subtitleNl || event.subtitle
-  // Real Sanity copy always wins. Only when a page has never had a hand-written description does
-  // it fall back to the generated promo template (NEW copy, listed for approval in the report) —
-  // never in place of existing fullDescription/shortDescription content.
-  const description = event.fullDescriptionNl || event.fullDescription || event.shortDescriptionNl || event.shortDescription || generateEventPromoNl(event)
+  // Only featured events reach this page (see the redirect guard above), so this NEVER falls back
+  // to the "{act} achter de knoppen" template - that phrasing assumes a DJ distinct from the
+  // event's own name, which reads as nonsense for a named night ("Amphitryon Inkom Party achter
+  // de knoppen"). Real hand-written copy (Sanity `promoNl`, mapped to fullDescriptionNl) always
+  // wins; with nothing written yet, this shows a plain factual line instead of guessing a story.
+  const description = event.fullDescriptionNl || event.fullDescription || event.shortDescriptionNl || event.shortDescription || factualEventLineNl(event)
 
   const isPast = event.date < new Date().toISOString().slice(0, 10)
 

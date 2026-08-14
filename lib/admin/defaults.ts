@@ -197,9 +197,9 @@ const inkomWeekEvents: AgendaEvent[] = [
     endTime: '03:00',
     ageLimit: '21+',
     fullDescriptionNl:
-      'De laatste nacht van de zomer, en we gaan hem niet stilletjes uit. Woensdag 26 augustus is de Vertigo Maastricht Closing Party bij CLINIQ — het einde van het seizoen op de Platielstraat, één keer alles geven voordat het voorbij is. Deuren 22:00, open tot 03:00.',
+      'De laatste nacht van de zomer, en we gaan hem niet stilletjes uit. Woensdag 26 augustus is de Vertigo Maastricht Closing Party bij CLINIQ — het einde van het seizoen op de Platielstraat. Deuren 22:00, open tot 03:00.',
     fullDescriptionEn:
-      "The last night of summer, and we're not going quietly. On Wednesday 26 August, it's the Vertigo Maastricht Closing Party at CLINIQ — the end of the season on Platielstraat, giving it everything one more time before it's over. Doors 22:00, open until 03:00.",
+      "The last night of summer, and we're not going quietly. On Wednesday 26 August, it's the Vertigo Maastricht Closing Party at CLINIQ — the end of the season on Platielstraat. Doors 22:00, open until 03:00.",
     metaTitleNl: 'Vertigo Maastricht Closing Party · Wo 26 aug — CLINIQ Maastricht',
     metaTitleEn: 'Vertigo Maastricht Closing Party · Wed 26 Aug — CLINIQ Maastricht',
     metaDescriptionNl: 'De Vertigo Maastricht Closing Party bij CLINIQ, woensdag 26 augustus. Het einde van de zomer op de Platielstraat in Maastricht.',

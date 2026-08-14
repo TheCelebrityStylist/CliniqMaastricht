@@ -58,29 +58,30 @@ function dateLong(dateStr: string, lang: Lang) {
   return date.toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-GB', { day: 'numeric', month: 'long' })
 }
 
-// Per-event promo body copy, generated from Sanity/admin fields (date, act, theme, age) per the
-// approved template. NEW copy - every string this produces is listed for approval in the report,
-// never silently shipped as if it were existing/approved body copy.
-export function generateEventPromoNl(event: EventLike): string {
-  const act = event.titleNl || event.title
+function cap(text: string) {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text
+}
+
+// Featured events must NEVER fall back to generateEventPromoNl/En: that template's "{act} achter
+// de knoppen" phrasing assumes the act is a DJ distinct from the event name, which is false for a
+// named night like "Amphitryon Inkom Party" - it would read as nonsense ("Amphitryon Inkom Party
+// achter de knoppen"). When a featured event has no hand-written promo copy yet (Sanity `promoNl`/
+// `promoEn` empty), this plain factual line is the fallback instead - no invented narrative, no
+// performer claim, just the facts the page already knows are true.
+export function factualEventLineNl(event: EventLike): string {
   const weekday = weekdayLong(event.date, 'nl')
   const dateStr = dateLong(event.date, 'nl')
   const doors = event.startTime || '22:00'
   const age = event.ageLimit || '21+'
-  return `${cap(weekday)} ${dateStr} zet CLINIQ de Platielstraat op z'n kop. ${act} achter de knoppen, cocktails tot in de late uurtjes en de dansvloer waar uitgaan in Maastricht om draait. Deuren ${doors} — open tot ${event.endTime || '03:00'}. ${age}. Beperkt plek — zorg dat je erbij bent.`
+  return `${cap(weekday)} ${dateStr} bij CLINIQ. Deuren ${doors}, open tot ${event.endTime || '03:00'}. ${age}.`
 }
 
-export function generateEventPromoEn(event: EventLike): string {
-  const act = event.titleEn || event.title
+export function factualEventLineEn(event: EventLike): string {
   const weekday = weekdayLong(event.date, 'en')
   const dateStr = dateLong(event.date, 'en')
   const doors = event.startTime || '22:00'
   const age = event.ageLimit || '21+'
-  return `${cap(weekday)} ${dateStr} CLINIQ turns the Platielstraat upside down. ${act} on the decks, cocktails deep into the night and the dancefloor that defines going out in Maastricht. Doors ${doors} — open until ${event.endTime || '03:00'}. ${age}. Limited spots — be there.`
-}
-
-function cap(text: string) {
-  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text
+  return `${cap(weekday)} ${dateStr} at CLINIQ. Doors ${doors}, open until ${event.endTime || '03:00'}. ${age}.`
 }
 
 // GEO answer block for "Wat is er dit weekend te doen in Maastricht?" - the freshness signal is
