@@ -72,6 +72,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         <div>
           <p className="eyebrow">{formatDateEn(event.date)} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}{isThisWeekend(event.date) ? ' · This weekend' : ''}{event.categoryTagEn ? ` · ${event.categoryTagEn}` : ''}</p>
           <h1 className="h1 mt-5">{title}</h1>
+          {event.djName ? <p className="mt-3 text-sm font-black uppercase tracking-[0.1em] text-white/50">with {event.djName}</p> : null}
           {subtitle ? <p className="mt-4 text-2xl text-coral-text">{subtitle}</p> : null}
           <p className="prose-premium mt-7">{description}</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">

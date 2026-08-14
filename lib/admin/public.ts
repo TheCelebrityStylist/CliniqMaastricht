@@ -315,10 +315,22 @@ async function getSanityEvents(includePast = false) {
 
   if (!events?.length) return []
 
-  return events
+  // De-duplicate by _id as a defensive safety net - a Sanity query should never return the same
+  // document twice, but two DIFFERENT documents for the same night (same DJ booked on two
+  // separate event docs) are a data-entry duplicate, not a code one, and aren't deduped here.
+  const seen = new Set<string>()
+  const uniqueEvents = events.filter((event) => {
+    if (seen.has(event._id)) return false
+    seen.add(event._id)
+    return true
+  })
+
+  return uniqueEvents
     .filter((event) => includePast || !event.date || event.date >= today)
     .map((event): AgendaEvent & { relatedAlbumSlug?: string; source?: string; imageSource?: string } => {
-      const title = event.djName || event.title || 'CLINIQ'
+      // The event's own name always wins - the DJ is a secondary "met {djName}" line, never the
+      // card title. djName is only a fallback for the rare event that has no name of its own.
+      const title = event.title || event.djName || 'CLINIQ'
       const titleNl = event.customTitleNl || title
       const titleEn = event.customTitleEn || title
       const imageUrl = event.eventImageUrl || event.djImageUrl || images.fallbackEvent
@@ -328,6 +340,7 @@ async function getSanityEvents(includePast = false) {
         title,
         titleNl,
         titleEn,
+        djName: event.djName || undefined,
         slug: { current: event.slug || event._id },
         date: event.date || '',
         startTime: event.openingTime || '22:00',

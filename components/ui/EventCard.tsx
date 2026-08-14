@@ -7,10 +7,12 @@ import SafeImage from './SafeImage'
 type EventWithAlbum = AgendaEvent & { relatedAlbumSlug?: string; source?: string; imageSource?: string }
 
 // Featured events stay in their natural date position (no reordering) - importance is signaled
-// by style, not position: a coral accent border, an UITGELICHT/FEATURED tag, and a Guestlist CTA
-// instead of the plain "Bekijk event" link. Only featured events have a real detail page (see
-// /uitgaan/[slug] and /en/nightlife/[slug], which redirect any non-featured slug back to the
-// agenda) - so a non-featured card's own link goes to the agenda anchor, not a generated page.
+// by style, not position: a coral accent border, an UITGELICHT/FEATURED tag, and a single "Meer
+// info" CTA instead of the plain "Bekijk event" link. Only featured events have a real detail
+// page (see /uitgaan/[slug] and /en/nightlife/[slug], which redirect any non-featured slug back
+// to the agenda) - so a non-featured card's own link goes to the agenda anchor, not a generated
+// page. The card always leads with the event's own name; the DJ/act (when confirmed) is a
+// secondary "met {djName}" line under it, never the title itself.
 export function EventCard({ event, lang = 'nl', priority = false }: { event: EventWithAlbum; lang?: 'nl' | 'en'; priority?: boolean }) {
   const parsedDate = new Date(`${event.date}T00:00:00`)
   const dateLooksSaturday = !Number.isNaN(parsedDate.getTime()) && parsedDate.getDay() === 6
@@ -24,6 +26,9 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     subtitle
   const time = [event.startTime, event.endTime].filter(Boolean).join('–')
   const featured = Boolean(event.featured)
+  const metLabel = lang === 'en' ? 'with' : 'met'
+  const secondaryLine = event.djName ? `${metLabel} ${event.djName}${time ? ` · ${time}` : ''}` : time
+  const moreInfoLabel = lang === 'en' ? 'More info' : 'Meer info'
 
   const detailHref = lang === 'en' ? `/en/nightlife/${event.slug?.current || event._id}` : `/uitgaan/${event.slug?.current || event._id}`
   const agendaAnchor = lang === 'en' ? '/en/nightlife#agenda' : '/uitgaan#agenda'
@@ -43,7 +48,7 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     </div>
     <div className="event-title-block">
       <h3 className="event-card-title">{title}</h3>
-      {time ? <p className="event-card-time">{time}</p> : null}
+      {secondaryLine ? <p className="event-card-time">{secondaryLine}</p> : null}
     </div>
   </div>
 
@@ -51,13 +56,13 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
     {/* Below md: a compact ~76px tappable row (date block, name/time, age+chevron) so several fit
        on screen at once - not a wall of full-height cards. The featured event gets the same row
        height but a coral accent border, a small thumbnail instead of the date block, and a
-       Guestlist chip instead of the plain chevron. The full card (below) is hidden here, shown
+       "Meer info" chip instead of the plain chevron. The full card (below) is hidden here, shown
        from md up, so desktop is untouched by any of this. */}
     {featured ? (
       <Link
         href={href}
         data-track="agenda_card_click"
-        aria-label={`${title} ${time}`}
+        aria-label={`${title} ${secondaryLine}`}
         className="focus-ring group flex min-h-[76px] items-center gap-3 rounded-2xl border-2 border-coral/70 bg-coral/[0.07] px-3 py-2.5 transition-colors hover:border-coral md:hidden"
       >
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl">
@@ -66,9 +71,9 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
         <div className="min-w-0 flex-1">
           <span className="block text-[9px] font-black uppercase tracking-wider text-magenta">{lang === 'nl' ? 'Uitgelicht' : 'Featured'}</span>
           <p className="truncate text-[15px] font-black leading-tight text-white">{title}</p>
-          {time ? <p className="mt-0.5 truncate text-xs font-bold text-white/55">{time}</p> : null}
+          {secondaryLine ? <p className="mt-0.5 truncate text-xs font-bold text-white/55">{secondaryLine}</p> : null}
         </div>
-        <span className="shrink-0 rounded-full bg-coral px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.04em] text-white">Guestlist</span>
+        <span className="shrink-0 rounded-full bg-coral px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.04em] text-white">{moreInfoLabel} →</span>
       </Link>
     ) : (
       <Link
@@ -96,15 +101,12 @@ export function EventCard({ event, lang = 'nl', priority = false }: { event: Eve
       data-image-source={event.source || event.imageSource || 'unknown'}
       className={`event-card group hidden md:block ${featured ? 'event-card-spotlight' : hasDetail ? 'event-card-featured' : 'event-card-regular'}`}
     >
-      <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${time}`}>{media}</Link>
+      <Link href={href} className="block" data-track="agenda_card_click" aria-label={`${title} ${secondaryLine}`}>{media}</Link>
       {hasDetail || featured ? <div className="event-card-detail">
         {description ? <p className="line-clamp-1 text-base leading-7 text-white/70">{description}</p> : null}
         <div className="mt-4 flex flex-wrap items-center gap-4">
           {featured ? (
-            <>
-              <Link href={detailHref} className="btn-primary" data-track="agenda_card_click">Guestlist</Link>
-              <Link href={detailHref} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/60 hover:text-white">{lang === 'en' ? 'More info' : 'Meer info'} <span>→</span></Link>
-            </>
+            <Link href={detailHref} className="btn-primary" data-track="agenda_card_click">{moreInfoLabel} →</Link>
           ) : null}
           {event.relatedAlbumSlug ? <Link href={lang === 'en' ? `/en/photos/${event.relatedAlbumSlug}` : `/fotos/${event.relatedAlbumSlug}`} className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-white/55 hover:text-white">{lang === 'en' ? 'View photos' : 'Bekijk foto’s'} <span>→</span></Link> : null}
           {event.ticketUrl ? <Link data-track="agenda_click" href={event.ticketUrl} target="_blank" className="cta-arrow text-sm font-black uppercase tracking-[0.1em] text-magenta hover:text-white">Tickets / RSVP <span>→</span></Link> : null}
