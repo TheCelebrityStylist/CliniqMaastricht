@@ -17,6 +17,7 @@ const PAGES = [
   { path: '/uitgaan', name: 'uitgaan' },
   { path: '/cocktail-workshop', name: 'cocktail-workshop' },
   { path: '/event-space', name: 'event-space' },
+  { path: '/feest', name: 'feest' },
   { path: '/fotos', name: 'fotos' },
 ]
 const MIN_TAP_TARGET = 44

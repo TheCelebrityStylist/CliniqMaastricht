@@ -26,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/nachtclub-maastricht`,              lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
     { url: `${base}/discotheek-maastricht`,             lastModified: now, changeFrequency: 'monthly', priority: 0.90 },
     { url: `${base}/event-space`,                       lastModified: now, changeFrequency: 'monthly', priority: 0.88 },
+    { url: `${base}/feest`,                             lastModified: now, changeFrequency: 'monthly', priority: 0.80 },
     { url: `${base}/vrijgezellenavond`,                 lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/bedrijfsfeest`,                     lastModified: now, changeFrequency: 'monthly', priority: 0.85 },
     { url: `${base}/studentenavond`,                    lastModified: now, changeFrequency: 'monthly', priority: 0.82 },
@@ -38,6 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/en/nightlife`,                      lastModified: now, changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${base}/en/cocktail-workshop`,              lastModified: now, changeFrequency: 'monthly', priority: 0.78 },
     { url: `${base}/en/event-space`,                    lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
+    { url: `${base}/en/party`,                          lastModified: now, changeFrequency: 'monthly', priority: 0.70 },
     ...eventEntries,
   ]
 }

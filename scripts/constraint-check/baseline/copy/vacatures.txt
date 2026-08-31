@@ -61,11 +61,11 @@ Vertel kort wie je bent, waar je naar zoekt en wanneer je beschikbaar bent. We n
 ✓ Avond- en weekendwerk
 ✓ Centrum Maastricht
 ✓ Ervaring niet altijd nodig
-Naam
-E-mail
+Naam *
+E-mail *
 Telefoon
 Gewenste rol
-Motivatie
+Motivatie *
 Verstuur aanvraag
 Cliniq We own the night
 Op stap in Maastricht. Donderdag, vrijdag en zaterdag open aan de Platielstraat.

@@ -63,12 +63,12 @@ Is it good for a hen party? Yes, one of our most-booked activities for hen night
 Inquiry
 Request workshop
 Drop us a message. We respond fast and help you plan the full evening.
-Name
-Email
+Name *
+Email *
 Phone
 Preferred date
 Group size
-Message
+Message *
 Send request
 Cliniq We own the night
 Going out in Maastricht. Open Thursday, Friday and Saturday on Platielstraat.

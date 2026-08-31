@@ -11,11 +11,11 @@ Beschikbaar in avonden/weekenden
 Teamspeler
 Apply?
 Leave your details and tell us why you fit Cliniq.
-Name
-Email
+Name *
+Email *
 Phone
 Desired role
-Motivation
+Motivation *
 Send request
 Cliniq We own the night
 Going out in Maastricht. Open Thursday, Friday and Saturday on Platielstraat.

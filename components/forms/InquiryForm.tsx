@@ -6,7 +6,7 @@ import BookingDateField from './BookingDateField'
 
 type Field = { name: string; label: string; type?: string; placeholder?: string; required?: boolean; options?: string[]; helper?: string }
 
-export default function InquiryForm({ type, fields, sourcePage, lang: langProp }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string; lang?: 'nl' | 'en' }) {
+export default function InquiryForm({ type, fields, sourcePage, lang: langProp, legend }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string; lang?: 'nl' | 'en'; legend?: string }) {
   const pathname = usePathname()
   const lang = langProp || getLanguageFromPath(pathname || '')
   const t = ui[lang].form
@@ -35,14 +35,15 @@ export default function InquiryForm({ type, fields, sourcePage, lang: langProp }
   return <form onSubmit={onSubmit} className="card rounded-[2rem] p-5 sm:p-8">
     <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
     <input type="hidden" name="sourcePage" value={sourcePage || ''} />
+    {legend ? <p className="mb-5 text-xs text-white/50">{legend}</p> : null}
     <div className="grid gap-5 sm:grid-cols-2">
       {fields.map((field) => <div key={field.name} className={field.name === 'message' ? 'sm:col-span-2' : ''}>
         {field.type === 'booking-date' ? (
           <BookingDateField name={field.name} label={field.label} required={field.required} lang={lang} />
         ) : (
           <>
-            <label htmlFor={field.name} className="label">{field.label}</label>
-            {field.options ? <select id={field.name} name={field.name} required={field.required} className="input"><option value="">{t.select}</option>{field.options.map((option) => <option key={option}>{option}</option>)}</select> : field.name === 'message' ? <textarea id={field.name} name={field.name} rows={5} required={field.required} placeholder={field.placeholder} className="input" /> : <input id={field.name} name={field.name} type={field.type || 'text'} required={field.required} placeholder={field.placeholder} className="input" />}
+            <label htmlFor={field.name} className="label">{field.label}{field.required ? <span className="text-coral-text" aria-hidden="true"> *</span> : null}</label>
+            {field.options ? <select id={field.name} name={field.name} required={field.required} aria-required={field.required || undefined} className="input"><option value="">{t.select}</option>{field.options.map((option) => <option key={option}>{option}</option>)}</select> : field.name === 'message' ? <textarea id={field.name} name={field.name} rows={5} required={field.required} aria-required={field.required || undefined} placeholder={field.placeholder} className="input" /> : <input id={field.name} name={field.name} type={field.type || 'text'} required={field.required} aria-required={field.required || undefined} placeholder={field.placeholder} className="input" />}
             {field.helper ? <p className="mt-1.5 text-xs text-white/50">{field.helper}</p> : null}
           </>
         )}

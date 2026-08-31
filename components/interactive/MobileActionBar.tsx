@@ -7,7 +7,7 @@ import { getLanguageFromPath, localizedPaths, copy } from '@/lib/i18n'
 import { INTERACTIVE_COPY } from '@/lib/content'
 import { site } from '@/lib/site'
 
-const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest']
+const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest', '/feest', '/en/party']
 
 export default function MobileActionBar() {
   const pathname = usePathname()

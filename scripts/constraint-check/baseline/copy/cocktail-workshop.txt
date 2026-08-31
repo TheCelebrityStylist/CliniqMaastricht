@@ -84,12 +84,12 @@ Ja — een van onze meest geboekte activiteiten voor vrijgezellenfeesten. Exclus
 Aanvraag
 Cocktail workshop aanvragen
 Stuur je datum, groepsgrootte en wensen mee. Dan reageren we met beschikbaarheid en een passend voorstel.
-Naam
-E-mail
+Naam *
+E-mail *
 Telefoon
 Gewenste datum
 Groepsgrootte
-Bericht
+Bericht *
 Verstuur aanvraag
 Cliniq We own the night
 Op stap in Maastricht. Donderdag, vrijdag en zaterdag open aan de Platielstraat.

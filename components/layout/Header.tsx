@@ -8,7 +8,7 @@ import Logo from '@/components/brand/Logo'
 
 export default function Header() {
   const pathname = usePathname()
-  if (pathname?.startsWith('/admin') || pathname?.startsWith('/vrijgezellenavond') || pathname?.startsWith('/bedrijfsfeest') || pathname?.startsWith('/privefeest')) return null
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/vrijgezellenavond') || pathname?.startsWith('/bedrijfsfeest') || pathname?.startsWith('/privefeest') || pathname?.startsWith('/feest') || pathname?.startsWith('/en/party')) return null
   const lang = getLanguageFromPath(pathname)
   const t = copy[lang]
   const switchHref = getSwitchPath(pathname)

@@ -63,6 +63,22 @@
     "NightClub",
     "Organization"
   ],
+  "feest": [
+    "BreadcrumbList",
+    "EventVenue",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
+  "party-en": [
+    "BreadcrumbList",
+    "EventVenue",
+    "EventVenue",
+    "LocalBusiness",
+    "NightClub",
+    "Organization"
+  ],
   "contact": [
     "BreadcrumbList",
     "EventVenue",

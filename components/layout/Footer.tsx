@@ -60,7 +60,7 @@ const GROEPEN_EN = [
   { href: '/event-space', label: 'Event venue Maastricht' },
 ]
 
-const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest']
+const HIDDEN_PATHS = ['/admin', '/vrijgezellenavond', '/bedrijfsfeest', '/privefeest', '/feest', '/en/party']
 
 export default function Footer() {
   const pathname = usePathname()

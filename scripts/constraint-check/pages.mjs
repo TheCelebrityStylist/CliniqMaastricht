@@ -10,6 +10,8 @@ export const WATCHED_PAGES = [
   { path: '/en/cocktail-workshop', name: 'cocktail-workshop-en' },
   { path: '/event-space', name: 'event-space' },
   { path: '/en/event-space', name: 'event-space-en' },
+  { path: '/feest', name: 'feest' },
+  { path: '/en/party', name: 'party-en' },
   { path: '/contact', name: 'contact' },
   { path: '/en/contact', name: 'contact-en' },
   { path: '/fotos', name: 'fotos' },

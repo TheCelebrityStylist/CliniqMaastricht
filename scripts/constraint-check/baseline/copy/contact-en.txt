@@ -13,10 +13,10 @@ Zaterdag 22:00–03:00
 Agenda Workshop Venue hire
 ± 3 min walk from Vrijthof ± 2 min walk from the Markt
 View the map
-Name
-Email
+Name *
+Email *
 Phone
-Message
+Message *
 Send request
 Directions
 Central Maastricht

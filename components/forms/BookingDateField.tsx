@@ -37,13 +37,14 @@ export default function BookingDateField({
 
   return (
     <div>
-      <label htmlFor={name} className="label">{label}</label>
+      <label htmlFor={name} className="label">{label}{required ? <span className="text-coral-text" aria-hidden="true"> *</span> : null}</label>
       <input
         ref={inputRef}
         id={name}
         name={name}
         type="date"
         required={required}
+        aria-required={required || undefined}
         value={value}
         onChange={handleChange}
         aria-invalid={blocked}

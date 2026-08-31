@@ -13,10 +13,10 @@ Zaterdag 22:00–03:00
 Agenda Workshop Ruimte huren
 ± 3 min lopen vanaf het Vrijthof ± 2 min lopen vanaf de Markt
 Bekijk de kaart
-Naam
-E-mail
+Naam *
+E-mail *
 Telefoon
-Bericht
+Bericht *
 Verstuur aanvraag
 Route
 Midden in Maastricht
