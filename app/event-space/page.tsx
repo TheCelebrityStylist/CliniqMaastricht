@@ -8,11 +8,14 @@ import { getPageContent, getSectionPhotoMedia, getSeoSettings } from '@/lib/admi
 import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import EventTypeCards from '@/components/ui/EventTypeCards'
+import EventTypeChips from '@/components/forms/EventTypeChips'
 import { eventSpaceFaqsNl as fallbackFaqs } from '@/lib/faqs'
+import { BOOKING_END_TIME_NOTE } from '@/lib/booking'
 import SafeImage from '@/components/ui/SafeImage'
 
 import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
+import StickyRequestCTA from '@/components/experience/StickyRequestCTALoader'
 
 const GalleryLightbox = dynamic(() => import('@/components/interactive/GalleryLightbox'))
 const LightboxImageButton = dynamic(() => import('@/components/interactive/GalleryLightbox').then((mod) => ({ default: mod.LightboxImageButton })))
@@ -22,6 +25,11 @@ export const revalidate = 60
 
 // Targets "eventlocatie maastricht" / "zakelijk evenement maastricht" — position ~11, CTR < 0.4%.
 // Also the canonical target for the /business-event-space-maastricht redirect (still ranking on Google).
+//
+// Shipped title/description below got a light "Huren" edit for the host-your-own-event brief
+// (targets "eventlocatie huren Maastricht" / "feestzaal huren Maastricht") - same tested A angle,
+// one keyword inserted, not a rewrite. The variant history below still reflects the original A/B/C
+// test that picked this angle.
 //
 // Title variants tested:
 // A (shipped) — capacity + centre-of-town hook:
@@ -41,10 +49,10 @@ export const revalidate = 60
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoSettings('event-space', 'nl')
 
-  const title = seo?.seoTitle || 'Eventlocatie Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen'
+  const title = seo?.seoTitle || 'Eventlocatie Huren Maastricht | Cliniq — Feestzaal Centrum, Tot 400 Personen'
   const description =
     seo?.metaDescription ||
-    'Eventlocatie in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.'
+    'Eventlocatie huren in het centrum van Maastricht. Cliniq aan de Platielstraat 9A biedt exclusieve feestzaal- en zaalverhuur tot 400 personen — voor bedrijfsfeesten, borrels, privéfeesten en vrijgezellenavonden.'
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
   const socialImages = seo?.socialImageUrl ? [{ url: seo.socialImageUrl }] : [{ url: images.redRoom, width: 1200, height: 1500 }]
@@ -126,10 +134,6 @@ const fallbackEventTypes: EditableCard[] = [
   {
     titleNl: 'Borrel',
     textNl: 'Voor groepen die informeel willen samenkomen met bar en muziek dichtbij.',
-  },
-  {
-    titleNl: 'Private party',
-    textNl: 'Een eigen avond met deurbeleid, bar en invulling op maat.',
   },
   {
     titleNl: 'Studentenfeest',
@@ -249,8 +253,9 @@ export default async function EventSpacePage() {
         <MagneticCTAs />
 
         <div className="container-premium py-24">
-          <p className="eyebrow mb-4">Events</p>
+          <p className="eyebrow mb-4">Organiseer je eigen avond</p>
           <h1 className="h1 max-w-5xl">{heroTitle}</h1>
+          <p className="mt-3 text-2xl font-black text-coral-text">Jouw avond. Onze club.</p>
           <p className="mt-7 max-w-3xl text-xl leading-8 text-white/78">{heroSubtitle}</p>
 
           <a href="#aanvraag" className="btn-primary mt-8">
@@ -262,6 +267,13 @@ export default async function EventSpacePage() {
       <section className="container-premium section-y">
         <p className="eyebrow">{eventTypeEyebrow}</p>
         <h2 className="h2 mt-4">{eventTypeTitle}</h2>
+
+        <div className="mt-6">
+          <EventTypeChips
+            types={['Verjaardag', 'Ticketed event', 'Private party', 'Vrijgezellenfeest', 'Bedrijfsfeest', 'Anders']}
+            formAnchor="aanvraag"
+          />
+        </div>
 
         <div className="mt-8">
           <EventTypeCards
@@ -439,14 +451,30 @@ export default async function EventSpacePage() {
                 'Private party',
                 'Borrel',
                 'Product launch',
+                'Ticketed event',
+                'Anders',
               ],
             },
-            { name: 'preferredDate', label: 'Gewenste datum', type: 'date' },
+            { name: 'preferredDate', label: 'Datum (optie 1)', type: 'booking-date', required: true },
+            { name: 'preferredDate2', label: 'Datum (optie 2, optioneel)', type: 'booking-date' },
+            { name: 'time', label: 'Gewenste tijd', placeholder: 'bv. 20:00 – 01:00', helper: BOOKING_END_TIME_NOTE.nl },
+            {
+              name: 'music',
+              label: 'Muziek',
+              options: ['Ik regel mijn eigen DJ', 'CLINIQ regelt de muziek', 'Weet ik nog niet'],
+            },
             { name: 'guests', label: 'Aantal gasten', type: 'number' },
+            {
+              name: 'howHeard',
+              label: 'Hoe hoorde je van ons?',
+              options: ['Instagram', 'Google', 'Via vrienden', 'Was hier eerder', 'Anders'],
+            },
             { name: 'message', label: 'Bericht', required: true },
           ]}
         />
       </section>
+
+      <StickyRequestCTA formId="aanvraag" label="Aanvragen" />
 
       <JsonLd data={faqSchema([geoAnswer, ...pageFaqs])} />
       <JsonLd data={eventVenueSchema()} />

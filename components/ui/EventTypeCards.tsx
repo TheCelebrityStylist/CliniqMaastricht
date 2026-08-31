@@ -9,11 +9,9 @@ import SafeImage from './SafeImage'
 // unchanged; when present it folds a card's supporting copy into the same tile instead of a
 // second, separately-rendered card grid repeating the same eight items.
 //
-// The description + micro-CTA reveal on hover/focus via a pure-CSS max-height + opacity + translate
-// transition (grid-template-rows would be cleaner but has patchy support for this exact combo) -
-// no WebGL, no JS: with 8 cards on one page, a per-card WebGL context would be a real Lighthouse/
-// GPU-context risk, and the content is already in the DOM either way (readable with JS off,
-// visible via screen reader regardless of hover state).
+// Description + micro-CTA are ALWAYS visible, not hover-gated: an earlier pass hid them behind
+// group-hover, which meant touch devices - no persistent hover state - never saw them at all,
+// only the bare title. That's what read as "empty" and is exactly the regression this corrects.
 export default function EventTypeCards({
   cards,
 }: {
@@ -35,18 +33,18 @@ export default function EventTypeCards({
             sizes="(min-width:1024px) 24vw, 50vw"
             className="object-cover brightness-[1.05] transition-transform duration-700 ease-out group-hover:scale-105"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent transition-[background] duration-500 group-hover:via-ink/75" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent" />
           <div className="relative p-4">
-            <span className="block font-display text-[clamp(16px,1.9vw,20px)] font-black uppercase leading-tight tracking-tight text-white transition-transform duration-500 ease-out group-hover:-translate-y-1">
+            <span className="block font-display text-[clamp(16px,1.9vw,20px)] font-black uppercase leading-tight tracking-tight text-white">
               {card.title}
             </span>
             {card.description ? (
-              <div className="max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-500 ease-out group-hover:max-h-24 group-hover:opacity-100 group-focus-visible:max-h-24 group-focus-visible:opacity-100">
+              <>
                 <p className="mt-1.5 line-clamp-2 text-sm leading-snug text-white/75">{card.description}</p>
-                <span className="mt-2 inline-flex items-center gap-1 text-xs font-black uppercase tracking-[0.1em] text-coral-text">
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-black uppercase tracking-[0.1em] text-coral-text transition group-hover:text-white">
                   Aanvragen <span aria-hidden="true">→</span>
                 </span>
-              </div>
+              </>
             ) : null}
           </div>
         </Link>

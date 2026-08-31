@@ -27,6 +27,8 @@ type SanityEvent = {
   showDetailPage?: boolean
   descriptionNl?: string
   descriptionEn?: string
+  promoNl?: string
+  promoEn?: string
   ticketUrl?: string
   albumSlug?: string
 }
@@ -308,6 +310,8 @@ async function getSanityEvents(includePast = false) {
       showDetailPage,
       descriptionNl,
       descriptionEn,
+      promoNl,
+      promoEn,
       ticketUrl,
       "albumSlug": album->slug.current
     }`,
@@ -315,10 +319,22 @@ async function getSanityEvents(includePast = false) {
 
   if (!events?.length) return []
 
-  return events
+  // De-duplicate by _id as a defensive safety net - a Sanity query should never return the same
+  // document twice, but two DIFFERENT documents for the same night (same DJ booked on two
+  // separate event docs) are a data-entry duplicate, not a code one, and aren't deduped here.
+  const seen = new Set<string>()
+  const uniqueEvents = events.filter((event) => {
+    if (seen.has(event._id)) return false
+    seen.add(event._id)
+    return true
+  })
+
+  return uniqueEvents
     .filter((event) => includePast || !event.date || event.date >= today)
     .map((event): AgendaEvent & { relatedAlbumSlug?: string; source?: string; imageSource?: string } => {
-      const title = event.djName || event.title || 'CLINIQ'
+      // The event's own name always wins - the DJ is a secondary "met {djName}" line, never the
+      // card title. djName is only a fallback for the rare event that has no name of its own.
+      const title = event.title || event.djName || 'CLINIQ'
       const titleNl = event.customTitleNl || title
       const titleEn = event.customTitleEn || title
       const imageUrl = event.eventImageUrl || event.djImageUrl || images.fallbackEvent
@@ -328,6 +344,7 @@ async function getSanityEvents(includePast = false) {
         title,
         titleNl,
         titleEn,
+        djName: event.djName || undefined,
         slug: { current: event.slug || event._id },
         date: event.date || '',
         startTime: event.openingTime || '22:00',
@@ -336,6 +353,12 @@ async function getSanityEvents(includePast = false) {
         shortDescription: event.descriptionNl || event.descriptionEn,
         shortDescriptionNl: event.descriptionNl,
         shortDescriptionEn: event.descriptionEn,
+        // Long-form hand-written promo copy for the event's own detail page (Sanity fields
+        // `promoNl`/`promoEn`) - kept separate from the short card-teaser description above.
+        // Never auto-generated: an empty value here is a deliberate "nothing written yet" signal
+        // the detail page must respect, not something to paper over with a template sentence.
+        fullDescriptionNl: event.promoNl || undefined,
+        fullDescriptionEn: event.promoEn || undefined,
         ticketUrl: event.ticketUrl,
         featured: Boolean(event.featured),
         eventType: event.eventType || 'regular',

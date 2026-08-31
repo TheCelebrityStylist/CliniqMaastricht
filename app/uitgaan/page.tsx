@@ -10,8 +10,7 @@ import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import FeaturedEvent from '@/components/experience/FeaturedEvent'
-import { pickFeaturedEvent, weekendAnswerNl } from '@/lib/eventCopy'
+import { eventJsonLdDates, weekendAnswerNl } from '@/lib/eventCopy'
 import { nightlifeFaqsNl as fallbackFaqs } from '@/lib/faqs'
 import SafeImage from '@/components/ui/SafeImage'
 
@@ -189,8 +188,6 @@ export default async function NightlifePage() {
     .filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
   const pilePhotos = getPilePhotos('nl')
-  const featuredEvent = pickFeaturedEvent(events)
-  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
   const heroImage = pageContent?.imageUrl || images.redCrowd
   const heroTitle = pageContent?.heroTitleNl || 'Uitgaan in Maastricht.'
   const heroSubtitle =
@@ -226,8 +223,7 @@ export default async function NightlifePage() {
     '@type': 'Event',
     '@id': `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}#event`,
     name: `${event.titleNl || event.title} bij Cliniq Maastricht`,
-    startDate: `${event.date}T${event.startTime || '22:00'}:00+01:00`,
-    endDate: `${event.date}T${event.endTime || '03:00'}:00+01:00`,
+    ...eventJsonLdDates(event),
     description: event.shortDescriptionNl || event.shortDescription || `${event.titleNl || event.title} bij Cliniq Maastricht, Platielstraat 9A.`,
     url: `https://www.cliniqmaastricht.nl/uitgaan/${event.slug?.current || event._id}`,
     location: {
@@ -269,18 +265,16 @@ export default async function NightlifePage() {
         </div>
       </section>
 
-      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
-
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
           <SectionIntro eyebrow="Agenda" title="Agenda: uitgaan bij CLINIQ Maastricht" text="Bekijk de eerstvolgende clubnachten, DJ-avonden en events aan de Platielstraat." />
-          {remainingEvents.length ? (
-            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
-              {remainingEvents.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />)}
+          {events.length ? (
+            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
+              {events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}
             </div>
-          ) : !events.length ? (
+          ) : (
             <div className="mt-10 rounded-[2rem] border border-white/10 p-8 text-white/70">Nieuwe events worden binnenkort toegevoegd.</div>
-          ) : null}
+          )}
         </div>
       </section>
 

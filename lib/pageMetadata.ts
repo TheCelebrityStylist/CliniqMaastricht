@@ -100,7 +100,7 @@ const fallbackByPage: Record<string, Record<Lang, FallbackMetadata>> = {
       image: images.redRoom,
     },
     en: {
-      title: 'Event Location Maastricht | Cliniq — City Centre Venue, Up to 400 Guests',
+      title: 'Hire an Event Location in Maastricht | Cliniq — Private Party Venue, Up to 400 Guests',
       description: 'Event location in central Maastricht. Cliniq on Platielstraat 9A offers exclusive private hire for up to 400 guests — for corporate events, drinks, private parties and hen nights.',
       path: '/en/event-space',
       image: images.redRoom,

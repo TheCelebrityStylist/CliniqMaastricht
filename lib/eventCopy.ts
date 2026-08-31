@@ -28,29 +28,21 @@ export function isThisWeekend(dateStr: string, now = new Date()): boolean {
   return date >= friday && date < mondayAfter
 }
 
-// Picks the card that gets the full-bleed FeaturedEvent treatment: an explicit Sanity/admin
-// `featured` flag wins if one exists among the upcoming events; otherwise the next chronological
-// night is featured by default (the brief's own wording: "the next (or flagged) big night").
-export function pickFeaturedEvent<T extends { date: string; featured?: boolean }>(events: T[]): T | null {
-  if (!events.length) return null
-  return events.find((event) => event.featured) || events[0]
-}
-
-const MONTHS_NL = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const WEEKDAYS_NL = ['ZO', 'MA', 'DI', 'WO', 'DO', 'VR', 'ZA']
-const WEEKDAYS_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-
-// Big oversized date block for FeaturedEvent, e.g. { weekday: 'ZA', day: '17', month: 'AUG' }.
-export function formatBigDate(dateStr: string, lang: Lang) {
-  const date = new Date(`${dateStr}T00:00:00`)
-  if (Number.isNaN(date.getTime())) return { weekday: '', day: '', month: '' }
-  const months = lang === 'nl' ? MONTHS_NL : MONTHS_EN
-  const weekdays = lang === 'nl' ? WEEKDAYS_NL : WEEKDAYS_EN
+// Event JSON-LD start/end datetimes. Nights close at 02:00-03:00, i.e. after midnight - the end
+// date is the day AFTER the event's calendar date, not the same date (matching the day-rollover
+// already used by the club-open-window calculation in clubStatus.ts). Using the same date for
+// both, as every Event JSON-LD block in this codebase did before, produces an endDate that's
+// earlier in the day than startDate on the same date - an invalid Event where it ends before it
+// starts.
+export function eventJsonLdDates(event: { date: string; startTime?: string; endTime?: string }, utcOffset = '+02:00') {
+  const startTime = event.startTime || '22:00'
+  const endTime = event.endTime || '03:00'
+  const endDate = new Date(`${event.date}T00:00:00`)
+  endDate.setDate(endDate.getDate() + 1)
+  const endDateStr = Number.isNaN(endDate.getTime()) ? event.date : endDate.toISOString().slice(0, 10)
   return {
-    weekday: weekdays[date.getDay()],
-    day: String(date.getDate()),
-    month: months[date.getMonth()].toUpperCase(),
+    startDate: `${event.date}T${startTime}:00${utcOffset}`,
+    endDate: `${endDateStr}T${endTime}:00${utcOffset}`,
   }
 }
 
@@ -66,29 +58,30 @@ function dateLong(dateStr: string, lang: Lang) {
   return date.toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-GB', { day: 'numeric', month: 'long' })
 }
 
-// Per-event promo body copy, generated from Sanity/admin fields (date, act, theme, age) per the
-// approved template. NEW copy - every string this produces is listed for approval in the report,
-// never silently shipped as if it were existing/approved body copy.
-export function generateEventPromoNl(event: EventLike): string {
-  const act = event.titleNl || event.title
+function cap(text: string) {
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text
+}
+
+// Featured events must NEVER fall back to generateEventPromoNl/En: that template's "{act} achter
+// de knoppen" phrasing assumes the act is a DJ distinct from the event name, which is false for a
+// named night like "Amphitryon Inkom Party" - it would read as nonsense ("Amphitryon Inkom Party
+// achter de knoppen"). When a featured event has no hand-written promo copy yet (Sanity `promoNl`/
+// `promoEn` empty), this plain factual line is the fallback instead - no invented narrative, no
+// performer claim, just the facts the page already knows are true.
+export function factualEventLineNl(event: EventLike): string {
   const weekday = weekdayLong(event.date, 'nl')
   const dateStr = dateLong(event.date, 'nl')
   const doors = event.startTime || '22:00'
   const age = event.ageLimit || '21+'
-  return `${cap(weekday)} ${dateStr} zet CLINIQ de Platielstraat op z'n kop. ${act} achter de knoppen, cocktails tot in de late uurtjes en de dansvloer waar uitgaan in Maastricht om draait. Deuren ${doors} — open tot ${event.endTime || '03:00'}. ${age}. Beperkt plek — zorg dat je erbij bent.`
+  return `${cap(weekday)} ${dateStr} bij CLINIQ. Deuren ${doors}, open tot ${event.endTime || '03:00'}. ${age}.`
 }
 
-export function generateEventPromoEn(event: EventLike): string {
-  const act = event.titleEn || event.title
+export function factualEventLineEn(event: EventLike): string {
   const weekday = weekdayLong(event.date, 'en')
   const dateStr = dateLong(event.date, 'en')
   const doors = event.startTime || '22:00'
   const age = event.ageLimit || '21+'
-  return `${cap(weekday)} ${dateStr} CLINIQ turns the Platielstraat upside down. ${act} on the decks, cocktails deep into the night and the dancefloor that defines going out in Maastricht. Doors ${doors} — open until ${event.endTime || '03:00'}. ${age}. Limited spots — be there.`
-}
-
-function cap(text: string) {
-  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text
+  return `${cap(weekday)} ${dateStr} at CLINIQ. Doors ${doors}, open until ${event.endTime || '03:00'}. ${age}.`
 }
 
 // GEO answer block for "Wat is er dit weekend te doen in Maastricht?" - the freshness signal is

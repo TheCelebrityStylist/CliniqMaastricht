@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { getAgendaEventBySlug } from '@/lib/admin/public'
 import { images, site } from '@/lib/site'
 import { breadcrumbSchema } from '@/lib/seo'
-import { generateEventPromoEn, isThisWeekend } from '@/lib/eventCopy'
+import { eventJsonLdDates, factualEventLineEn, isThisWeekend } from '@/lib/eventCopy'
 import JsonLd from '@/components/ui/JsonLd'
 import SafeImage from '@/components/ui/SafeImage'
 import EventCountdown from '@/components/interactive/EventCountdownLoader'
@@ -15,19 +15,22 @@ function formatDateEn(dateStr: string) {
   return date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
 }
 
+// Only the 5 events flagged `featured` get a dedicated detail page (see the guard in the page
+// component below) — a non-featured slug is treated the same as a missing one here so it never
+// gets indexed with its own metadata.
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const event = await getAgendaEventBySlug(slug)
   const path = `/en/nightlife/${slug}`
-  if (!event) {
+  if (!event || !event.featured) {
     return {
       title: 'Event not found | Nightlife Maastricht',
       description: 'This Cliniq Maastricht event could not be found.',
       alternates: { canonical: `${site.url}${path}` },
     }
   }
-  const title = `${event.titleEn || event.title} — ${formatDateEn(event.date)} | Nightlife Maastricht CLINIQ`
-  const description = event.shortDescriptionEn || event.shortDescription || generateEventPromoEn(event).slice(0, 155)
+  const title = event.metaTitleEn || `${event.titleEn || event.title} — ${formatDateEn(event.date)} | Nightlife Maastricht CLINIQ`
+  const description = event.metaDescriptionEn || event.shortDescriptionEn || event.shortDescription || factualEventLineEn(event)
   return {
     title,
     description,
@@ -44,10 +47,16 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const { slug } = await params
   const event = await getAgendaEventBySlug(slug)
   if (!event) notFound()
+  // Non-featured nights are list-only: no generated template page for them, so a stray link or
+  // stale bookmark lands back on the agenda instead of a generic filled-in-with-fallbacks page.
+  if (!event.featured) redirect('/en/nightlife#agenda')
 
   const title = event.titleEn || event.title
   const subtitle = event.subtitleEn || event.subtitle
-  const description = event.fullDescriptionEn || event.fullDescription || event.shortDescriptionEn || event.shortDescription || generateEventPromoEn(event)
+  // Only featured events reach this page (see the redirect guard above), so this NEVER falls back
+  // to the "{act} on the decks" template - real hand-written copy (Sanity `promoEn`, mapped to
+  // fullDescriptionEn) always wins; with nothing written yet, this shows a plain factual line.
+  const description = event.fullDescriptionEn || event.fullDescription || event.shortDescriptionEn || event.shortDescription || factualEventLineEn(event)
   const isPast = event.date < new Date().toISOString().slice(0, 10)
 
   return <section className="container-premium pt-36 pb-24">
@@ -64,8 +73,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       <div className="mt-8 grid gap-10 lg:grid-cols-[.9fr_1.1fr]">
         <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]"><SafeImage src={event.imageUrl} fallbackSrc={images.fallbackEvent} alt={event.imageAlt || title} fill priority sizes="50vw" className="object-cover brightness-[1.08]" objectPosition={event.imagePosition || 'center'} /><EventImageReveal /></div>
         <div>
-          <p className="eyebrow">{formatDateEn(event.date)} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}{isThisWeekend(event.date) ? ' · This weekend' : ''}</p>
+          <p className="eyebrow">{formatDateEn(event.date)} · {event.startTime || '22:00'} · {event.ageLimit || '21+'}{isThisWeekend(event.date) ? ' · This weekend' : ''}{event.categoryTagEn ? ` · ${event.categoryTagEn}` : ''}</p>
           <h1 className="h1 mt-5">{title}</h1>
+          {event.djName ? <p className="mt-3 text-sm font-black uppercase tracking-[0.1em] text-white/50">with {event.djName}</p> : null}
           {subtitle ? <p className="mt-4 text-2xl text-coral-text">{subtitle}</p> : null}
           <p className="prose-premium mt-7">{description}</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -83,8 +93,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
       '@context': 'https://schema.org',
       '@type': 'Event',
       name: title,
-      startDate: `${event.date}T${event.startTime || '22:00'}:00+02:00`,
-      endDate: `${event.date}T${event.endTime || '03:00'}:00+02:00`,
+      ...eventJsonLdDates(event),
       eventStatus: 'https://schema.org/EventScheduled',
       eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
       location: { '@type': 'Place', name: site.name, address: { '@type': 'PostalAddress', streetAddress: site.address.street, postalCode: site.address.postalCode, addressLocality: site.address.city, addressCountry: 'NL' } },

@@ -3,9 +3,8 @@ import { getNextNightLine, type ClubStatusEvent } from '@/lib/clubStatus'
 import type { Lang } from '@/lib/i18n'
 
 // Plain, un-boxed line above the agenda cards: eyebrow + date/DJ, no border, no dot, no live
-// counter. Static per request (SSR, revalidate=60) - a live per-second countdown is reserved for
-// a single flagged FEATURED event (FeaturedEvent.tsx), where counting down to one specific date
-// is legitimate hype, not for this always-present line.
+// counter. Static per request (SSR, revalidate=60) - a live countdown would need client JS and
+// per-second re-renders for no real benefit on a line that's just naming the next date.
 export default function NextNightLine({ events, lang }: { events: ClubStatusEvent[]; lang: Lang }) {
   const line = getNextNightLine(new Date(), events, lang)
   if (!line) return null

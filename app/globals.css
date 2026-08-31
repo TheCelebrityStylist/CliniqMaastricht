@@ -69,11 +69,15 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
    glows" note; this codebase's tokens never had the gold accent that spec references, but the
    same "one glow only" principle applies). */
 .event-section::after { content:""; position:absolute; right:2%; bottom:8rem; width:28rem; height:28rem; border-radius:999px; pointer-events:none; background:radial-gradient(circle, rgba(219,51,76,.12), transparent 66%); filter:blur(12px); }
-.event-grid { display:grid; gap:32px; align-items:start; position:relative; z-index:1; }
+/* align-items:stretch (not start) so every card in a grid row matches the row's tallest card -
+   the featured card's extra detail panel (description + "Meer info" button, always rendered for
+   featured events even when siblings have no detail panel at all) no longer makes it taller than
+   its row; it's distinguished by border/tag/button only, never by footprint. */
+.event-grid { display:grid; gap:32px; align-items:stretch; position:relative; z-index:1; }
 .event-grid-1 { max-width:460px; grid-template-columns:1fr; margin-inline:auto; }
 .event-grid-2 { max-width:1040px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-inline:auto; }
 .event-grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
-.event-card { overflow:hidden; border:1px solid rgba(255,255,255,.10); border-radius:28px; background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); box-shadow:0 24px 70px rgba(0,0,0,.24); transition:transform .32s ease, border-color .32s ease, box-shadow .32s ease, background .32s ease; animation: soft-reveal .7s ease both; }
+.event-card { display:flex; flex-direction:column; height:100%; overflow:hidden; border:1px solid rgba(255,255,255,.10); border-radius:28px; background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); box-shadow:0 24px 70px rgba(0,0,0,.24); transition:transform .32s ease, border-color .32s ease, box-shadow .32s ease, background .32s ease; animation: soft-reveal .7s ease both; }
 .event-card:hover { transform:translateY(-6px); border-color:rgba(220,72,254,.45); box-shadow:0 30px 90px rgba(80,11,56,.34); }
 .event-card-media { position:relative; aspect-ratio:4/5; overflow:hidden; background:#180811; }
 .event-card-overlay { position:absolute; inset:auto 0 0; height:58%; background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0)); }
@@ -84,6 +88,11 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card-detail { padding:1.25rem; padding-top:1rem; }
 .event-chip { display:inline-flex; align-items:center; min-height:2.2rem; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.45); padding:10px 16px; color:rgba(255,247,234,.92); font-size:clamp(.78rem, .9vw, .9rem); font-weight:800; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(12px); }
 .event-chip-age { padding-inline:14px; }
+/* Featured event: signals importance in place (natural date position, not reordered to the top)
+   via a coral accent border on the card and a magenta-tinted chip replacing the plain date chip. */
+.event-card-spotlight { border-color:rgba(219,51,76,.55); }
+.event-card-spotlight:hover { border-color:rgba(219,51,76,.8); }
+.event-chip-featured { border-color:rgba(220,72,254,.5); background:rgba(80,11,56,.55); color:#fff; }
 @media (max-width:640px) { .event-chip-row { left:14px; right:14px; top:14px; } .event-chip { min-height:1.9rem; padding:8px 12px; font-size:.72rem; } .event-title-block { padding:22px; } }
 .cta-arrow { display:inline-flex; align-items:center; min-height:2.75rem; }
 .cta-arrow span { display:inline-block; transition:transform .25s ease; }
@@ -134,69 +143,30 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 @media (max-width: 767px) { .atmosphere-glow { animation-duration: 24s; filter: blur(40px); } }
 @media (prefers-reduced-motion: reduce) { .atmosphere-glow { animation: none !important; } }
 
-/* Mobile agenda: no tiny three-column cards. Cards become a readable swipe rail. */
+/* Mobile agenda: no tiny three-column cards, no hidden horizontal swipe, and (this rule's third
+   revision) no wall of 15+ full-height hero cards either. EventCard itself renders a compact
+   ~76px tappable row below md and hides its full media card there (shown from md up) - see
+   components/ui/EventCard.tsx. The one exception is the featured event, which keeps its own
+   `.event-card` full-bleed treatment on every breakpoint (deliberately "one standout", not
+   compact) - the `.event-card` mobile sizing below still applies to that card specifically. */
 @media (max-width: 767px) {
   .event-grid,
   .event-grid-1,
   .event-grid-2,
   .event-grid-3 {
     display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
     grid-template-columns: none !important;
-    gap: 18px;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    overflow-x: auto;
-    padding: 0 5vw 18px;
-    scroll-padding-inline: 5vw;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    max-width: none;
+    overflow-x: visible;
   }
 
   .event-card {
     border-radius: 24px;
-    flex: 0 0 90vw;
-    max-width: 90vw;
-    min-width: 88vw;
-    scroll-snap-align: center;
-  }
-
-  .event-card-media {
-    aspect-ratio: 4 / 5;
-    min-height: auto;
-  }
-
-  .event-card .event-card-title,
-  .event-card-title {
-    font-size: clamp(2.35rem, 11vw, 3.75rem) !important;
-    letter-spacing: -0.055em;
-    line-height: 0.86;
-    max-width: 100%;
-    overflow-wrap: break-word;
-  }
-
-  .event-title-block {
-    gap: 10px;
-    padding: 20px !important;
-  }
-
-  .event-card-detail,
-  .event-card-description,
-  .event-card-cta {
-    display: none !important;
-  }
-
-  .event-card-time {
-    color: rgba(255, 255, 255, 0.76) !important;
-    display: block !important;
-    font-size: 1.2rem !important;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    line-height: 1.1;
-  }
-
-  .event-chip {
-    min-height: 34px;
-    padding: 9px 12px !important;
+    width: 100%;
+    max-width: none;
   }
 
   .hero-title,

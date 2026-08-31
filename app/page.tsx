@@ -12,11 +12,9 @@ import AtmosphereFX from '@/components/interactive/AtmosphereFXLoader'
 import MagneticCTAs from '@/components/interactive/MagneticCTAsLoader'
 import EventTicker from '@/components/experience/EventTicker'
 import NextNightLine from '@/components/experience/NextNightLine'
-import FeaturedEvent from '@/components/experience/FeaturedEvent'
 import HeroTitle from '@/components/ui/HeroTitle'
 import PhotoPile from '@/components/experience/PhotoPile'
 import { getPilePhotos } from '@/lib/photoPile'
-import { pickFeaturedEvent } from '@/lib/eventCopy'
 
 export const revalidate = 60
 
@@ -81,6 +79,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const t = ui.nl
 
+  // Events render in plain chronological order (getAgendaEvents already sorts by date) -
+  // featured nights are signaled by style, not by being reordered to the top.
   const [events, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
     getPageContent('home'),
@@ -105,9 +105,6 @@ export default async function Home() {
   const primaryCta = pageContent?.primaryCtaNl || t.common.viewAgenda
   const secondaryCta = pageContent?.secondaryCtaNl || t.home.heroCta2
   const seoBodyNl = pageContent?.bodyNl
-
-  const featuredEvent = pickFeaturedEvent(events)
-  const remainingEvents = featuredEvent ? events.filter((event) => event._id !== featuredEvent._id) : events
 
   return (
     <>
@@ -145,8 +142,6 @@ export default async function Home() {
         </div>
       </HeroFrame>
 
-      {featuredEvent ? <FeaturedEvent event={featuredEvent} lang="nl" /> : null}
-
       <EventTicker events={events.map((event) => ({ title: event.titleNl || event.title, date: event.date }))} lang="nl" />
 
       <section className="event-section section-y">
@@ -161,13 +156,13 @@ export default async function Home() {
             ctaLabel={t.common.allEvents}
           />
 
-          {remainingEvents.length ? (
-            <div className={`event-grid event-grid-${Math.min(remainingEvents.length, 3)} mt-10`}>
-              {remainingEvents.slice(0, 3).map((event, index) => (
-                <EventCard key={event._id} event={event} priority={index === 0 && !featuredEvent} />
+          {events.length ? (
+            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
+              {events.slice(0, 3).map((event, index) => (
+                <EventCard key={event._id} event={event} priority={index === 0} />
               ))}
             </div>
-          ) : !events.length ? (
+          ) : (
             <div className="image-frame mt-10 min-h-[360px] p-8">
               <SafeImage
                 src={images.club}
@@ -180,6 +175,12 @@ export default async function Home() {
               <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black via-black/45 to-transparent" />
               <h3 className="h2 absolute bottom-8 left-8 right-8">Nieuwe events volgen.</h3>
             </div>
+          )}
+
+          {events.length > 3 ? (
+            <Link href="/uitgaan" className="focus-ring mt-4 inline-flex min-h-11 items-center text-sm font-black uppercase tracking-[0.1em] text-coral-text hover:text-white md:hidden">
+              {t.common.allEvents} →
+            </Link>
           ) : null}
         </div>
       </section>

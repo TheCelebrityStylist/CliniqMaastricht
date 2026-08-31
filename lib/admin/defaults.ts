@@ -45,7 +45,205 @@ const agendaPlan: Array<{ date: string; dj: string }> = [
 
 const eventImages = [images.redCrowd, images.club, images.party, images.hero]
 
-export const defaultAgendaEvents: AgendaEvent[] = agendaPlan.map(({ date, dj }, index) => {
+// Real owner-supplied Inkom-week (student welcome week) events, wired directly rather than
+// through the generic agendaPlan/defaultAgendaEvents pipeline: that pipeline assumes a uniform
+// Thu/Fri/Sat weekly night (age-by-weekday, one generic subtitle/description). These are
+// individually authored, one-off nights on Mon/Tue/Wed/Sun - outside the venue's normal open
+// days - each with its own promo copy AND its own dedicated detail page (all 6 are `featured`;
+// per the brief, only featured events get a detail page). Doors/close default to 22:00-03:00
+// (matching every other night) since Sanity has no exact per-event times in this environment -
+// flagged for owner confirmation in the report, same as the spelling of "Amphitryon", the DJ/act
+// on 17/25 Aug (owner's own table lists "[DJ]" = unconfirmed, so djName is left unset there -
+// never fabricated), and what "Vertigo" is (student org vs. party series - flagged, not guessed).
+// All six weekdays were checked against the actual 2026 calendar and match the owner's table
+// exactly (17 Aug Mon, 18 Aug Tue, 19 Aug Wed, 25 Aug Tue, 26 Aug Wed, 30 Aug Sun) - no correction
+// needed this time. Age limits: 18+ for the three Inkom nights + ESN (student-audience events,
+// matching the venue's existing Thu 18+ pattern); 21+ for the Wed 26 Aug closing party and Sun 30
+// Aug Preuve afterparty since neither is Inkom/international-student-specific (matches the
+// existing Fri/Sat 21+ default) - a judgment call flagged in the report, not owner-confirmed.
+const inkomWeekEvents: AgendaEvent[] = [
+  {
+    _id: 'agenda-2026-08-17-amphitryon-inkom-party',
+    title: 'Amphitryon Inkom Party',
+    titleNl: 'Amphitryon Inkom Party',
+    titleEn: 'Amphitryon Inkom Party',
+    subtitleNl: 'Opening van de Inkomweek',
+    subtitleEn: 'Opening night of Inkom week',
+    categoryTagNl: 'INKOM',
+    categoryTagEn: 'INKOM',
+    slug: { current: '2026-08-17-amphitryon-inkom-party' },
+    date: '2026-08-17',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      "De Inkom begint hier. Maandag 17 augustus opent CLINIQ het studentenjaar met de Amphitryon Inkom Party — de eerste grote nacht van je Inkom, midden op de Platielstraat. Nieuwe stad, nieuwe mensen, één dansvloer. Deuren 22:00, open tot 03:00. Vol is vol.",
+    fullDescriptionEn:
+      "This is where Inkom begins. On Monday 17 August, CLINIQ opens the student year with the Amphitryon Inkom Party — the first big night of your Inkom, right on Platielstraat. New city, new people, one dancefloor. Doors 22:00, open until 03:00. Once it's full, it's full.",
+    metaTitleNl: 'Amphitryon Inkom Party · Ma 17 aug — CLINIQ Maastricht',
+    metaTitleEn: 'Amphitryon Inkom Party · Mon 17 Aug — CLINIQ Maastricht',
+    metaDescriptionNl: 'De Amphitryon Inkom Party bij CLINIQ, maandag 17 augustus. De eerste grote nacht van je Inkom, midden op de Platielstraat in Maastricht.',
+    metaDescriptionEn: 'The Amphitryon Inkom Party at CLINIQ, Monday 17 August. The first big night of your Inkom, right on Platielstraat in Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.party,
+    imageAlt: 'Amphitryon Inkom Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-18-inkom-pubcrawl-koko',
+    title: 'Inkom Pubcrawl × KOKO',
+    titleNl: 'Inkom Pubcrawl × KOKO',
+    titleEn: 'Inkom Pubcrawl × KOKO',
+    subtitleNl: 'Van kroeg naar dansvloer',
+    subtitleEn: 'From bars to dancefloor',
+    categoryTagNl: 'INKOM',
+    categoryTagEn: 'INKOM',
+    djName: 'KOKO',
+    slug: { current: '2026-08-18-inkom-pubcrawl-koko' },
+    date: '2026-08-18',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Van kroeg naar kroeg — en dan hierheen. Dinsdag 18 augustus strandt de Inkom Pubcrawl bij CLINIQ, samen met KOKO. Je hebt de stad gezien; nu begint het echte werk op de dansvloer. Deuren 22:00, open tot 03:00.',
+    fullDescriptionEn:
+      "From bar to bar — and then here. On Tuesday 18 August, the Inkom Pub Crawl lands at CLINIQ, together with KOKO. You've seen the city; now the real work starts on the dancefloor. Doors 22:00, open until 03:00.",
+    metaTitleNl: 'Inkom Pubcrawl × KOKO · Di 18 aug — CLINIQ Maastricht',
+    metaTitleEn: 'Inkom Pub Crawl × KOKO · Tue 18 Aug — CLINIQ Maastricht',
+    metaDescriptionNl: 'De Inkom Pubcrawl eindigt bij CLINIQ met KOKO, dinsdag 18 augustus. Van de kroegentocht recht de dansvloer op, midden in Maastricht.',
+    metaDescriptionEn: 'The Inkom Pub Crawl ends at CLINIQ with KOKO, Tuesday 18 August. Straight from the bar crawl onto the dancefloor, in the heart of Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.club,
+    imageAlt: 'Inkom Pubcrawl × KOKO bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-19-stennis-inkom-party',
+    title: 'Stennis Inkom Party',
+    titleNl: 'Stennis Inkom Party',
+    titleEn: 'Stennis Inkom Party',
+    subtitleNl: 'Het hoogtepunt van je Inkom-week',
+    subtitleEn: 'The highlight of your Inkom week',
+    categoryTagNl: 'INKOM',
+    categoryTagEn: 'INKOM',
+    djName: 'Stennis',
+    slug: { current: '2026-08-19-stennis-inkom-party' },
+    date: '2026-08-19',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Het hoogtepunt van je Inkom-week. Woensdag 19 augustus draait Stennis de Inkom-party bij CLINIQ. Beats die niet stoppen, een volle dansvloer en de nacht waar je het na de Inkom nog over hebt. Deuren 22:00, open tot 03:00. Wees erbij.',
+    fullDescriptionEn:
+      "The highlight of your Inkom week. On Wednesday 19 August, Stennis plays the Inkom party at CLINIQ. Beats that don't stop, a packed dancefloor, and the night you'll still be talking about after Inkom. Doors 22:00, open until 03:00. Be there.",
+    metaTitleNl: 'Stennis Inkom Party · Wo 19 aug — CLINIQ Maastricht',
+    metaTitleEn: 'Stennis Inkom Party · Wed 19 Aug — CLINIQ Maastricht',
+    metaDescriptionNl: 'Stennis draait de Inkom-party bij CLINIQ, woensdag 19 augustus. Het hoogtepunt van je Inkom-week op de Platielstraat in Maastricht.',
+    metaDescriptionEn: 'Stennis plays the Inkom party at CLINIQ, Wednesday 19 August. The highlight of your Inkom week on Platielstraat in Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.redCrowd,
+    imageAlt: 'Stennis Inkom Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-25-esn-party',
+    title: 'ESN Party',
+    titleNl: 'ESN Party',
+    titleEn: 'ESN Party',
+    subtitleNl: 'Internationale studentennacht',
+    subtitleEn: 'International students night',
+    categoryTagNl: 'INTERNATIONAL',
+    categoryTagEn: 'INTERNATIONAL',
+    slug: { current: '2026-08-25-esn-party' },
+    date: '2026-08-25',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '18+',
+    fullDescriptionNl:
+      'Eén dansvloer, dertig nationaliteiten. Dinsdag 25 augustus neemt ESN CLINIQ over voor de internationale studentennacht van Maastricht. Erasmus of local — vanavond danst iedereen samen. Deuren 22:00, open tot 03:00.',
+    fullDescriptionEn:
+      "One dancefloor, thirty nationalities. On Tuesday 25 August, ESN takes over CLINIQ for Maastricht's international students night. Erasmus or local — tonight, everyone dances together. Doors 22:00, open until 03:00.",
+    metaTitleNl: 'ESN Party · Internationale Studentennacht · Di 25 aug CLINIQ Maastricht',
+    metaTitleEn: 'ESN Party · International Students Night · Tue 25 Aug CLINIQ Maastricht',
+    metaDescriptionNl: 'ESN neemt CLINIQ over voor de internationale studentennacht, dinsdag 25 augustus. Erasmus students & locals, één dansvloer, midden in Maastricht.',
+    metaDescriptionEn: 'ESN takes over CLINIQ for the international students night, Tuesday 25 August. Erasmus students & locals, one dancefloor, in the heart of Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.hero,
+    imageAlt: 'ESN Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-26-vertigo-maastricht-closing-party',
+    title: 'Vertigo Maastricht Closing Party',
+    titleNl: 'Vertigo Maastricht Closing Party',
+    titleEn: 'Vertigo Maastricht Closing Party',
+    subtitleNl: 'Het einde van de zomer',
+    subtitleEn: 'The end of summer',
+    slug: { current: '2026-08-26-vertigo-maastricht-closing-party' },
+    date: '2026-08-26',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '21+',
+    fullDescriptionNl:
+      'De laatste nacht van de zomer, en we gaan hem niet stilletjes uit. Woensdag 26 augustus is de Vertigo Maastricht Closing Party bij CLINIQ — het einde van het seizoen op de Platielstraat. Deuren 22:00, open tot 03:00.',
+    fullDescriptionEn:
+      "The last night of summer, and we're not going quietly. On Wednesday 26 August, it's the Vertigo Maastricht Closing Party at CLINIQ — the end of the season on Platielstraat. Doors 22:00, open until 03:00.",
+    metaTitleNl: 'Vertigo Maastricht Closing Party · Wo 26 aug — CLINIQ Maastricht',
+    metaTitleEn: 'Vertigo Maastricht Closing Party · Wed 26 Aug — CLINIQ Maastricht',
+    metaDescriptionNl: 'De Vertigo Maastricht Closing Party bij CLINIQ, woensdag 26 augustus. Het einde van de zomer op de Platielstraat in Maastricht.',
+    metaDescriptionEn: 'The Vertigo Maastricht Closing Party at CLINIQ, Wednesday 26 August. The end of summer on Platielstraat in Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.bar,
+    imageAlt: 'Vertigo Maastricht Closing Party bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+  {
+    _id: 'agenda-2026-08-30-after-preuve-john-tana',
+    title: 'After Preuve × John Tana',
+    titleNl: 'After Preuve × John Tana',
+    titleEn: 'After Preuve × John Tana',
+    subtitleNl: 'De afterparty na Preuve',
+    subtitleEn: 'The afterparty after Preuve',
+    djName: 'John Tana',
+    slug: { current: '2026-08-30-after-preuve-john-tana' },
+    date: '2026-08-30',
+    startTime: '22:00',
+    endTime: '03:00',
+    ageLimit: '21+',
+    fullDescriptionNl:
+      'Als het Vrijthof leegloopt, begint het hier pas. Zondag 30 augustus is CLINIQ dé afterparty na Preuve, met John Tana. Van het terras naar de dansvloer — de laatste warme nacht van de zomer, midden in Maastricht. Deuren 22:00, open tot 03:00.',
+    fullDescriptionEn:
+      'When Vrijthof empties out, this is where it really starts. On Sunday 30 August, CLINIQ hosts the afterparty after Preuve, with John Tana. From the terrace to the dancefloor — the last warm night of summer, right in the heart of Maastricht. Doors 22:00, open until 03:00.',
+    metaTitleNl: 'After Preuve × John Tana · Zo 30 aug — CLINIQ Maastricht',
+    metaTitleEn: 'After Preuve × John Tana · Sun 30 Aug — CLINIQ Maastricht',
+    metaDescriptionNl: 'De afterparty na Preuve bij CLINIQ met John Tana, zondag 30 augustus. De laatste zomernacht op de Platielstraat in Maastricht.',
+    metaDescriptionEn: 'The afterparty after Preuve at CLINIQ with John Tana, Sunday 30 August. The last summer night on Platielstraat in Maastricht.',
+    featured: true,
+    eventType: 'featured',
+    showDetailCTA: true,
+    published: true,
+    imageUrl: images.crowd,
+    imageAlt: 'After Preuve × John Tana bij CLINIQ Maastricht',
+    imagePosition: 'center',
+  },
+]
+
+export const defaultAgendaEvents: AgendaEvent[] = [...agendaPlan.map(({ date, dj }, index): AgendaEvent => {
   const day = new Date(`${date}T00:00:00`).getUTCDay()
   const isThursday = day === 4
   const startTime = '22:00'
@@ -73,7 +271,7 @@ export const defaultAgendaEvents: AgendaEvent[] = agendaPlan.map(({ date, dj }, 
     imageAlt: `${dj} bij CLINIQ Maastricht`,
     imagePosition: 'center',
   }
-})
+}), ...inkomWeekEvents]
 
 export const defaultStore: AdminStore = {
   media: [
