@@ -81,8 +81,8 @@ Name *
 Email *
 Phone
 Event type Select… Corporate event Birthday Bachelorette party Gala Student party Private party Drinks Product launch Ticketed event Other
-Date (option 1) * Available Sunday–Wednesday. Thu/Fri/Sat are our own club nights.
-Date (option 2, optional) Available Sunday–Wednesday. Thu/Fri/Sat are our own club nights.
+Date (option 1) * Sun–Wed: day & evening. Thu–Sat: daytime only (evenings are club nights).
+Date (option 2, optional) Sun–Wed: day & evening. Thu–Sat: daytime only (evenings are club nights).
 Preferred time Guideline end time for private nights: 02:00 at the latest (provisional, to be confirmed).
 Music Select… I’ll bring my own DJ CLINIQ provides the music Still deciding
 Guests

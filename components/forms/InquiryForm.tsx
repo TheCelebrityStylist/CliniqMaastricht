@@ -2,9 +2,26 @@
 import { FormEvent, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { getLanguageFromPath, ui } from '@/lib/i18n'
-import BookingDateField from './BookingDateField'
+import BookingScheduleField from './BookingScheduleField'
 
-type Field = { name: string; label: string; type?: string; placeholder?: string; required?: boolean; options?: string[]; helper?: string }
+type Field = {
+  name: string
+  label: string
+  type?: string
+  placeholder?: string
+  required?: boolean
+  options?: string[]
+  helper?: string
+  // Only used when type === 'booking-schedule': `name`/`label`/`required` above describe date
+  // option 1, and these describe the optional second date and the shared time field that both
+  // dates are validated against together (see BookingScheduleField for why they're coupled).
+  date2Name?: string
+  date2Label?: string
+  timeName?: string
+  timeLabel?: string
+  timePlaceholder?: string
+  timeHelper?: string
+}
 
 export default function InquiryForm({ type, fields, sourcePage, lang: langProp, legend }: { type: 'contact' | 'workshop' | 'event-space' | 'job'; fields: Field[]; sourcePage?: string; lang?: 'nl' | 'en'; legend?: string }) {
   const pathname = usePathname()
@@ -37,9 +54,14 @@ export default function InquiryForm({ type, fields, sourcePage, lang: langProp, 
     <input type="hidden" name="sourcePage" value={sourcePage || ''} />
     {legend ? <p className="mb-5 text-xs text-white/50">{legend}</p> : null}
     <div className="grid gap-5 sm:grid-cols-2">
-      {fields.map((field) => <div key={field.name} className={field.name === 'message' ? 'sm:col-span-2' : ''}>
-        {field.type === 'booking-date' ? (
-          <BookingDateField name={field.name} label={field.label} required={field.required} lang={lang} />
+      {fields.map((field) => <div key={field.name} className={field.name === 'message' || field.type === 'booking-schedule' ? 'sm:col-span-2' : ''}>
+        {field.type === 'booking-schedule' ? (
+          <BookingScheduleField
+            lang={lang}
+            date1={{ name: field.name, label: field.label, required: field.required }}
+            date2={field.date2Name ? { name: field.date2Name, label: field.date2Label || field.date2Name } : undefined}
+            time={{ name: field.timeName || 'time', label: field.timeLabel || 'Time', placeholder: field.timePlaceholder, helper: field.timeHelper }}
+          />
         ) : (
           <>
             <label htmlFor={field.name} className="label">{field.label}{field.required ? <span className="text-coral-text" aria-hidden="true"> *</span> : null}</label>

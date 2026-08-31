@@ -7,6 +7,8 @@ import JsonLd from '@/components/ui/JsonLd'
 import { breadcrumbSchema, eventVenueSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { BOOKING_END_TIME_NOTE } from '@/lib/booking'
+import PhotoStrip from '@/components/landing/PhotoStrip'
+import { getPilePhotos } from '@/lib/photoPile'
 
 // English counterpart of /feest - see that file for the full rationale (ad-landing variant of
 // /event-space, same form/rule/backend, indexable by default per the brief).
@@ -35,6 +37,7 @@ export const metadata: Metadata = {
 }
 
 export default function PartyPage() {
+  const pilePhotos = getPilePhotos('en')
   return <div className="bg-ink text-white">
     <AdLandingHeader lang="en" formAnchor="inquiry" ctaLabel="Request" />
 
@@ -60,6 +63,8 @@ export default function PartyPage() {
       </div>
     </section>
 
+    <PhotoStrip photos={pilePhotos} />
+
     <section id="inquiry" className="container-premium py-16">
       <div className="mx-auto max-w-2xl">
         <p className="eyebrow">Inquiry</p>
@@ -78,12 +83,20 @@ export default function PartyPage() {
                 required: true,
                 options: ['Birthday', 'Ticketed event', 'Private party', 'Bachelorette party', 'Corporate event', 'Other'],
               },
-              { name: 'preferredDate', label: 'Date (option 1)', type: 'booking-date', required: true },
-              { name: 'preferredDate2', label: 'Date (option 2, optional)', type: 'booking-date' },
+              {
+                name: 'preferredDate',
+                label: 'Date (option 1)',
+                type: 'booking-schedule',
+                required: true,
+                date2Name: 'preferredDate2',
+                date2Label: 'Date (option 2, optional)',
+                timeName: 'time',
+                timeLabel: 'Preferred time',
+                timeHelper: BOOKING_END_TIME_NOTE.en,
+              },
               { name: 'name', label: 'Name', required: true },
               { name: 'email', label: 'Email', type: 'email', required: true },
               { name: 'phone', label: 'Phone', type: 'tel', required: true },
-              { name: 'time', label: 'Preferred time', placeholder: 'e.g. 20:00 – 01:00', helper: BOOKING_END_TIME_NOTE.en },
               {
                 name: 'music',
                 label: 'Music',

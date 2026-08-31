@@ -73,8 +73,8 @@ Naam *
 E-mail *
 Telefoon
 Type event Selecteer… Bedrijfsfeest Verjaardag Vrijgezellenfeest Gala Studentenfeest Private party Borrel Product launch Ticketed event Anders
-Datum (optie 1) * Beschikbaar zondag t/m woensdag. Do/vr/za draaien we onze eigen clubnachten.
-Datum (optie 2, optioneel) Beschikbaar zondag t/m woensdag. Do/vr/za draaien we onze eigen clubnachten.
+Datum (optie 1) * Zo t/m wo: dag en avond. Do/vr/za: alleen overdag mogelijk (avonden zijn clubnachten).
+Datum (optie 2, optioneel) Zo t/m wo: dag en avond. Do/vr/za: alleen overdag mogelijk (avonden zijn clubnachten).
 Gewenste tijd Richtlijn eindtijd voor besloten avonden: uiterlijk 02:00 (onder voorbehoud, te bevestigen).
 Muziek Selecteer… Ik regel mijn eigen DJ CLINIQ regelt de muziek Weet ik nog niet
 Aantal gasten

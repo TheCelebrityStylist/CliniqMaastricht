@@ -7,6 +7,8 @@ import JsonLd from '@/components/ui/JsonLd'
 import { breadcrumbSchema, eventVenueSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { BOOKING_END_TIME_NOTE } from '@/lib/booking'
+import PhotoStrip from '@/components/landing/PhotoStrip'
+import { getPilePhotos } from '@/lib/photoPile'
 
 // Ad-landing variant of /event-space: same form, same Thu/Fri/Sat rule, same backend - built for
 // paid/social traffic (Instagram bio, ad click-throughs) where the whole page is the pitch for
@@ -40,6 +42,7 @@ export const metadata: Metadata = {
 }
 
 export default function FeestPage() {
+  const pilePhotos = getPilePhotos('nl')
   return <div className="bg-ink text-white">
     <AdLandingHeader lang="nl" formAnchor="aanvraag" ctaLabel="Aanvragen" />
 
@@ -65,6 +68,8 @@ export default function FeestPage() {
       </div>
     </section>
 
+    <PhotoStrip photos={pilePhotos} />
+
     <section id="aanvraag" className="container-premium py-16">
       <div className="mx-auto max-w-2xl">
         <p className="eyebrow">Aanvraag</p>
@@ -83,12 +88,20 @@ export default function FeestPage() {
                 required: true,
                 options: ['Verjaardag', 'Ticketed event', 'Private party', 'Vrijgezellenfeest', 'Bedrijfsfeest', 'Anders'],
               },
-              { name: 'preferredDate', label: 'Datum (optie 1)', type: 'booking-date', required: true },
-              { name: 'preferredDate2', label: 'Datum (optie 2, optioneel)', type: 'booking-date' },
+              {
+                name: 'preferredDate',
+                label: 'Datum (optie 1)',
+                type: 'booking-schedule',
+                required: true,
+                date2Name: 'preferredDate2',
+                date2Label: 'Datum (optie 2, optioneel)',
+                timeName: 'time',
+                timeLabel: 'Gewenste tijd',
+                timeHelper: BOOKING_END_TIME_NOTE.nl,
+              },
               { name: 'name', label: 'Naam', required: true },
               { name: 'email', label: 'E-mail', type: 'email', required: true },
               { name: 'phone', label: 'Telefoon', type: 'tel', required: true },
-              { name: 'time', label: 'Gewenste tijd', placeholder: 'bv. 20:00 – 01:00', helper: BOOKING_END_TIME_NOTE.nl },
               {
                 name: 'music',
                 label: 'Muziek',

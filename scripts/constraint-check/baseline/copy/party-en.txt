@@ -16,12 +16,12 @@ Request proposal
 Tell us your date, group size and type of event. We respond fast with availability.
 Fields marked * are required.
 Event type * Select… Birthday Ticketed event Private party Bachelorette party Corporate event Other
-Date (option 1) * Available Sunday–Wednesday. Thu/Fri/Sat are our own club nights.
-Date (option 2, optional) Available Sunday–Wednesday. Thu/Fri/Sat are our own club nights.
+Date (option 1) * Sun–Wed: day & evening. Thu–Sat: daytime only (evenings are club nights).
+Date (option 2, optional) Sun–Wed: day & evening. Thu–Sat: daytime only (evenings are club nights).
+Preferred time Guideline end time for private nights: 02:00 at the latest (provisional, to be confirmed).
 Name *
 Email *
 Phone *
-Preferred time Guideline end time for private nights: 02:00 at the latest (provisional, to be confirmed).
 Music Select… I’ll bring my own DJ CLINIQ provides the music Still deciding
 How did you hear about us? Select… Instagram Google Friends Been here before Other
 Message
