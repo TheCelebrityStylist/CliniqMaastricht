@@ -15,8 +15,8 @@ export function FeaturedEventsSection({ events, lang = 'nl' }: { events: AgendaE
   const title = lang === 'nl' ? 'Deze avonden mis je niet' : 'Nights you don\'t want to miss'
   const text =
     lang === 'nl'
-      ? 'Speciale avonden bij CLINIQ, met hun eigen promoflyer en aanbieding.'
-      : 'Special nights at CLINIQ, each with its own promo flyer and deal.'
+      ? 'Speciale thema-avonden bij CLINIQ, elk met een eigen line-up en deal.'
+      : 'Special theme nights at CLINIQ, each with its own line-up and deal.'
 
   return (
     <section id="uitgelicht" className="container-premium section-y">
