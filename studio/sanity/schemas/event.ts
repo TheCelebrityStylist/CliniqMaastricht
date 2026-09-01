@@ -48,6 +48,32 @@ export default defineType({
     }),
     defineField({ name: 'ticketUrl', title: 'Ticket/detail URL', type: 'url' }),
     defineField({ name: 'album', title: 'Related album', type: 'reference', to: [{ type: 'album' }] }),
+    defineField({
+      name: 'metaTitleNl',
+      title: 'Meta title NL (detail page <title>, featured events only)',
+      description: 'Leave empty to auto-generate "{event name} — {date} | Uitgaan Maastricht CLINIQ" instead.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'metaTitleEn',
+      title: 'Meta title EN (detail page <title>, featured events only)',
+      description: 'Leave empty to auto-generate "{event name} — {date} | Nightlife Maastricht CLINIQ" instead.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'metaDescriptionNl',
+      title: 'Meta description NL (featured events only)',
+      description: 'Leave empty to fall back to the short Description NL above, then to a plain factual line.',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'metaDescriptionEn',
+      title: 'Meta description EN (featured events only)',
+      description: 'Leave empty to fall back to the short Description EN above, then to a plain factual line.',
+      type: 'text',
+      rows: 3,
+    }),
   ],
   preview: { select: { title: 'title', subtitle: 'date', media: 'eventImage' } },
 })

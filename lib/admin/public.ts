@@ -31,6 +31,10 @@ type SanityEvent = {
   promoEn?: string
   ticketUrl?: string
   albumSlug?: string
+  metaTitleNl?: string
+  metaTitleEn?: string
+  metaDescriptionNl?: string
+  metaDescriptionEn?: string
 }
 
 type SanityPage = {
@@ -313,6 +317,10 @@ async function getSanityEvents(includePast = false) {
       promoNl,
       promoEn,
       ticketUrl,
+      metaTitleNl,
+      metaTitleEn,
+      metaDescriptionNl,
+      metaDescriptionEn,
       "albumSlug": album->slug.current
     }`,
   )
@@ -359,6 +367,10 @@ async function getSanityEvents(includePast = false) {
         // the detail page must respect, not something to paper over with a template sentence.
         fullDescriptionNl: event.promoNl || undefined,
         fullDescriptionEn: event.promoEn || undefined,
+        metaTitleNl: event.metaTitleNl || undefined,
+        metaTitleEn: event.metaTitleEn || undefined,
+        metaDescriptionNl: event.metaDescriptionNl || undefined,
+        metaDescriptionEn: event.metaDescriptionEn || undefined,
         ticketUrl: event.ticketUrl,
         featured: Boolean(event.featured),
         eventType: event.eventType || 'regular',
