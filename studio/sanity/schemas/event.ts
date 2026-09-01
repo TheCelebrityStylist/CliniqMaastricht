@@ -30,6 +30,12 @@ export default defineType({
     defineField({ name: 'featured', title: 'Featured', type: 'boolean', initialValue: false }),
     defineField({ name: 'showDetailPage', title: 'Show detail page', type: 'boolean', initialValue: false }),
     defineField({ name: 'eventImage', title: 'Custom event image', type: 'image', options: { hotspot: true } }),
+    defineField({
+      name: 'flyerImage',
+      title: 'Promo flyer (portrait, featured events only)',
+      description: 'The event\'s own portrait promo flyer/poster artwork, if one exists (title/lineup/deal already baked into the design). Shown uncropped in the featured-events section - never overlaid with a duplicate title. Leave empty and the featured section falls back to the Custom event image above, shown in a portrait frame.',
+      type: 'image',
+    }),
     defineField({ name: 'descriptionNl', title: 'Description NL (short teaser, shown on agenda cards)', type: 'text', rows: 4 }),
     defineField({ name: 'descriptionEn', title: 'Description EN (short teaser, shown on agenda cards)', type: 'text', rows: 4 }),
     defineField({

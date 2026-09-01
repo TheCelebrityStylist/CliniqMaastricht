@@ -16,6 +16,7 @@ type SanityEvent = {
   djName?: string
   djImageUrl?: string
   eventImageUrl?: string
+  flyerImageUrl?: string
   customTitleNl?: string
   customTitleEn?: string
   eventType?: 'regular' | 'featured' | 'special' | 'private'
@@ -303,6 +304,7 @@ async function getSanityEvents(includePast = false) {
       "djName": dj->name,
       "djImageUrl": dj->image.asset->url,
       "eventImageUrl": eventImage.asset->url,
+      "flyerImageUrl": flyerImage.asset->url,
       customTitleNl,
       customTitleEn,
       eventType,
@@ -371,6 +373,10 @@ async function getSanityEvents(includePast = false) {
         metaTitleEn: event.metaTitleEn || undefined,
         metaDescriptionNl: event.metaDescriptionNl || undefined,
         metaDescriptionEn: event.metaDescriptionEn || undefined,
+        // Portrait promo-flyer artwork for the featured-events section - deliberately kept
+        // separate from `imageUrl` above (the landscape agenda photo). Undefined when no flyer
+        // was uploaded, so the featured section can fall back to imageUrl in a portrait frame.
+        flyerImageUrl: event.flyerImageUrl || undefined,
         ticketUrl: event.ticketUrl,
         featured: Boolean(event.featured),
         eventType: event.eventType || 'regular',

@@ -79,8 +79,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const t = ui.nl
 
-  // Events render in plain chronological order (getAgendaEvents already sorts by date) -
-  // featured nights are signaled by style, not by being reordered to the top.
+  // Events render in plain chronological order (getAgendaEvents already sorts by date). Featured
+  // events (portrait promo flyers) are excluded here - this preview grid uses the same landscape
+  // EventCard as the full agenda, which no longer renders flyer artwork at all (see
+  // FeaturedEventsSection.tsx); an upcoming featured night simply doesn't show in this "next 3"
+  // preview, same as it no longer appears in the full agenda's regular grid either.
   const [events, pageContent, homepagePhotos] = await Promise.all([
     getAgendaEvents(),
     getPageContent('home'),
@@ -94,6 +97,7 @@ export default async function Home() {
     ]),
   ])
 
+  const regularEvents = events.filter((event) => !event.featured)
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
@@ -156,9 +160,9 @@ export default async function Home() {
             ctaLabel={t.common.allEvents}
           />
 
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.slice(0, 3).map((event, index) => (
+          {regularEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(regularEvents.length, 3)} mt-10`}>
+              {regularEvents.slice(0, 3).map((event, index) => (
                 <EventCard key={event._id} event={event} priority={index === 0} />
               ))}
             </div>

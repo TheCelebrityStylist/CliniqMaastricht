@@ -59,6 +59,10 @@ export type AgendaEvent = {
   imageUrl?: string
   imageAlt?: string
   imagePosition?: string
+  // Portrait promo-flyer artwork (title/lineup/deal already baked into the design), used only by
+  // the featured-events section - kept distinct from imageUrl (the landscape agenda photo) so the
+  // two never get conflated into one grid. Unset when the event has no flyer of its own.
+  flyerImageUrl?: string
   galleryImageIds?: string[]
   relatedAlbumId?: string
 }

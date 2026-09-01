@@ -5,6 +5,7 @@ import { breadcrumbSchema, faqSchema } from '@/lib/seo'
 import { images, site } from '@/lib/site'
 import { getAgendaEvents, getPageContent, getPhotoAlbums, getSectionPhotoMedia, getSeoSettings } from '@/lib/admin/public'
 import { EventCard } from '@/components/ui/EventCard'
+import { FeaturedEventsSection } from '@/components/ui/FeaturedEventsSection'
 import { AlbumGrid } from '@/components/gallery/AlbumGrid'
 import JsonLd from '@/components/ui/JsonLd'
 import ChoreographedContent from '@/components/ui/ChoreographedContent'
@@ -182,6 +183,9 @@ export default async function NightlifePage() {
     ]),
   ])
 
+  // Featured events (portrait promo flyers) get their own section above, not this landscape grid -
+  // see FeaturedEventsSection.tsx for why the two can't share one grid.
+  const regularEvents = events.filter((event) => !event.featured)
   const pageContent = rawPageContent as ExtendedPageContent
   const photos = (pageContent?.gallery?.length ? pageContent.gallery : sectionPhotos)
     .map((photo) => photo.url)
@@ -265,12 +269,14 @@ export default async function NightlifePage() {
         </div>
       </section>
 
+      <FeaturedEventsSection events={events} lang="nl" />
+
       <section id="agenda" className="event-section py-24">
         <div className="container-premium">
           <SectionIntro eyebrow="Agenda" title="Agenda: uitgaan bij CLINIQ Maastricht" text="Bekijk de eerstvolgende clubnachten, DJ-avonden en events aan de Platielstraat." />
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}
+          {regularEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(regularEvents.length, 3)} mt-10`}>
+              {regularEvents.map((event, index) => <EventCard key={event._id} event={event} priority={index === 0} />)}
             </div>
           ) : (
             <div className="mt-10 rounded-[2rem] border border-white/10 p-8 text-white/70">Nieuwe events worden binnenkort toegevoegd.</div>

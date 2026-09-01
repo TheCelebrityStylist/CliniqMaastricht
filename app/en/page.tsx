@@ -74,6 +74,10 @@ export default async function HomeEn() {
     ]),
   ])
 
+  // Featured events (portrait promo flyers) are excluded from this preview grid - it uses the
+  // same landscape EventCard as the full agenda, which no longer renders flyer artwork at all
+  // (see FeaturedEventsSection.tsx).
+  const regularEvents = events.filter((event) => !event.featured)
   const gallerySources = pageContent?.gallery?.length ? pageContent.gallery : homepagePhotos
   const photos = gallerySources.map((photo) => photo.url).filter(Boolean)
   const carouselPhotos = photos.length ? [...photos, ...photos] : []
@@ -139,9 +143,9 @@ export default async function HomeEn() {
             ctaLabel={t.common.allEvents}
           />
 
-          {events.length ? (
-            <div className={`event-grid event-grid-${Math.min(events.length, 3)} mt-10`}>
-              {events.slice(0, 3).map((event, index) => (
+          {regularEvents.length ? (
+            <div className={`event-grid event-grid-${Math.min(regularEvents.length, 3)} mt-10`}>
+              {regularEvents.slice(0, 3).map((event, index) => (
                 <EventCard key={event._id} event={event} lang="en" priority={index === 0} />
               ))}
             </div>

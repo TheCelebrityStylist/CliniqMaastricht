@@ -77,6 +77,16 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-grid-1 { max-width:460px; grid-template-columns:1fr; margin-inline:auto; }
 .event-grid-2 { max-width:1040px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-inline:auto; }
 .event-grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+/* Featured-events row (portrait flyer cards) - a separate grid from .event-grid above, never
+   mixed with the landscape agenda cards. Desktop/tablet: a real grid, 2-4 columns. Mobile: see the
+   max-width:767px override further down, which turns this into a horizontal snap-scroll row
+   instead of a tall stack. */
+.featured-grid { display:grid; gap:24px; align-items:stretch; position:relative; z-index:1; }
+.featured-grid-1 { max-width:340px; grid-template-columns:1fr; margin-inline:auto; }
+.featured-grid-2 { max-width:760px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-inline:auto; }
+.featured-grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.featured-grid-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.featured-card-media { aspect-ratio:4/5; }
 .event-card { display:flex; flex-direction:column; height:100%; overflow:hidden; border:1px solid rgba(255,255,255,.10); border-radius:28px; background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.015)); box-shadow:0 24px 70px rgba(0,0,0,.24); transition:transform .32s ease, border-color .32s ease, box-shadow .32s ease, background .32s ease; animation: soft-reveal .7s ease both; }
 .event-card:hover { transform:translateY(-6px); border-color:rgba(220,72,254,.45); box-shadow:0 30px 90px rgba(80,11,56,.34); }
 .event-card-media { position:relative; aspect-ratio:4/5; overflow:hidden; background:#180811; }
@@ -88,10 +98,9 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card-detail { padding:1.25rem; padding-top:1rem; }
 .event-chip { display:inline-flex; align-items:center; min-height:2.2rem; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.45); padding:10px 16px; color:rgba(255,247,234,.92); font-size:clamp(.78rem, .9vw, .9rem); font-weight:800; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(12px); }
 .event-chip-age { padding-inline:14px; }
-/* Featured event: signals importance in place (natural date position, not reordered to the top)
-   via a coral accent border on the card and a magenta-tinted chip replacing the plain date chip. */
-.event-card-spotlight { border-color:rgba(219,51,76,.55); }
-.event-card-spotlight:hover { border-color:rgba(219,51,76,.8); }
+/* Magenta-tinted "Uitgelicht"/"Featured" chip - used on the featured-events section's cards
+   (see FeaturedEventCard.tsx), not the regular agenda grid (featured events no longer render
+   there at all). */
 .event-chip-featured { border-color:rgba(220,72,254,.5); background:rgba(80,11,56,.55); color:#fff; }
 @media (max-width:640px) { .event-chip-row { left:14px; right:14px; top:14px; } .event-chip { min-height:1.9rem; padding:8px 12px; font-size:.72rem; } .event-title-block { padding:22px; } }
 .cta-arrow { display:inline-flex; align-items:center; min-height:2.75rem; }
@@ -146,9 +155,8 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 /* Mobile agenda: no tiny three-column cards, no hidden horizontal swipe, and (this rule's third
    revision) no wall of 15+ full-height hero cards either. EventCard itself renders a compact
    ~76px tappable row below md and hides its full media card there (shown from md up) - see
-   components/ui/EventCard.tsx. The one exception is the featured event, which keeps its own
-   `.event-card` full-bleed treatment on every breakpoint (deliberately "one standout", not
-   compact) - the `.event-card` mobile sizing below still applies to that card specifically. */
+   components/ui/EventCard.tsx. Featured events no longer render in this grid at all (they live in
+   their own section, styled below), so there's no exception case to carve out here any more. */
 @media (max-width: 767px) {
   .event-grid,
   .event-grid-1,
@@ -167,6 +175,33 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
     border-radius: 24px;
     width: 100%;
     max-width: none;
+  }
+
+  /* Featured flyer row: a horizontal snap-scroll strip instead of a tall stack, so several
+     portrait cards stay scannable in one screen's worth of scrolling. Each card is sized to
+     ~78vw so the next card visibly peeks in at the edge - the swipe affordance the brief asked
+     for, no separate arrow/dot UI needed. */
+  .featured-grid,
+  .featured-grid-1,
+  .featured-grid-2,
+  .featured-grid-3,
+  .featured-grid-4 {
+    display: flex !important;
+    grid-template-columns: none !important;
+    max-width: none;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+
+  .featured-card {
+    scroll-snap-align: start;
+    flex: 0 0 78vw;
+    max-width: 320px;
   }
 
   .hero-title,
