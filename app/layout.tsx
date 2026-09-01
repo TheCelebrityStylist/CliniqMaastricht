@@ -12,7 +12,6 @@ import { localBusinessSchema, organizationSchema } from '@/lib/seo'
 import MobileActionBar from '@/components/interactive/MobileActionBarLoader'
 import SmoothScroll from '@/components/experience/SmoothScroll'
 import ScrollChoreography from '@/components/experience/ScrollChoreographyLoader'
-import CustomCursor from '@/components/experience/CustomCursorLoader'
 import MobileHaptics from '@/components/experience/MobileHapticsLoader'
 import PageTransition from '@/components/experience/PageTransition'
 import AmbientSound from '@/components/experience/AmbientSoundLoader'
@@ -57,7 +56,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ScrollChoreography />
       </SmoothScroll>
       <MobileActionBar />
-      <CustomCursor />
       <MobileHaptics />
       <AmbientSound />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema()) }} />

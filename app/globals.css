@@ -98,10 +98,6 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 .event-card-detail { padding:1.25rem; padding-top:1rem; }
 .event-chip { display:inline-flex; align-items:center; min-height:2.2rem; border-radius:999px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.45); padding:10px 16px; color:rgba(255,247,234,.92); font-size:clamp(.78rem, .9vw, .9rem); font-weight:800; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(12px); }
 .event-chip-age { padding-inline:14px; }
-/* Magenta-tinted "Uitgelicht"/"Featured" chip - used on the featured-events section's cards
-   (see FeaturedEventCard.tsx), not the regular agenda grid (featured events no longer render
-   there at all). */
-.event-chip-featured { border-color:rgba(220,72,254,.5); background:rgba(80,11,56,.55); color:#fff; }
 @media (max-width:640px) { .event-chip-row { left:14px; right:14px; top:14px; } .event-chip { min-height:1.9rem; padding:8px 12px; font-size:.72rem; } .event-title-block { padding:22px; } }
 .cta-arrow { display:inline-flex; align-items:center; min-height:2.75rem; }
 .cta-arrow span { display:inline-block; transition:transform .25s ease; }
@@ -141,10 +137,6 @@ details[open] { @apply border-coral/40 bg-white/[0.085]; }
 
 /* Experience layer (components/experience/*) — additive, self-contained styles. */
 @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.custom-cursor-active, .custom-cursor-active a, .custom-cursor-active button, .custom-cursor-active [role="button"] { cursor: none !important; }
-.cursor-dot { position: fixed; top: 0; left: 0; width: 7px; height: 7px; margin: -3.5px; border-radius: 999px; background: #DC48FE; pointer-events: none; z-index: 300; will-change: transform; transition: opacity .2s ease; }
-.cursor-ring { position: fixed; top: 0; left: 0; width: 34px; height: 34px; margin: -17px; border-radius: 999px; border: 1px solid rgba(255,255,255,.4); pointer-events: none; z-index: 300; will-change: transform; transition: width .25s ease, height .25s ease, margin .25s ease, border-color .25s ease, background-color .25s ease, opacity .2s ease; }
-.cursor-ring.cursor-ring-active { width: 60px; height: 60px; margin: -30px; border-color: #DC48FE; background: rgba(220,72,254,.12); }
 
 /* Interactive layer (components/interactive/*) — additive, self-contained styles. */
 .atmosphere-glow { position:absolute; inset:-20%; background: radial-gradient(circle at 28% 30%, rgba(220,72,254,.16), transparent 55%), radial-gradient(circle at 75% 68%, rgba(219,51,76,.12), transparent 50%); filter: blur(60px); animation: atmosphere-drift 18s ease-in-out infinite alternate; }
